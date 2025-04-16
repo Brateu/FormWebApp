@@ -1,0 +1,33 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: auth-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/Auth-User
+    username: postgres
+    password: nah
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+security:
+  jwt:
+    secret: similud-secret-uvek-kaoznass-sml-idegas47-veoma123-similudi45-blekniga-nowhepregnent10
+    token-expiration: 3600000
+  basic:
+    enabled: false
+
+logging:
+  level:
+    org.springframework: INFO
+
+swagger:
+  enabled: true
