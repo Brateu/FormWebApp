@@ -8,6 +8,15 @@ package org.microservices.userservice.enums;
  * throughout the application using role-based security configurations.
  */
 public enum Role {
+    /**
+     * Standard user role with basic privileges.
+     * Users with this role can access their own data and use the basic features of the application.
+     */
     USER,
+
+    /**
+     * Administrator role with elevated privileges.
+     * Users with this role have access to administrative functions and can manage other users.
+     */
     ADMIN
 }

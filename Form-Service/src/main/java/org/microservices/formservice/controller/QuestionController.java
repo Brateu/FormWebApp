@@ -9,14 +9,29 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * REST controller for managing questions in forms.
+ * Provides endpoints for retrieving, creating, updating, deleting, cloning, and reordering questions.
+ * Questions are always associated with a specific form.
+ */
 @RestController
-@RequestMapping("/api/questions")
+@RequestMapping("/api/forms/{formId}/questions")
 @RequiredArgsConstructor
 public class QuestionController {
 
+    /**
+     * Service for question-related operations.
+     */
     private final QuestionService questionService;
 
-    @GetMapping("/form/{formId}")
+    /**
+     * Retrieves all questions for a specific form.
+     * 
+     * @param formId The ID of the form whose questions to retrieve
+     * @param userId The ID of the user making the request
+     * @return A list of question DTOs
+     */
+    @GetMapping
     public ResponseEntity<List<QuestionDto>> getQuestionsByForm(
             @PathVariable Long formId,
             @RequestHeader("X-User-ID") Long userId) {
@@ -24,15 +39,32 @@ public class QuestionController {
         return ResponseEntity.ok(questions);
     }
 
-    @GetMapping("/{id}")
+    /**
+     * Retrieves a specific question by its ID.
+     * 
+     * @param formId The ID of the form containing the question
+     * @param questionId The ID of the question to retrieve
+     * @param userId The ID of the user making the request
+     * @return The question DTO if found
+     */
+    @GetMapping("/{questionId}")
     public ResponseEntity<QuestionDto> getQuestionById(
-            @PathVariable Long id,
+            @PathVariable Long formId,
+            @PathVariable Long questionId,
             @RequestHeader("X-User-ID") Long userId) {
-        QuestionDto question = questionService.getQuestionById(id, userId);
+        QuestionDto question = questionService.getQuestionById(questionId, userId);
         return ResponseEntity.ok(question);
     }
 
-    @PostMapping("/form/{formId}")
+    /**
+     * Creates a new question in a form.
+     * 
+     * @param formId The ID of the form to add the question to
+     * @param questionDto The question data to create
+     * @param userId The ID of the user making the request
+     * @return The created question DTO
+     */
+    @PostMapping
     public ResponseEntity<QuestionDto> createQuestion(
             @PathVariable Long formId,
             @RequestBody QuestionDto questionDto,
@@ -41,32 +73,70 @@ public class QuestionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdQuestion);
     }
 
-    @PutMapping("/{id}")
+    /**
+     * Updates an existing question.
+     * 
+     * @param formId The ID of the form containing the question
+     * @param questionId The ID of the question to update
+     * @param questionDto The updated question data
+     * @param userId The ID of the user making the request
+     * @return The updated question DTO
+     */
+    @PutMapping("/{questionId}")
     public ResponseEntity<QuestionDto> updateQuestion(
-            @PathVariable Long id,
+            @PathVariable Long formId,
+            @PathVariable Long questionId,
             @RequestBody QuestionDto questionDto,
             @RequestHeader("X-User-ID") Long userId) {
-        QuestionDto updatedQuestion = questionService.updateQuestion(id, questionDto, userId);
+        questionDto.setFormId(formId);
+        questionDto.setId(questionId);
+        QuestionDto updatedQuestion = questionService.updateQuestion(questionId, questionDto, userId);
         return ResponseEntity.ok(updatedQuestion);
     }
 
-    @DeleteMapping("/{id}")
+    /**
+     * Deletes a question.
+     * 
+     * @param formId The ID of the form containing the question
+     * @param questionId The ID of the question to delete
+     * @param userId The ID of the user making the request
+     * @return No content response
+     */
+    @DeleteMapping("/{questionId}")
     public ResponseEntity<Void> deleteQuestion(
-            @PathVariable Long id,
+            @PathVariable Long formId,
+            @PathVariable Long questionId,
             @RequestHeader("X-User-ID") Long userId) {
-        questionService.deleteQuestion(id, userId);
+        questionService.deleteQuestion(questionId, userId);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{id}/clone")
+    /**
+     * Creates a clone of an existing question.
+     * 
+     * @param formId The ID of the form containing the question
+     * @param questionId The ID of the question to clone
+     * @param userId The ID of the user making the request
+     * @return The cloned question DTO
+     */
+    @PostMapping("/{questionId}/clone")
     public ResponseEntity<QuestionDto> cloneQuestion(
-            @PathVariable Long id,
+            @PathVariable Long formId,
+            @PathVariable Long questionId,
             @RequestHeader("X-User-ID") Long userId) {
-        QuestionDto clonedQuestion = questionService.cloneQuestion(id, userId);
+        QuestionDto clonedQuestion = questionService.cloneQuestion(questionId, userId);
         return ResponseEntity.status(HttpStatus.CREATED).body(clonedQuestion);
     }
 
-    @PutMapping("/form/{formId}/reorder")
+    /**
+     * Reorders questions within a form.
+     * 
+     * @param formId The ID of the form containing the questions
+     * @param questionIds The ordered list of question IDs
+     * @param userId The ID of the user making the request
+     * @return The list of reordered question DTOs
+     */
+    @PutMapping("/reorder")
     public ResponseEntity<List<QuestionDto>> reorderQuestions(
             @PathVariable Long formId,
             @RequestBody List<Long> questionIds,

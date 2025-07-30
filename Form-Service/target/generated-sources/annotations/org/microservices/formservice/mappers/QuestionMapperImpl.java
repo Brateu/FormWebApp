@@ -5,13 +5,14 @@ import java.util.List;
 import javax.annotation.processing.Generated;
 import org.microservices.formservice.DTO.OptionDto;
 import org.microservices.formservice.DTO.QuestionDto;
+import org.microservices.formservice.entity.Form;
 import org.microservices.formservice.entity.Option;
 import org.microservices.formservice.entity.Question;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-05-09T12:38:50+0200",
+    date = "2025-07-30T15:48:37+0200",
     comments = "version: 1.5.5.Final, compiler: javac, environment: Java 23 (Oracle Corporation)"
 )
 @Component
@@ -25,11 +26,13 @@ public class QuestionMapperImpl implements QuestionMapper {
 
         QuestionDto.QuestionDtoBuilder questionDto = QuestionDto.builder();
 
+        questionDto.formId( questionFormId( question ) );
         questionDto.id( question.getId() );
         questionDto.text( question.getText() );
         questionDto.type( question.getType() );
         questionDto.required( question.isRequired() );
         questionDto.orderIndex( question.getOrderIndex() );
+        questionDto.userId( question.getUserId() );
         questionDto.options( optionListToOptionDtoList( question.getOptions() ) );
 
         return questionDto.build();
@@ -62,6 +65,7 @@ public class QuestionMapperImpl implements QuestionMapper {
         question.type( questionDto.getType() );
         question.required( questionDto.isRequired() );
         question.orderIndex( questionDto.getOrderIndex() );
+        question.userId( questionDto.getUserId() );
         question.options( optionDtoListToOptionList( questionDto.getOptions() ) );
 
         return question.build();
@@ -78,6 +82,7 @@ public class QuestionMapperImpl implements QuestionMapper {
         question.setType( dto.getType() );
         question.setRequired( dto.isRequired() );
         question.setOrderIndex( dto.getOrderIndex() );
+        question.setUserId( dto.getUserId() );
         if ( question.getOptions() != null ) {
             List<Option> list = optionDtoListToOptionList( dto.getOptions() );
             if ( list != null ) {
@@ -94,6 +99,21 @@ public class QuestionMapperImpl implements QuestionMapper {
                 question.setOptions( list );
             }
         }
+    }
+
+    private Long questionFormId(Question question) {
+        if ( question == null ) {
+            return null;
+        }
+        Form form = question.getForm();
+        if ( form == null ) {
+            return null;
+        }
+        Long id = form.getId();
+        if ( id == null ) {
+            return null;
+        }
+        return id;
     }
 
     protected OptionDto optionToOptionDto(Option option) {

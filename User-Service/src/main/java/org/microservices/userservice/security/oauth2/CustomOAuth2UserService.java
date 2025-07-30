@@ -22,11 +22,34 @@ import java.util.UUID;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+/**
+ * Custom implementation of OAuth2UserService for handling OAuth2 authentication.
+ * This service extends the DefaultOAuth2UserService to provide custom processing
+ * of OAuth2 user information, including user registration and updates.
+ * 
+ * It supports multiple OAuth2 providers (Google, GitHub) and handles the extraction
+ * of user details from provider-specific attributes.
+ */
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
+    /**
+     * Repository for accessing and manipulating user data.
+     */
     private final UserRepository userRepository;
+
+    /**
+     * Encoder for securely hashing passwords.
+     */
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Loads the user by OAuth2 user request.
+     * Overrides the default implementation to provide custom processing of OAuth2 users.
+     *
+     * @param userRequest the user request
+     * @return the OAuth2User
+     * @throws OAuth2AuthenticationException if an authentication error occurs
+     */
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oauth2User = super.loadUser(userRequest);
@@ -41,14 +64,22 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         }
     }
 
+    /**
+     * Processes the OAuth2 user information.
+     * Extracts user details from the OAuth2 user attributes based on the provider,
+     * and either registers a new user or updates an existing one.
+     *
+     * @param userRequest the OAuth2 user request
+     * @param oauth2User the OAuth2 user
+     * @return the processed OAuth2 user
+     * @throws OAuth2AuthenticationException if an authentication error occurs
+     */
     private OAuth2User processOAuth2User(OAuth2UserRequest userRequest, OAuth2User oauth2User) {
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         Map<String, Object> attributes = oauth2User.getAttributes();
 
-        // Determine the authentication provider
         AuthProvider authProvider = determineAuthProvider(registrationId);
 
-        // Extract the necessary user information based on the provider
         String email;
         String fullName;
         String providerId;
@@ -82,21 +113,17 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
                 throw new OAuth2AuthenticationException("Unsupported OAuth2 provider: " + registrationId);
         }
 
-        // Check if the user already exists
         Optional<User> userOptional = userRepository.findByEmail(email);
 
         User user;
         if (userOptional.isEmpty()) {
-            // Register a new user
             user = registerNewUser(email, fullName, providerId, authProvider, Role.USER);
             log.info("New user registered via OAuth2: {}", email);
         } else {
-            // Update existing user
             user = updateExistingUser(userOptional.get(), fullName, authProvider, providerId);
             log.info("Existing user updated via OAuth2: {}", email);
         }
 
-        // Create new OAuth2User with updated attributes
         return new DefaultOAuth2User(
                 Collections.emptyList(),
                 attributes,
@@ -104,6 +131,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         );
     }
 
+    /**
+     * Determines the authentication provider based on the registration ID.
+     *
+     * @param registrationId the OAuth2 registration ID
+     * @return the corresponding AuthProvider enum value
+     * @throws OAuth2AuthenticationException if the provider is not supported
+     */
     private AuthProvider determineAuthProvider(String registrationId) {
         return switch (registrationId.toLowerCase()) {
             case "google" -> AuthProvider.GOOGLE;
@@ -112,8 +146,18 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         };
     }
 
+    /**
+     * Registers a new user with OAuth2 credentials.
+     * Creates a new user entity with the provided details and a randomly generated password.
+     *
+     * @param email the user's email address
+     * @param fullName the user's full name
+     * @param providerId the provider-specific user ID
+     * @param provider the authentication provider
+     * @param role the user's role
+     * @return the newly created user entity
+     */
     private User registerNewUser(String email, String fullName, String providerId, AuthProvider provider, Role role) {
-        // Generate a random password for OAuth users
         String randomPassword = UUID.randomUUID().toString();
 
         User user = User.builder()
@@ -128,8 +172,18 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         return userRepository.save(user);
     }
 
+    /**
+     * Updates an existing user with OAuth2 credentials.
+     * Verifies that the authentication provider matches and updates the user's details.
+     *
+     * @param existingUser the existing user entity
+     * @param fullName the user's full name (may be updated)
+     * @param provider the authentication provider
+     * @param providerId the provider-specific user ID
+     * @return the updated user entity
+     * @throws OAuth2AuthenticationException if the provider doesn't match the existing user's provider
+     */
     private User updateExistingUser(User existingUser, String fullName, AuthProvider provider, String providerId) {
-        // Verify the provider matches
         if (existingUser.getAuthProvider() != provider) {
             String errorMessage = "User with email " + existingUser.getEmail() +
                     " is already registered with provider " + existingUser.getAuthProvider();
@@ -137,7 +191,6 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             throw new OAuth2AuthenticationException(errorMessage);
         }
 
-        // Update user information using builder pattern
         User updatedUser = User.builder()
                 .id(existingUser.getId())
                 .email(existingUser.getEmail())

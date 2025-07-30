@@ -57,7 +57,6 @@ public class UserServiceImpl implements UserService {
 
     System.out.println("User object after mapping: " + mappedUser);
 
-    // Use builder pattern instead of setters
     User user = User.builder()
             .id(mappedUser.getId())
             .email(mappedUser.getEmail())
@@ -70,10 +69,14 @@ public class UserServiceImpl implements UserService {
 
     System.out.println("User object before saving: " + user);
 
-    userRepository.save(user);
+    user = userRepository.save(user);
     String token = jwtTokenProvider.generateToken(user);
 
-    return new AuthResponseDto(token);
+    return AuthResponseDto.builder()
+            .token(token)
+            .tokenType("Bearer")
+            .userId(user.getId())
+            .build();
   }
 
   /**
@@ -95,7 +98,11 @@ public class UserServiceImpl implements UserService {
     }
 
     String token = jwtTokenProvider.generateToken(user);
-    return new AuthResponseDto(token);
+    return AuthResponseDto.builder()
+            .token(token)
+            .tokenType("Bearer")
+            .userId(user.getId())
+            .build();
   }
 
   /**
@@ -127,14 +134,13 @@ public class UserServiceImpl implements UserService {
   public AuthResponseDto authenticateOAuthUser(String email, String name, String providerId) {
     User user = userRepository.findByEmail(email)
             .orElseGet(() -> {
-              // If user doesn't exist, create a new one
               User newUser = User.builder()
                       .email(email)
                       .fullName(name)
-                      .password(passwordEncoder.encode(providerId)) // Use providerId as basis for password
-                      .authProvider(AuthProvider.GITHUB) // This will be set correctly by OAuth2AuthenticationSuccessHandler
+                      .password(passwordEncoder.encode(providerId))
+                      .authProvider(AuthProvider.GITHUB)
                       .providerId(providerId)
-                      .role(Role.USER) // Default role for OAuth users
+                      .role(Role.USER)
                       .enabled(true)
                       .build();
 
@@ -146,6 +152,7 @@ public class UserServiceImpl implements UserService {
     return AuthResponseDto.builder()
             .token(token)
             .tokenType("Bearer")
+            .userId(user.getId())
             .build();
   }
 
@@ -158,7 +165,6 @@ public class UserServiceImpl implements UserService {
   @Override
   public boolean logout() {
     try {
-      // Clear the security context
       SecurityContextHolder.clearContext();
       log.info("User logged out successfully");
       return true;

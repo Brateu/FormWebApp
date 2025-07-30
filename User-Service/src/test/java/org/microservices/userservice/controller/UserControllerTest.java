@@ -15,6 +15,7 @@ import org.microservices.userservice.service.UserServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -30,6 +31,9 @@ class UserControllerTest {
 
     @Mock
     private Authentication authentication;
+
+    @Mock
+    private jakarta.servlet.http.HttpServletResponse httpServletResponse;
 
     @InjectMocks
     private UserController userController;
@@ -80,12 +84,12 @@ class UserControllerTest {
     }
 
     @Test
-    void login_ShouldReturnOkResponse_WithAuthResponseDto() {
+    void login_ShouldReturnOkResponse_WithAuthResponseDto() throws IOException {
         // Arrange
         when(userService.login(any(LoginRequestDto.class))).thenReturn(authResponseDto);
 
         // Act
-        ResponseEntity<AuthResponseDto> response = userController.login(loginRequestDto);
+        ResponseEntity<AuthResponseDto> response = userController.login(loginRequestDto, null, httpServletResponse);
 
         // Assert
         assertNotNull(response);

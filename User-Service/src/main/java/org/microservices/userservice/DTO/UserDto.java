@@ -19,8 +19,25 @@ import org.microservices.userservice.enums.AuthProvider;
  */
 @Data
 public class UserDto {
+    /**
+     * The unique identifier for the user.
+     */
     private Long id;
+
+    /**
+     * The email address associated with the user.
+     * Used as the username for authentication.
+     */
     private String email;
+
+    /**
+     * The full name of the user.
+     */
     private String fullName;
+
+    /**
+     * The authentication provider used by the user.
+     * Can be LOCAL, GOOGLE, GITHUB, etc.
+     */
     private AuthProvider authProvider;
 }

@@ -3,11 +3,11 @@ server:
 
 spring:
   application:
-    name: Form-Service
+    name: form-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/postgres
-    username: postgres
-    password: nah
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -17,3 +17,20 @@ spring:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
+  cloud:
+    compatibility-verifier:
+      enabled: false
+
+# User Service configuration
+user-service:
+  url: ${USER_SERVICE_URL:http://localhost:8080}
+
+# Feign client configuration
+feign:
+  client:
+    config:
+      user-service:
+        url: ${user-service.url}
+        connectTimeout: 5000
+        readTimeout: 5000
+        loggerLevel: full

@@ -19,17 +19,46 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Security configuration class for the User Service.
+ * Configures web security, authentication, and authorization settings.
+ * Enables method-level security and stateless session management.
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    /**
+     * Service for loading user-specific data.
+     */
     private final UserDetailsService userDetailsService;
+
+    /**
+     * Service for handling OAuth2 authentication.
+     */
     private final CustomOAuth2UserService customOAuth2UserService;
+
+    /**
+     * Encoder for password hashing and verification.
+     */
     private final PasswordEncoder passwordEncoder;
+
+    /**
+     * Handler for successful OAuth2 authentication.
+     */
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
+    /**
+     * Configures the security filter chain.
+     * Sets up CSRF protection, request authorization rules, session management,
+     * and OAuth2 login configuration.
+     *
+     * @param http HttpSecurity to be configured
+     * @return The configured SecurityFilterChain
+     * @throws Exception If an error occurs during configuration
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -39,7 +68,8 @@ public class SecurityConfig {
                                 "/api/user/register",
                                 "/api/user/login",
                                 "/api/v1/auth/oauth2/**",
-                                "/oauth2/**"
+                                "/oauth2/**",
+                                "/api/user/email/{email}/id"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
@@ -56,7 +86,12 @@ public class SecurityConfig {
         return http.build();
     }
 
-
+    /**
+     * Creates and configures an authentication provider.
+     * Sets the user details service and password encoder.
+     *
+     * @return Configured DaoAuthenticationProvider
+     */
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -65,6 +100,13 @@ public class SecurityConfig {
         return authProvider;
     }
 
+    /**
+     * Creates an authentication manager.
+     *
+     * @param config Authentication configuration
+     * @return AuthenticationManager instance
+     * @throws Exception If an error occurs during creation
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();

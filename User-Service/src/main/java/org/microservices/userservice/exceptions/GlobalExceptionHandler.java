@@ -1,9 +1,14 @@
 package org.microservices.userservice.exceptions;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * GlobalExceptionHandler is a centralized exception handling class for the application.
@@ -36,9 +41,16 @@ public class GlobalExceptionHandler {
      *         and the exception message in the response body
      */
     @ExceptionHandler(UserServiceException.class)
-    public ResponseEntity<String> handleAuthServiceException(UserServiceException ex) {
+    public ResponseEntity<Map<String, Object>> handleAuthServiceException(UserServiceException ex) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("timestamp", LocalDateTime.now().toString());
+        errorResponse.put("status", HttpStatus.BAD_REQUEST.value());
+        errorResponse.put("error", "Bad Request");
+        errorResponse.put("message", ex.getMessage());
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ex.getMessage());
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(errorResponse);
     }
 
     /**
@@ -54,8 +66,61 @@ public class GlobalExceptionHandler {
      *         and a generic error message in the response body
      */
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleGenericException(Exception ex) {
+    public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("timestamp", LocalDateTime.now().toString());
+        errorResponse.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        errorResponse.put("error", "Internal Server Error");
+        errorResponse.put("message", "An unexpected error occurred: " + ex.getMessage());
+
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("An unexpected error occurred: " + ex.getMessage());
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(errorResponse);
+    }
+
+    /**
+     * Handles UserNotFoundException specifically.
+     * Returns a 404 Not Found status with a JSON error response.
+     *
+     * @param ex the UserNotFoundException that was thrown
+     * @return a ResponseEntity containing the HTTP status 404 Not Found
+     *         and a JSON error response
+     */
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Map<String, Object>> handleUserNotFoundException(UserNotFoundException ex) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("timestamp", LocalDateTime.now().toString());
+        errorResponse.put("status", HttpStatus.NOT_FOUND.value());
+        errorResponse.put("error", "Not Found");
+        errorResponse.put("message", ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(errorResponse);
+    }
+
+    /**
+     * Handles RuntimeException specifically for user not found cases.
+     * Returns a 404 Not Found status with a JSON error response.
+     *
+     * @param ex the RuntimeException that was thrown
+     * @return a ResponseEntity containing the HTTP status 404 Not Found
+     *         and a JSON error response
+     */
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Map<String, Object>> handleRuntimeException(RuntimeException ex) {
+        if (ex.getMessage() != null && ex.getMessage().contains("User not found")) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("timestamp", LocalDateTime.now().toString());
+            errorResponse.put("status", HttpStatus.NOT_FOUND.value());
+            errorResponse.put("error", "Not Found");
+            errorResponse.put("message", ex.getMessage());
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(errorResponse);
+        }
+
+        return handleGenericException(ex);
     }
 }

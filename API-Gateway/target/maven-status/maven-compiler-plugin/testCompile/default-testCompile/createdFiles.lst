@@ -1,0 +1,5 @@
+org\microservices\apigateway\config\SecurityConfigTest.class
+org\microservices\apigateway\filter\UserIdPropagationFilterTest.class
+org\microservices\apigateway\security\ReactiveJwtAuthenticationConverterTest.class
+org\microservices\apigateway\ApiGatewayApplicationTests.class
+org\microservices\apigateway\controller\AuthControllerTest.class

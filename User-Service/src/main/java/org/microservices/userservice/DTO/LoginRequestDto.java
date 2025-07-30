@@ -16,6 +16,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginRequestDto {
+    /**
+     * The email address of the user attempting to log in.
+     * Used as the username for authentication.
+     */
     private String email;
+
+    /**
+     * The password of the user attempting to log in.
+     * Will be validated against the stored password hash.
+     */
     private String password;
 }
