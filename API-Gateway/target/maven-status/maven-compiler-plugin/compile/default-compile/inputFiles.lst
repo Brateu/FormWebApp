@@ -1,6 +1,0 @@
-D:\FormApp\API-Gateway\src\main\java\org\microservices\apigateway\security\ReactiveJwtAuthenticationConverter.java
-D:\FormApp\API-Gateway\src\main\java\org\microservices\apigateway\controller\AuthController.java
-D:\FormApp\API-Gateway\src\main\java\org\microservices\apigateway\filter\UserIdFilter.java
-D:\FormApp\API-Gateway\src\main\java\org\microservices\apigateway\filter\UserIdPropagationFilter.java
-D:\FormApp\API-Gateway\src\main\java\org\microservices\apigateway\ApiGatewayApplication.java
-D:\FormApp\API-Gateway\src\main\java\org\microservices\apigateway\config\SecurityConfig.java

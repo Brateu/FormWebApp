@@ -1,6 +1,0 @@
-org\microservices\apigateway\filter\UserIdFilter.class
-org\microservices\apigateway\filter\UserIdPropagationFilter.class
-org\microservices\apigateway\controller\AuthController.class
-org\microservices\apigateway\ApiGatewayApplication.class
-org\microservices\apigateway\security\ReactiveJwtAuthenticationConverter.class
-org\microservices\apigateway\config\SecurityConfig.class
