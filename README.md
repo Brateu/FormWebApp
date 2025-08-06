@@ -91,19 +91,13 @@ This project uses environment variables to store sensitive information such as d
 
 Each service has its own `.env` file that contains the necessary environment variables. Before running the services, make sure these environment variables are properly set in your environment.
 
+> **Note for Windows Users**: When running Docker Compose on Windows, you need to run the Docker client with elevated privileges. Right-click on the Docker Desktop icon and select "Run as administrator". If you don't run Docker with elevated privileges, you'll see an error like: `error during connect: in the default daemon configuration on Windows, the docker client must be run with elevated privileges to connect`.
+
 #### API Gateway
 
 The API Gateway requires the following environment variables:
 
 ```
-# OAuth2 Client Credentials
-SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID=your-google-client-id
-SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET=your-google-client-secret
-SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENT_ID=your-github-client-id
-SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENT_SECRET=your-github-client-secret
-SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_USER_SERVICE_CLIENT_ID=api-gateway
-SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_USER_SERVICE_CLIENT_SECRET=api-gateway-secret
-
 # JWT Configuration
 SECURITY_JWT_SECRET=your-jwt-secret
 SECURITY_JWT_TOKEN_EXPIRATION=3600000
@@ -217,6 +211,65 @@ There are several ways to load environment variables:
    - For Docker: Use the `-e` flag or a docker-compose.yml file
    - For Kubernetes: Use ConfigMaps and Secrets
    - For cloud platforms: Use their environment variable configuration options
+
+## Docker Setup
+
+This project is containerized using Docker, making it easy to set up and run in any environment.
+
+### Prerequisites
+
+- [Docker](https://www.docker.com/get-started) installed on your machine
+- [Docker Compose](https://docs.docker.com/compose/install/) installed on your machine
+
+### Configuration
+
+1. **Environment Variables**:
+   - The project includes a `.env` file in the root directory with default values
+   - Update the values in this file with your actual credentials before running the application
+   - Each service also has its own `.env` file for service-specific configuration
+
+2. **Docker Compose**:
+   - The `docker-compose.yml` file in the root directory orchestrates all services
+   - It defines the services, networks, and volumes needed for the application
+
+### Running the Application
+
+1. **Build and start all services**:
+   ```bash
+   docker-compose up -d
+   ```
+
+2. **View logs**:
+   ```bash
+   docker-compose logs -f
+   ```
+
+3. **Stop all services**:
+   ```bash
+   docker-compose down
+   ```
+
+4. **Rebuild services after making changes**:
+   ```bash
+   docker-compose up -d --build
+   ```
+
+### Service URLs
+
+Once the application is running, you can access the services at:
+
+- API Gateway: http://localhost:8080
+- User Service: http://localhost:8082
+- Form Service: http://localhost:8081
+
+### Database Access
+
+The PostgreSQL databases are exposed on the following ports:
+
+- User Database: localhost:5432
+- Form Database: localhost:5433
+
+You can connect to these databases using a PostgreSQL client like pgAdmin or DBeaver.
 
 ### Security Considerations
 
