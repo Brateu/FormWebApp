@@ -1,0 +1,45 @@
+name: Build, Scan, and Push Docker Images (Multi-Folder)
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_name:
+        description: 'Docker image name (base name, folder name will be appended)'
+        required: true
+        default: 'myapp'
+  push:
+    paths:
+      - 'API-Gateway/**'
+      - 'Form-Service/**'
+      - 'User-Service/**'
+  pull_request:
+    paths:
+      - 'API-Gateway/**'
+      - 'Form-Service/**'
+      - 'User-Service/**'
+
+jobs:
+  build-scan-push:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        folder: ['API-Gateway', 'Form-Service', 'User-Service']  # Lista foldera
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+
+      - name: Build Docker image
+        run: |
+          cd ${{ matrix.folder }}  # Ulazi u odgovarajući folder
+          docker build -t ${{ inputs.image_name }}-${{ matrix.folder }}:${{ github.sha }} .
+
+      - name: Scan image with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: '${{ inputs.image_name }}-${{ matrix.folder }}:${{ github.sha }}'
+          format: 'table'
+          exit-code: 1
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+
