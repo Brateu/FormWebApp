@@ -7,16 +7,6 @@ on:
         description: 'Docker image name (base name, folder name will be appended)'
         required: true
         default: 'myapp'
-  push:
-    paths:
-      - 'API-Gateway/**'
-      - 'Form-Service/**'
-      - 'User-Service/**'
-  pull_request:
-    paths:
-      - 'API-Gateway/**'
-      - 'Form-Service/**'
-      - 'User-Service/**'
 
 jobs:
   build-scan-push:
