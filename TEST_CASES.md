@@ -1,6 +1,6 @@
 TEST_CASES — User Service / Registracija
 --------------------------------------------------------------------------------------------------------------------------
-Sistem: FormApp (User-Service @ http://localhost:8070)
+Sistem: FormApp (User-Service @ http://localhost:8070),
 Okruženje: Docker lokalno (Postgres 15, User-Service 8070)
 ---------------------------------------------------------------------------------------------------------------------------
 _Sažetak nalaza (Bug Summary):_
