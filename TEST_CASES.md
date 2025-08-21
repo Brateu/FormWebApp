@@ -6,13 +6,13 @@ Okruženje: Docker lokalno (Postgres 15, User-Service 8070)
 _Sažetak nalaza (Bug Summary):_
 ---------------------------------------------------------------------------------------------------------------------------
 **BUG-REG-001** -	Nevalidan email prolazi	- API prihvata email bez validnog formata (npr. not-an-email) - očekivano->400 Bad Request	- dobijeno->200 OK / 201 Created	- status **FAIL**
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 **BUG-REG-002**	- Duplikat email-a prolazi - Ponovna registracija istog email i username prolazi - očekivano->409 Conflict (ili 400) - dobijeno->200 OK / 201 Created - status **FAIL**	
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 **BUG-REG-003** -	Case-insensitive problem	- USER@mail.com i user@mail.com tretirani kao različiti - očekivano->Normalizacija i blokiranje duplikata	- dobijeno->200/201	- status **FAIL**
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 **BUG-REG-004**	- Razmaci u email-u prolaze -	" user @mail.com " prolazi bez trim/validacije - o;ekivano->Trim + 400 Bad Request	- dobijeno->200/201	**FAIL**
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 **Napomena dev timu**: Predlaže se @Email + @NotBlank, trim() + toLowerCase() pre upisa, i UNIQUE ograničenje u bazi nad email (posle normalizacije). Za duplikat vraćati 409.
 
 --------------------------------------------------------------------------------------------------------------------------
@@ -37,7 +37,7 @@ Očekivano: 201 Created (ili 200 OK), telo sadrži podatke o korisniku ili potvr
 
 Stvarno: 200 OK (korisnik kreiran) — **PASS**.
 
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 **TC-REG-002 — Registracija (nevalidan email)**
 
@@ -56,7 +56,7 @@ Očekivano: 400 Bad Request.
 
 Stvarno: 200 OK — **FAIL** (nema validacije formata email-a).
 
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 **TC-REG-003 — Registracija (duplikat korisnika)**
 
@@ -77,7 +77,7 @@ Očekivano: 409 Conflict (ili 400) + poruka da korisnik već postoji.
 
 Stvarno: 200 OK / 201 Created — **FAIL** (dozvoljen duplikat).
 
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 **TC-REG-004 — Registracija (email UPPERCASE)**
 
@@ -98,7 +98,7 @@ Očekivano: 409/400 (email normalizovan na lowercase i detektovan duplikat).
 
 Stvarno: 200/201 — **FAIL** (case-sensitive tretman email-a).
 
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 **TC-REG-005 — Registracija (razmaci u email-u)**
 
