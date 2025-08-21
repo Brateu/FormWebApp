@@ -2,9 +2,9 @@ TEST_CASES — User Service / Registracija
 
 Sistem: FormApp (User-Service @ http://localhost:8070)
 Okruženje: Docker lokalno (Postgres 15, User-Service 8070)
-
+---------------------------------------------------------------------------------------------------------------------------
 _Sažetak nalaza (Bug Summary):_
-
+---------------------------------------------------------------------------------------------------------------------------
 **BUG-REG-001** -	Nevalidan email prolazi	- API prihvata email bez validnog formata (npr. not-an-email) - očekivano->400 Bad Request	- dobijeno->200 OK / 201 Created	- status **FAIL**
 
 **BUG-REG-002**	- Duplikat email-a prolazi - Ponovna registracija istog email i username prolazi - očekivano->409 Conflict (ili 400) - dobijeno->200 OK / 201 Created - status **FAIL**	
@@ -15,9 +15,9 @@ _Sažetak nalaza (Bug Summary):_
 
 **Napomena dev timu**: Predlaže se @Email + @NotBlank, trim() + toLowerCase() pre upisa, i UNIQUE ograničenje u bazi nad email (posle normalizacije). Za duplikat vraćati 409.
 
-
+--------------------------------------------------------------------------------------------------------------------------
 _Detaljni test slučajevi:_
-
+--------------------------------------------------------------------------------------------------------------------------
 **TC-REG-001 — Registracija (validan slučaj)**
 
 URL: POST /users/register
