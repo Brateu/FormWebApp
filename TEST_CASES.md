@@ -57,3 +57,56 @@ TestCase - Scenario - Očekivano - Dobijeno - {kod}
 
 **17)** TC17 - Empty Body - 500 - 500 - 
 **{}**
+
+--------------------------------------------------------------------------------------------------------------------------
+--Prijava--
+--------------------------------------------------------------------------------------------------------------------------
+Sistem: FormApp (User-Service @ http://localhost:8080/api/user/login),
+Okruženje: Docker lokalno (Postgres 15, User-Service 8080)
+---------------------------------------------------------------------------------------------------------------------------
+TestCase - Scenario - Očekivano - Dobijeno - {kod}
+
+**1)** TC01 - Valid Login (valid email, password) - 200 - 200 -
+**{ "email": "qa_user3@mail.com", "password": "Passw0rd!" }**
+
+**2)** TC02 - Email Case-Insensitive - 200 - **400** -
+**{ "email": "QA_USER3@MAIL.COM", "password": "Passw0rd!" }**
+
+**3)** TC03 - Plus-Alias Email - 200 - **400** -
+**{ "email": "qa_user3+alias@mail.com", "password": "Passw0rd!" }**
+
+**4)** TC04 - Invalid Password - 400 - 400 -
+**{ "email": "qa_user3@mail.com", "password": "WrongPass!" }**
+
+**5)** TC05 - Unknown Email - 400 - 400 -
+**{ "email": "nepoznat_user@mail.com", "password": "Passw0rd!" }**
+
+**6)** TC06 - Middle Space Email - 400 - 400 - 
+**{ "email": "qa user3@mail.com", "password": "Passw0rd!" }**
+
+**7)** TC07 - Password with Tailer Space - 400 - 400 -
+**{ "email": "qa_user3@mail.com", "password": "  Passw0rd!  " }**
+
+**8)** TC08 - Email with Spaces Around - 400 - 400 -
+**{ "email": "  qa_user3@mail.com  ", "password": "Passw0rd!" }**
+
+**9)** TC09 - Empty Email - 400 - **200** - 
+{ "email": "", "password": "Passw0rd!" }
+
+**10)** TC10 - Empty Password - 400 - 400 - 
+**{ "email": "qa_user3@mail.com", "password": "" }**
+
+**11)** TC11 - Empty Email Empty Password - 400 - 400 -
+**{ "email": "", "password": "" }**
+
+**12)** TC12 - Null Field - 500 - 500 - 
+**{ "email": "qa_user3@mail.com" }**
+
+**13)** TC13 - Empty Body - 400 - 400 - 
+**{}**
+
+**14)** TC14 - Body Without Bracket - 500 - 500 -
+**{ "email": "qa_user3@mail.com", "password": "Passw0rd!"**   
+
+**15)** TC15 - Login - GET Instead of POST - 500 - 500 - 
+**{ "email": "qa_user3@mail.com", "password": "Passw0rd!" }**
