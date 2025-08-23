@@ -110,6 +110,7 @@ TestCase - Scenario - Očekivano - Dobijeno - {kod}
 
 **15)** TC15 - Login - GET Instead of POST - 500 - 500 - 
 **{ "email": "qa_user3@mail.com", "password": "Passw0rd!" }**
+
 -------------------------------------------------------------------------------------------------------------------------
 
 TEST_CASES — Form Service
@@ -168,7 +169,9 @@ TestCase - Scenario - Očekivano - Dobijeno - {kod}
 **16)** TC16 - Get a Specific Public Form - 200 - 200 - 
 {} - http://localhost:8090/api/forms/public/2
 
-----QUESTIONS----
+-----------------------------------------------------------------------------------------------------------------------
+--QUESTIONS--
+-----------------------------------------------------------------------------------------------------------------------
 
 **1)** TC01 - Create Short Text Question - 200 - 200 - 
 **{ "text": "Vaše ime i prezime", "type": "SHORT_TEXT", "required": true, "orderIndex": 1 }**
@@ -209,8 +212,9 @@ TestCase - Scenario - Očekivano - Dobijeno - {kod}
 **13)** TC13 - Clone Question - 200 - **500** - 
 {} - http://localhost:8090/api/forms/2/questions/4/clone
 
-
-----OPTIONS----
+---------------------------------------------------------------------------------------------------------------------
+--OPTIONS--
+----------------------------------------------------------------------------------------------------------------------
 
 **1)** TC01 - Create a New Option for Single Choice 1 - 200 - 200 - 
 **{ "text": "Basic" }**
@@ -245,7 +249,9 @@ TestCase - Scenario - Očekivano - Dobijeno - {kod}
 **11)** TC11 - List of Options - Multi Choice - 200 - 200 - 
 {} - http://localhost:8090/api/forms/2/questions/7/options
 
-----COLLABORATOR----
+-----------------------------------------------------------------------------------------------------------------------
+--COLLABORATOR--
+-----------------------------------------------------------------------------------------------------------------------
 
 **1)** TC01 - Collaborator Editor - 200 - 200 - 
 **{ "userId": 21, "role": "EDITOR" }**
