@@ -1,6 +1,6 @@
 TEST_CASES — User Service
 
---Registracija--
+--REGISTER--
 --------------------------------------------------------------------------------------------------------------------------
 Sistem: FormApp (User-Service @ http://localhost:8080/api/user/register),
 Okruženje: Docker lokalno (Postgres 15, User-Service 8080)
@@ -59,7 +59,7 @@ TestCase - Scenario - Očekivano - Dobijeno - {kod}
 **{}**
 
 --------------------------------------------------------------------------------------------------------------------------
---Prijava--
+--LOGIN--
 --------------------------------------------------------------------------------------------------------------------------
 Sistem: FormApp (User-Service @ http://localhost:8080/api/user/login),
 Okruženje: Docker lokalno (Postgres 15, User-Service 8080)
