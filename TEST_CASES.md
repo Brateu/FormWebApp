@@ -110,3 +110,157 @@ TestCase - Scenario - Očekivano - Dobijeno - {kod}
 
 **15)** TC15 - Login - GET Instead of POST - 500 - 500 - 
 **{ "email": "qa_user3@mail.com", "password": "Passw0rd!" }**
+-------------------------------------------------------------------------------------------------------------------------
+
+TEST_CASES — Form Service
+
+--------------------------------------------------------------------------------------------------------------------------
+Sistem: FormApp (Form-Service @ http://localhost:8090/api/forms/...), 
+Okruženje: Docker lokalno (Postgres 15, Form-Service 8090)
+--------------------------------------------------------------------------------------------------------------------------
+TestCase - Scenario - Očekivano - Dobijeno - {kod}
+
+**1)** TC01 - Create Form - 200 - 200 - 
+**{ "name": "Test Form", "description": "Minimal body to create a form" }**
+
+**2)** TC02 - Test Created Form - 200 - 200 - 
+{}
+
+**3)** TC03 - List of Created Forms - 200 - 200 - 
+{}
+
+**4)** TC04 - Updated Form - 200 - 200 - 
+**{ "name": "Test Form Updated", "description": "Opis forme ažuriran za testiranje", "allowAnonymous": true, "responseLimit": 100 }**
+
+**5)** TC05 - Updated Form Status - 200 - 200 - 
+{} - PUT http://localhost:8090/api/forms/2/status?status=ACTIVE
+
+**6)** TC06 - Updated Form Status - 200 - 200 - 
+{} - PUT http://localhost:8090/api/forms/2/status?status=CLOSED	
+
+**7)** TC07 - Locked Form - 200 - 200 - 
+{} - http://localhost:8090/api/forms/1/lock - DRAFT -> ACTIVE
+
+**8)** TC08 - Unlocked Form - 200 - 200 - 
+{} - http://localhost:8090/api/forms/1/unlock
+
+**9)** TC09 - Delete Form - 204 - 204 - 
+{} 
+
+**10)** TC10 - Get Forms for the Current User - 200 - 200 -
+{}
+
+**11)** TC11 - Update Form Visibility - 200 - 200 -
+{} - http://localhost:8090/api/forms/2/visibility?visibility=PUBLIC
+
+**12)** TC12 - Get Forms by Visibility - 200 - 200 - 
+{} - http://localhost:8090/api/forms/visibility/PUBLIC
+
+**13)** TC13 - Create a Copy of a Form - 200 - 200 -
+{} - POST http://localhost:8090/api/forms/2/copy
+
+**14)** TC14 - Get Forms by Status - 200 - 200 -
+{} - http://localhost:8090/api/forms/status/CLOSED
+
+**15)** TC15 - Get All Public Forms - 200 - 200 - 
+{} - http://localhost:8090/api/forms/public
+
+**16)** TC16 - Get a Specific Public Form - 200 - 200 - 
+{} - http://localhost:8090/api/forms/public/2
+
+----QUESTIONS----
+
+**1)** TC01 - Create Short Text Question - 200 - 200 - 
+**{ "text": "Vaše ime i prezime", "type": "SHORT_TEXT", "required": true, "orderIndex": 1 }**
+
+**2)** TC02 - Create Long Text Question - 200 - 200 - 
+**{"text": "Opišite svoje iskustvo", "type": "LONG_TEXT", "required": false, "orderIndex": 2 }**
+
+**3)** TC03 - Create Single Choice Question - 200 - 200 - 
+**{ "text": "Koji paket koristite?", "type": "SINGLE_CHOICE", "required": true, "orderIndex": 3, }**
+
+**4)** TC04 - Create Multi Choice Question - 200 - 200 - 
+**{ "text": "Odaberite dve stavke", "type": "MULTI_CHOICE", "required": false, "orderIndex": 4, }**
+
+**5)** TC05 - Create Number Question - 200 - 200 - 
+**{ "text": "Ocenite uslugu (1–5)", "type": "NUMBER", "required": true, "orderIndex": 5 }**
+
+**6)** TC06 - Create Date Question - 200 - 200 - 
+**{ "text": "Datum rođenja", "type": "DATE", "required": false, "orderIndex": 6 }**
+
+**7)** TC07 - Create Time Question - 200 - 200 - 
+**{ "text": "Vreme kontakta", "type": "TIME", "required": false, "orderIndex": 7 }**
+
+**8)** TC08 - List of Question in Form - 200 - 200 - 
+{} - http://localhost:8090/api/forms/2/questions
+
+**9)** TC09 - Get a Specific Question - 200 - 200 - 
+{} - http://localhost:8090/api/forms/2/questions/7
+
+**10)** TC10 - Update a Question - 200 - 200 -
+**{ "text": "Vaše puno ime", "type": "SHORT_TEXT", "required": true, "orderIndex": 1 }**
+
+**11)** TC11 - Delete a Question - 204 - 204 - 
+{} - http://localhost:8090/api/forms/2/questions/11
+
+**12)** TC12 - Reordered Questions - 200 - 200 - 
+**[6, 9, 3, 7, 10, 4, 8]**
+
+**13)** TC13 - Clone Question - 200 - **500** - 
+{} - http://localhost:8090/api/forms/2/questions/4/clone
+
+
+----OPTIONS----
+
+**1)** TC01 - Create a New Option for Single Choice 1 - 200 - 200 - 
+**{ "text": "Basic" }**
+
+**2)** TC02 - Create a New Option for Single Choice 2 - 200 - 200 - 
+**{ "text": "Pro" }**
+
+**3)** TC03 - Create a New Option for Question with Image - 200 - 200 -
+**{ "text": "BasicPro", "imageUrl": "https://sh.wikipedia.org/wiki/Slika#/media/Datoteka:Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg" }**
+
+**4)** TC04 - Updated an Option - Text - 200 - 200 -
+**{ "text": "BasicProPlus" }**
+
+**5)** TC05 - Updated an Option - Image - 200 - 200 -
+**{ "imageUrl": "https://sr.wikipedia.org/wiki/%D0%A1%D0%BB%D0%B8%D0%BA%D0%B0#/media/%D0%94%D0%B0%D1%82%D0%BE%D1%82%D0%B5%D0%BA%D0%B0:Andrea_Mantegna_062.jpg" }**
+
+**6)** TC06 - Updated an Options - Text and Image - 200 - 200 -
+**{ "text": "UpdatedText", "imageUrl": "https://sr.wikipedia.org/wiki/%D0%A1%D0%BB%D0%B8%D0%BA%D0%B0#/media/%D0%94%D0%B0%D1%82%D0%BE%D1%82%D0%B5%D0%BA%D0%B0:Vincent_Willem_van_Gogh_107.jpg" }**
+
+**7)** TC07 - Delete an Option - 204 - 204 -
+{} - http://localhost:8090/api/forms/2/questions/6/options/3
+
+**8)** TC08 - List of Options - Single Choice - 200 - 200 - 
+{} - http://localhost:8090/api/forms/2/questions/6/options
+
+**9)** TC09 - Create a New Option for Multi Choice 1 - 200 - 200 - 
+**{ "text": "Brzina", "imageUrl": "https://sh.wikipedia.org/wiki/Krik_%28slika%29#/media/Datoteka:The_Scream.jpg" }**
+
+**10)** TC10 - Create a New Option for Multi Choice 2 - 200 - 200 - 
+**{ "text": "Vektor" }**
+
+**11)** TC11 - List of Options - Multi Choice - 200 - 200 - 
+{} - http://localhost:8090/api/forms/2/questions/7/options
+
+----COLLABORATOR----
+
+**1)** TC01 - Collaborator Editor - 200 - 200 - 
+**{ "userId": 21, "role": "EDITOR" }**
+
+**2)** TC02 - Collaborator Change (Editor -> Viewer) - 200 - 200 - 
+**{ "role": "VIEWER" }**
+
+**3)** TC03 - Collaborator Viewer - 200 - 200 - 
+**{ "userId": 22, "role": "VIEWER" }**
+
+**4)** TC04 - Collaborator Change (Viewer -> Editor) - 200 - 200 - 
+**{ "role": "EDITOR" }**
+
+**5)** TC05 - List of Collaborators - 200 - 200 - 
+{} - http://localhost:8090/api/forms/2/collaborators
+
+**6)** TC06 - Delete Collaborator - 204 - 204 -
+{} 
