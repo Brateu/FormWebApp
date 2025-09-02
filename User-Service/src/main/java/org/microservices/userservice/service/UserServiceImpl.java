@@ -39,6 +39,34 @@ public class UserServiceImpl implements UserService {
   private final UserMapper userMapper = Mappers.getMapper(UserMapper.class);
 
   /**
+   * Normalizes an email address by:
+   * 1. Converting to lowercase for case-insensitivity
+   * 2. Removing the plus alias part if present (e.g., user+alias@example.com -> user@example.com)
+   *
+   * @param email the email address to normalize
+   * @return the normalized email address
+   */
+  private String normalizeEmail(String email) {
+    if (email == null || email.isEmpty()) {
+      return email;
+    }
+
+    // Convert to lowercase for case-insensitivity
+    email = email.toLowerCase();
+
+    // Handle plus alias
+    int atIndex = email.indexOf('@');
+    if (atIndex > 0) {
+      int plusIndex = email.substring(0, atIndex).indexOf('+');
+      if (plusIndex > 0) {
+        email = email.substring(0, plusIndex) + email.substring(atIndex);
+      }
+    }
+
+    return email;
+  }
+
+  /**
    * Registers a new user in the system. If a user with the provided email already exists, an exception will be thrown.
    * The user's password will be encoded, and a JWT token will be generated upon successful registration.
    *
@@ -48,7 +76,14 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   public AuthResponseDto register(RegisterRequestDto request) {
-    if (userRepository.existsByEmail(request.getEmail())) {
+    if (request.getEmail() == null || request.getEmail().trim().isEmpty()) {
+      throw new UserServiceException("Email cannot be blank");
+    }
+
+    // Normalize the email (handle case-insensitivity and plus aliases)
+    String normalizedEmail = normalizeEmail(request.getEmail());
+
+    if (userRepository.existsByEmail(normalizedEmail)) {
       throw new UserServiceException("Email already in use");
     }
     System.out.println("Request DTO fields: " + request.toString());
@@ -59,7 +94,7 @@ public class UserServiceImpl implements UserService {
 
     User user = User.builder()
             .id(mappedUser.getId())
-            .email(mappedUser.getEmail())
+            .email(normalizedEmail) // Use normalized email
             .fullName(mappedUser.getFullName())
             .password(passwordEncoder.encode(request.getPassword()))
             .authProvider(AuthProvider.LOCAL)
@@ -86,11 +121,19 @@ public class UserServiceImpl implements UserService {
    * @return an AuthResponseDto containing the generated JWT token for the authenticated user
    * @throws UserServiceException if the user is not found or the credentials are invalid
    */
+
   @Override
   public AuthResponseDto login(LoginRequestDto request) {
+    if (request.getEmail() == null || request.getEmail().trim().isEmpty()) {
+      throw new UserServiceException("Email cannot be blank");
+    }
+
+    // Normalize the email (handle case-insensitivity and plus aliases)
+    String normalizedEmail = normalizeEmail(request.getEmail());
+
     User user =
         userRepository
-            .findByEmail(request.getEmail())
+            .findByEmail(normalizedEmail)
             .orElseThrow(() -> new UserServiceException("User not found"));
 
     if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
@@ -98,6 +141,7 @@ public class UserServiceImpl implements UserService {
     }
 
     String token = jwtTokenProvider.generateToken(user);
+
     return AuthResponseDto.builder()
             .token(token)
             .tokenType("Bearer")
@@ -115,8 +159,11 @@ public class UserServiceImpl implements UserService {
   @Override
   public UserDto getCurrentUser(Authentication authentication) {
     String email = authentication.getName();
+    // Normalize the email (handle case-insensitivity and plus aliases)
+    String normalizedEmail = normalizeEmail(email);
+
     User user = userRepository
-            .findByEmail(email)
+            .findByEmail(normalizedEmail)
             .orElseThrow(() -> new UserServiceException("User not found"));
 
     return userMapper.userToUserDto(user);
@@ -132,10 +179,13 @@ public class UserServiceImpl implements UserService {
    */
   @Override
   public AuthResponseDto authenticateOAuthUser(String email, String name, String providerId) {
-    User user = userRepository.findByEmail(email)
+    // Normalize the email (handle case-insensitivity and plus aliases)
+    String normalizedEmail = normalizeEmail(email);
+
+    User user = userRepository.findByEmail(normalizedEmail)
             .orElseGet(() -> {
               User newUser = User.builder()
-                      .email(email)
+                      .email(normalizedEmail) // Use normalized email
                       .fullName(name)
                       .password(passwordEncoder.encode(providerId))
                       .authProvider(AuthProvider.GITHUB)
@@ -149,6 +199,7 @@ public class UserServiceImpl implements UserService {
 
 
     String token = jwtTokenProvider.generateToken(user);
+
     return AuthResponseDto.builder()
             .token(token)
             .tokenType("Bearer")
@@ -165,6 +216,15 @@ public class UserServiceImpl implements UserService {
   @Override
   public boolean logout() {
     try {
+      // Get the current user ID from the authentication context
+      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+      if (authentication != null && authentication.isAuthenticated()) {
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email).orElse(null);
+
+        // User found, no action needed for logout
+      }
+
       SecurityContextHolder.clearContext();
       log.info("User logged out successfully");
       return true;

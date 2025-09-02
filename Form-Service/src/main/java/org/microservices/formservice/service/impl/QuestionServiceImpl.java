@@ -1,4 +1,4 @@
-package org.microservices.formservice.service;
+package org.microservices.formservice.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.microservices.formservice.DTO.QuestionDto;
@@ -11,6 +11,7 @@ import org.microservices.formservice.mappers.QuestionMapper;
 import org.microservices.formservice.repository.CollaboratorRepository;
 import org.microservices.formservice.repository.FormRepository;
 import org.microservices.formservice.repository.QuestionRepository;
+import org.microservices.formservice.service.QuestionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +32,7 @@ public class QuestionServiceImpl implements QuestionService {
     private final FormRepository formRepository;
     private final CollaboratorRepository collaboratorRepository;
     private final QuestionMapper questionMapper;
-    private final AuthorizationService authorizationService;
+    private final ValidationService validationService;
 
     /**
      * Retrieves the list of questions associated with a specific form, based on the given form ID and user ID.
@@ -96,7 +97,7 @@ public class QuestionServiceImpl implements QuestionService {
         Form form = formRepository.findById(formId)
                 .orElseThrow(() -> new ResourceNotFoundException("Form not found with id: " + formId));
 
-        if (!authorizationService.isUserAuthorizedToEdit(form, userId)) {
+        if (!validationService.isUserAuthorizedToEdit(form, userId)) {
             throw new UnauthorizedException("User is not authorized to add questions to this form");
         }
 
@@ -110,6 +111,20 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = questionMapper.toEntity(questionDto);
         question.setForm(form);
         question.setUserId(userId);
+
+        // Ensure the form is properly set before saving
+        if (question.getForm() == null) {
+            question.setForm(form);
+        }
+
+        // Handle options - ensure bidirectional relationship is properly set
+        if (question.getOptions() != null && !question.getOptions().isEmpty()) {
+            List<Option> options = new ArrayList<>(question.getOptions());
+            question.getOptions().clear();
+            for (Option option : options) {
+                question.addOption(option);
+            }
+        }
 
         Question savedQuestion = questionRepository.save(question);
         return questionMapper.toDto(savedQuestion);
@@ -131,7 +146,7 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = questionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Question not found with id: " + id));
 
-        if (!authorizationService.isUserAuthorizedToEdit(question.getForm(), userId)) {
+        if (!validationService.isUserAuthorizedToEdit(question.getForm(), userId)) {
             throw new UnauthorizedException("User is not authorized to update this question");
         }
 
@@ -139,7 +154,7 @@ public class QuestionServiceImpl implements QuestionService {
             Form newForm = formRepository.findById(questionDto.getFormId())
                     .orElseThrow(() -> new ResourceNotFoundException("Form not found with id: " + questionDto.getFormId()));
 
-            if (!authorizationService.isUserAuthorizedToEdit(newForm, userId)) {
+            if (!validationService.isUserAuthorizedToEdit(newForm, userId)) {
                 throw new UnauthorizedException("User is not authorized to move question to the specified form");
             }
 
@@ -162,6 +177,16 @@ public class QuestionServiceImpl implements QuestionService {
         }
 
         questionMapper.updateEntityFromDto(questionDto, question);
+
+        // Handle options - ensure bidirectional relationship is properly set
+        if (question.getOptions() != null && !question.getOptions().isEmpty()) {
+            List<Option> options = new ArrayList<>(question.getOptions());
+            question.getOptions().clear();
+            for (Option option : options) {
+                question.addOption(option);
+            }
+        }
+
         Question updatedQuestion = questionRepository.save(question);
         return questionMapper.toDto(updatedQuestion);
     }
@@ -180,7 +205,7 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = questionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Question not found with id: " + id));
 
-        if (!authorizationService.isUserAuthorizedToEdit(question.getForm(), userId)) {
+        if (!validationService.isUserAuthorizedToEdit(question.getForm(), userId)) {
             throw new UnauthorizedException("User is not authorized to delete this question");
         }
 
@@ -204,7 +229,7 @@ public class QuestionServiceImpl implements QuestionService {
         Question originalQuestion = questionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Question not found with id: " + id));
 
-        if (!authorizationService.isUserAuthorizedToEdit(originalQuestion.getForm(), userId)) {
+        if (!validationService.isUserAuthorizedToEdit(originalQuestion.getForm(), userId)) {
             throw new UnauthorizedException("User is not authorized to clone this question");
         }
 
@@ -220,14 +245,12 @@ public class QuestionServiceImpl implements QuestionService {
 
         Question savedQuestion = questionRepository.save(clonedQuestion);
         if (originalQuestion.getOptions() != null && !originalQuestion.getOptions().isEmpty()) {
-            List<Option> clonedOptions = new ArrayList<>();
             for (Option originalOption : originalQuestion.getOptions()) {
                 Option newOption = new Option();
                 newOption.setText(originalOption.getText());
-                newOption.setQuestion(savedQuestion);
-                clonedOptions.add(newOption);
+                newOption.setImageUrl(originalOption.getImageUrl());
+                savedQuestion.addOption(newOption);
             }
-            savedQuestion.setOptions(clonedOptions);
             savedQuestion = questionRepository.save(savedQuestion);
         }
 
@@ -254,7 +277,7 @@ public class QuestionServiceImpl implements QuestionService {
         Form form = formRepository.findById(formId)
                 .orElseThrow(() -> new ResourceNotFoundException("Form not found with id: " + formId));
 
-        if (!authorizationService.isUserAuthorizedToEdit(form, userId)) {
+        if (!validationService.isUserAuthorizedToEdit(form, userId)) {
             throw new UnauthorizedException("User is not authorized to reorder questions in this form");
         }
 
@@ -290,6 +313,6 @@ public class QuestionServiceImpl implements QuestionService {
      * @return true if the user is authorized, false otherwise
      */
     private boolean isUserAuthorized(Form form, Long userId) {
-        return authorizationService.isUserAuthorized(form, userId);
+        return validationService.isUserAuthorized(form, userId);
     }
 }

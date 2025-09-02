@@ -14,18 +14,21 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
     /**
-     * Finds a user by their email address.
+     * Finds a user by their email address (case-insensitive).
      *
      * @param email the email address of the user to be retrieved
      * @return an {@code Optional} containing the user if found, or an empty {@code Optional} if no user exists with the given email
      */
-    Optional<User> findByEmail(String email);
+    @org.springframework.data.jpa.repository.Query("SELECT u FROM User u WHERE LOWER(u.email) = LOWER(:email)")
+    Optional<User> findByEmail(@org.springframework.data.repository.query.Param("email") String email);
+
     /**
-     * Checks whether a user exists in the database with the specified email address.
+     * Checks whether a user exists in the database with the specified email address (case-insensitive).
      *
      * @param email the email address to be checked for existence
      * @return {@code true} if a user with the specified email exists, {@code false} otherwise
      */
-    boolean existsByEmail(String email);
+    @org.springframework.data.jpa.repository.Query("SELECT COUNT(u) > 0 FROM User u WHERE LOWER(u.email) = LOWER(:email)")
+    boolean existsByEmail(@org.springframework.data.repository.query.Param("email") String email);
 
 }

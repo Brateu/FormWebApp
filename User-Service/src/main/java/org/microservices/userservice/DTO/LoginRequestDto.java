@@ -1,5 +1,7 @@
 package org.microservices.userservice.DTO;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,11 +22,14 @@ public class LoginRequestDto {
      * The email address of the user attempting to log in.
      * Used as the username for authentication.
      */
+    @NotBlank(message = "Email cannot be blank")
+    @Email(message = "Email must be a valid email address")
     private String email;
 
     /**
      * The password of the user attempting to log in.
      * Will be validated against the stored password hash.
      */
+    @NotBlank(message = "Password cannot be blank")
     private String password;
 }

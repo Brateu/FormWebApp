@@ -5,9 +5,9 @@ spring:
   application:
     name: form-service
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    url: ${FORM_DB_URL:jdbc:postgresql://localhost:5433/formdb}
+    username: ${FORM_DB_USERNAME:postgres}
+    password: ${FORM_DB_PASSWORD:postgres}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -23,17 +23,9 @@ spring:
 
 # User Service configuration
 user-service:
-  url: ${USER_SERVICE_URL:http://user-service:8070}
+  url: ${USER_SERVICE_URL:http://localhost:8070}
 
-# Feign client configuration
-feign:
-  client:
-    config:
-      user-service:
-        url: ${user-service.url}
-        connectTimeout: 5000
-        readTimeout: 5000
-        loggerLevel: basic
+
 
 logging:
   level:

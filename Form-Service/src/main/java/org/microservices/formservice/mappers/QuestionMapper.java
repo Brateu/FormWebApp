@@ -37,6 +37,7 @@ public interface QuestionMapper {
 
     List<QuestionDto> toDtoList(List<Question> questions);
 
+    @Mapping(target = "form", ignore = true)
     Question toEntity(QuestionDto questionDto);
 
     @Mapping(target = "form", ignore = true)

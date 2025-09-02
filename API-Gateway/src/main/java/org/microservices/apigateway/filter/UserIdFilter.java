@@ -2,6 +2,7 @@ package org.microservices.apigateway.filter;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,6 +49,7 @@ public class UserIdFilter implements WebFilter {
      * @param chain The filter chain to delegate to once processing is complete
      * @return A Mono that completes when the filter chain has been executed
      */
+    @NotNull
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
@@ -57,10 +59,10 @@ public class UserIdFilter implements WebFilter {
             String token = authHeader.substring(7);
             try {
                 SecretKeySpec key = new SecretKeySpec(
-                    jwtSecret.getBytes(StandardCharsets.UTF_8),
-                    0,
-                    jwtSecret.getBytes(StandardCharsets.UTF_8).length,
-                    "HmacSHA512"
+                        jwtSecret.getBytes(StandardCharsets.UTF_8),
+                        0,
+                        jwtSecret.getBytes(StandardCharsets.UTF_8).length,
+                        "HmacSHA512"
                 );
 
                 Claims claims = Jwts.parserBuilder()

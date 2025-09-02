@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.microservices.formservice.DTO.FormDto;
+import org.microservices.formservice.DTO.QuestionDto;
+import org.microservices.formservice.enums.QuestionType;
 import org.microservices.formservice.enums.Status;
 import org.microservices.formservice.enums.Visibility;
 import org.microservices.formservice.service.FormService;
@@ -41,11 +43,22 @@ public class FormControllerTest {
     void setUp() {
         userId = 123L;
 
+        // Create a test question
+        QuestionDto questionDto = QuestionDto.builder()
+                .text("Test Question")
+                .type(QuestionType.SHORT_TEXT)
+                .required(true)
+                .build();
+
+        List<QuestionDto> questions = new ArrayList<>();
+        questions.add(questionDto);
+
         formDto = FormDto.builder()
                 .id(1L)
                 .name("Test Form")
                 .description("Test Description")
                 .createdBy(userId)
+                .questions(questions)
                 .build();
 
         formDtoList = new ArrayList<>();

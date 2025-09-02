@@ -22,7 +22,8 @@ public class FormServiceApplication {
    */
   public static void main(String[] args) {
     Dotenv dotenv = Dotenv.configure()
-            .directory("./Form-Service")
+            .directory("../") // Look for .env in parent directory (project root)
+            .ignoreIfMissing()
             .load();
 
     for (String key : dotenv.entries().stream().map(e -> e.getKey()).toArray(String[]::new)) {

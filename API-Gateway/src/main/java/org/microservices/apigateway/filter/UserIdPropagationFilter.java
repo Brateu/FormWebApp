@@ -20,7 +20,7 @@ import java.util.List;
  * Global filter that extracts the user ID from JWT tokens in the security context and propagates it to downstream services.
  * This filter intercepts all authenticated requests, extracts the user ID from the JWT token in the security context,
  * and adds it as an X-User-ID header to the request before forwarding it to the target service.
- * 
+ *
  * This filter works in conjunction with Spring Security's OAuth2 resource server configuration and
  * ensures that all authenticated requests to protected endpoints include the user's identity.
  * Public endpoints are excluded from this processing.
@@ -83,13 +83,13 @@ public class UserIdPropagationFilter implements GlobalFilter, Ordered {
         return ReactiveSecurityContextHolder.getContext()
                 .doOnNext(ctx -> log.debug("Security context found: {}", ctx != null))
                 .map(SecurityContext::getAuthentication)
-                .doOnNext(auth -> log.debug("Authentication found: {}, isAuthenticated: {}", 
-                        auth != null ? auth.getClass().getSimpleName() : "null", 
+                .doOnNext(auth -> log.debug("Authentication found: {}, isAuthenticated: {}",
+                        auth != null ? auth.getClass().getSimpleName() : "null",
                         auth != null ? auth.isAuthenticated() : "N/A"))
                 .filter(auth -> auth != null && auth.isAuthenticated())
                 .map(Authentication::getPrincipal)
-                .doOnNext(principal -> log.debug("Principal found: {}, type: {}", 
-                        principal != null, 
+                .doOnNext(principal -> log.debug("Principal found: {}, type: {}",
+                        principal != null,
                         principal != null ? principal.getClass().getName() : "null"))
                 .filter(principal -> principal instanceof Jwt)
                 .cast(Jwt.class)
@@ -132,5 +132,34 @@ public class UserIdPropagationFilter implements GlobalFilter, Ordered {
     @Override
     public int getOrder() {
         return Ordered.HIGHEST_PRECEDENCE + 100;
+    }
+
+    /**
+     * Extracts the user ID from the JWT token.
+     * This method is used by the filter to get the user ID from the JWT claims.
+     * It supports both numeric and string user IDs.
+     *
+     * @param jwt The JWT token
+     * @return The user ID as a Long, or null if not found
+     */
+    Long extractUserId(Jwt jwt) {
+        Object idClaim = jwt.getClaim("id");
+        if (idClaim == null) {
+            return null;
+        }
+
+        if (idClaim instanceof Number) {
+            return ((Number) idClaim).longValue();
+        } else if (idClaim instanceof String) {
+            try {
+                return Long.parseLong((String) idClaim);
+            } catch (NumberFormatException e) {
+                log.warn("Failed to parse user ID from JWT: {}", idClaim);
+                return null;
+            }
+        }
+
+        log.warn("Unexpected type for user ID in JWT: {}", idClaim.getClass().getName());
+        return null;
     }
 }

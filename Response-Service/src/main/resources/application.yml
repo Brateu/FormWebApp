@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: Response-Service
+  data:
+    mongodb:
+      host: ${RESPONSE_DB_HOST}
+      port: ${RESPONSE_DB_PORT}
+      database: ${RESPONSE_DB_NAME}
+      username: ${RESPONSE_DB_USERNAME}
+      password: ${RESPONSE_DB_PASSWORD}
+      authentication-database: admin
+
+server:
+  port: 8060
+
+form-service:
+  url: ${FORM_SERVICE_URL}
+
+logging:
+  level:
+    org:
+      springframework: INFO
+      springframework.security: WARN
+      springframework.web: INFO

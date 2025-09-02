@@ -1,12 +1,13 @@
-package org.microservices.formservice.service;
+package org.microservices.formservice.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.microservices.formservice.DTO.CollaboratorDto;
-import org.microservices.formservice.client.UserServiceClient;
+import org.microservices.formservice.client.UserService;
 import org.microservices.formservice.exception.ResourceNotFoundException;
 import org.microservices.formservice.exception.UnauthorizedException;
 import org.microservices.formservice.exception.UserNotFoundException;
+import org.microservices.formservice.service.CollaboratorService;
 import org.springframework.stereotype.Service;
 import org.microservices.formservice.repository.CollaboratorRepository;
 import org.microservices.formservice.repository.FormRepository;
@@ -28,8 +29,8 @@ public class CollaboratorServiceImpl implements CollaboratorService {
     private final CollaboratorRepository collaboratorRepository;
     private final FormRepository formRepository;
     private final CollaboratorMapper collaboratorMapper;
-    private final AuthorizationService authorizationService;
-    private final UserServiceClient userServiceClient;
+    private final ValidationService validationService;
+    private final UserService userService;
 
     /**
      * Retrieves a list of collaborators associated with the specified form.
@@ -43,10 +44,11 @@ public class CollaboratorServiceImpl implements CollaboratorService {
     @Override
     @Transactional(readOnly = true)
     public List<CollaboratorDto> getCollaborators(Long formId, Long userId) {
-        Form form = formRepository.findById(formId)
-                .orElseThrow(() -> new ResourceNotFoundException("Form not found with id: " + formId));
+        if (!formRepository.existsById(formId)) {
+            throw new ResourceNotFoundException("Form not found with id: " + formId);
+        }
 
-        if (!isUserAuthorized(form, userId)) {
+        if (!validationService.isUserAuthorizedForCollaborators(formId, userId)) {
             throw new UnauthorizedException("User is not authorized to view collaborators for this form");
         }
 
@@ -89,7 +91,7 @@ public class CollaboratorServiceImpl implements CollaboratorService {
 
             try {
                 log.info("Looking up user ID for email: {}", dto.getEmail());
-                Long collaboratorUserId = userServiceClient.getUserIdByEmail(dto.getEmail());
+                Long collaboratorUserId = userService.getUserIdByEmail(dto.getEmail());
 
                 if (collaboratorUserId == null) {
                     log.error("User not found with email: {}", dto.getEmail());
@@ -162,6 +164,6 @@ public class CollaboratorServiceImpl implements CollaboratorService {
     }
 
     private boolean isUserAuthorized(Form form, Long userId) {
-        return authorizationService.isUserAuthorizedForCollaborators(form, userId);
+        return validationService.isUserAuthorizedForCollaborators(form, userId);
     }
 }

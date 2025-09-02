@@ -1,108 +1,56 @@
 services:
-  api-gateway:
-    build:
-      context: ./API-Gateway
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"
-    environment:
-      - SECURITY_JWT_SECRET=${SECURITY_JWT_SECRET}
-      - SECURITY_JWT_TOKEN_EXPIRATION=${SECURITY_JWT_TOKEN_EXPIRATION}
-    volumes:
-      - ./API-Gateway/.env:/app/API-Gateway/.env
-    depends_on:
-      - user-service
-      - form-service
-    networks:
-      - formapp-network
+  # PostgreSQL for User Service
+    user-db:
+      image: postgres:latest
+      container_name: user-service-postgres
+      environment:
+        POSTGRES_DB: userdb
+        POSTGRES_USER: ${USER_DB_USERNAME}
+        POSTGRES_PASSWORD: ${USER_DB_PASSWORD}
+        POSTGRES_HOST_AUTH_METHOD: trust
+        POSTGRES_INITDB_ARGS: --auth-host=trust
+      ports:
+        - "5432:5432"
+      volumes:
+        - user-data:/var/lib/postgresql/data
+      networks:
+        - app-network
 
-  user-service:
-    build:
-      context: ./User-Service
-      dockerfile: Dockerfile
-    ports:
-      - "8070:8070"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://user-db:5432/User
-      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
-      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
-      - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID=${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID}
-      - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET=${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET}
-      - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENT_ID=${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENT_ID}
-      - SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENT_SECRET=${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENT_SECRET}
-      - SECURITY_JWT_SECRET=${SECURITY_JWT_SECRET}
-      - SECURITY_JWT_TOKEN_EXPIRATION=${SECURITY_JWT_TOKEN_EXPIRATION}
-    volumes:
-      - ./User-Service/.env:/app/User-Service/.env
-    depends_on:
-      - user-db
-    networks:
-      - formapp-network
+    # PostgreSQL for Form Service
+    form-db:
+      image: postgres:latest
+      container_name: form-service-postgres
+      environment:
+        POSTGRES_DB: formdb
+        POSTGRES_USER: ${FORM_DB_USERNAME}
+        POSTGRES_PASSWORD: ${FORM_DB_PASSWORD}
+      ports:
+        - "5433:5432"
+      volumes:
+        - form-data:/var/lib/postgresql/data
+      networks:
+        - app-network
 
-  form-service:
-    build:
-      context: ./Form-Service
-      dockerfile: Dockerfile
-    ports:
-      - "8090:8090"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://form-db:5432/postgres
-      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
-      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
-    volumes:
-      - ./Form-Service/.env:/app/Form-Service/.env
-    depends_on:
-      - form-db
-    networks:
-      - formapp-network
-
-  user-db:
-    image: postgres:15-alpine
-    ports:
-      - "5432:5432"
-    environment:
-      - POSTGRES_USER=${SPRING_DATASOURCE_USERNAME}
-      - POSTGRES_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
-      - POSTGRES_DB=User
-    volumes:
-      - user-db-data:/var/lib/postgresql/data
-    networks:
-      - formapp-network
-
-  form-db:
-    image: postgres:15-alpine
-    ports:
-      - "5433:5432"
-    environment:
-      - POSTGRES_USER=${SPRING_DATASOURCE_USERNAME}
-      - POSTGRES_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
-      - POSTGRES_DB=postgres
-    volumes:
-      - form-db-data:/var/lib/postgresql/data
-    networks:
-      - formapp-network
-
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    ports:
-      - "5050:80"
-    volumes:
-      - pgadmin-data:/var/lib/pgadmin
-    depends_on:
-      - user-db
-      - form-db
-    networks:
-      - formapp-network
+    # MongoDB for Response Service
+    response-db:
+      image: mongo:latest
+      container_name: response-service-mongodb
+      environment:
+        MONGO_INITDB_ROOT_USERNAME: ${RESPONSE_DB_USERNAME}
+        MONGO_INITDB_ROOT_PASSWORD: ${RESPONSE_DB_PASSWORD}
+        MONGO_INITDB_DATABASE: ${RESPONSE_DB_NAME}
+      ports:
+        - "27017:27017"
+      volumes:
+        - mongo-data:/data/db
+      networks:
+        - app-network
 
 networks:
-  formapp-network:
+  app-network:
     driver: bridge
 
 volumes:
-  user-db-data:
-  form-db-data:
-  pgadmin-data:
+  user-data:
+  form-data:
+  mongo-data:

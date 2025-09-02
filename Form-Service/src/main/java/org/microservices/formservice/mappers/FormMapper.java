@@ -1,6 +1,7 @@
 package org.microservices.formservice.mappers;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.microservices.formservice.DTO.FormDto;
 import org.microservices.formservice.entity.Form;
 
@@ -15,9 +16,12 @@ import org.microservices.formservice.entity.Form;
  * Methods:
  * - toDto(Form form): Converts a Form entity to its corresponding FormDto.
  * - toEntity(FormDto formDto): Converts a FormDto to its corresponding Form entity.
+ *   Ignores the questions field to ensure proper bidirectional relationship management.
  */
 @Mapper(componentModel = "spring")
 public interface FormMapper {
     FormDto toDto(Form form);
+
+    @Mapping(target = "questions", ignore = true)
     Form toEntity(FormDto formDto);
 }

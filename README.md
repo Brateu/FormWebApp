@@ -277,3 +277,60 @@ You can connect to these databases using a PostgreSQL client like pgAdmin or DBe
 - Use different secrets for development, testing, and production environments
 - Regularly rotate secrets
 - Consider using a secret management service like HashiCorp Vault or AWS Secrets Manager for production environments
+# FormApp - Microservices Application
+
+This is a microservices-based application for creating and managing forms.
+
+## Services
+
+- **User-Service**: Handles user authentication and management
+- **Form-Service**: Manages form creation and editing
+- **Response-Service**: Collects and processes form responses
+- **API-Gateway**: Routes requests to the appropriate services
+
+## Prerequisites
+
+- Docker and Docker Compose
+- Java 17 or higher
+
+## Running the Application
+
+1. Make sure Docker is running on your machine
+2. Clone this repository
+3. Navigate to the project root directory
+4. Start the databases using Docker Compose:
+
+```bash
+docker-compose up -d
+```
+
+5. Start each service individually:
+
+```bash
+# Start User-Service
+cd User-Service
+./mvnw spring-boot:run
+
+# Start Form-Service
+cd Form-Service
+./mvnw spring-boot:run
+
+# Start Response-Service
+cd Response-Service
+./mvnw spring-boot:run
+
+# Start API-Gateway
+cd API-Gateway
+./mvnw spring-boot:run
+```
+
+## Environment Variables
+
+The application uses environment variables for configuration. These are loaded from a `.env` file in the project root directory. See `.env.example` for the required variables.
+
+## API Documentation
+
+- User-Service: http://localhost:8070/swagger-ui.html
+- Form-Service: http://localhost:8090/swagger-ui.html
+- Response-Service: http://localhost:8095/swagger-ui.html
+- API-Gateway: http://localhost:8080

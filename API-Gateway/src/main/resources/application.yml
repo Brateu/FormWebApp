@@ -8,37 +8,51 @@ spring:
     gateway:
       routes:
         - id: user-service
-          uri: http://user-service:8070
+          uri: http://localhost:8070
           predicates:
             - Path=/api/user/**, /api/v1/auth/oauth2/**, /oauth2/**, /login/**
           filters:
             - AddRequestHeader=X-Gateway-Source, api-gateway
 
         - id: form-service
-          uri: http://form-service:8090
+          uri: http://localhost:8090
           predicates:
             - Path=/api/forms/**
           filters:
             - AddRequestHeader=X-Gateway-Source, api-gateway
 
         - id: collaborator-service
-          uri: http://form-service:8090
+          uri: http://localhost:8090
           predicates:
             - Path=/api/forms/*/collaborators/**
           filters:
             - AddRequestHeader=X-Gateway-Source, api-gateway
 
         - id: question-service
-          uri: http://form-service:8090
+          uri: http://localhost:8090
           predicates:
             - Path=/api/questions/**
           filters:
             - AddRequestHeader=X-Gateway-Source, api-gateway
 
         - id: option-service
-          uri: http://form-service:8090
+          uri: http://localhost:8090
           predicates:
             - Path=/api/questions/*/options/**
+          filters:
+            - AddRequestHeader=X-Gateway-Source, api-gateway
+
+        - id: response-service
+          uri: http://localhost:8060
+          predicates:
+            - Path=/api/responses/**
+          filters:
+            - AddRequestHeader=X-Gateway-Source, api-gateway
+
+        - id: analytics-service
+          uri: http://localhost:8060
+          predicates:
+            - Path=/api/analytics/**
           filters:
             - AddRequestHeader=X-Gateway-Source, api-gateway
 

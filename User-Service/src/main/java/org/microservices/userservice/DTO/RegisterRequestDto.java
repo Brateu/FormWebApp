@@ -28,18 +28,22 @@ import lombok.Data;
 @Data
 public class RegisterRequestDto {
 
-    @NotBlank
-    @Email
+    @NotBlank(message = "Email cannot be blank")
+    @Email(message = "Email must be a valid email address")
+    @Pattern(
+            regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+            message = "Email must be a valid email address with no spaces"
+    )
     private String email;
 
-    @NotBlank
+    @NotBlank(message = "Password cannot be blank")
     @Size(min = 8, message = "Password must be at least 8 characters long")
     @Pattern(
-            regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>\\.]).+$",
+            regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>.])[A-Za-z0-9!@#&()–[{}]:;',?/*~$^+=<>.]{8,}$",
             message = "Password must contain at least one digit, one uppercase letter, one lowercase letter, and one special character"
     )
     private String password;
 
-    @NotBlank
+    @NotBlank(message = "Full name cannot be blank")
     private String fullName;
 }

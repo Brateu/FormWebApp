@@ -1,8 +1,7 @@
-package org.microservices.formservice.service;
+package org.microservices.formservice.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.microservices.formservice.DTO.OptionDto;
-import org.microservices.formservice.entity.Form;
 import org.microservices.formservice.entity.Option;
 import org.microservices.formservice.entity.Question;
 import org.microservices.formservice.exception.ResourceNotFoundException;
@@ -11,6 +10,7 @@ import org.microservices.formservice.mappers.OptionMapper;
 import org.microservices.formservice.repository.CollaboratorRepository;
 import org.microservices.formservice.repository.OptionRepository;
 import org.microservices.formservice.repository.QuestionRepository;
+import org.microservices.formservice.service.OptionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -27,7 +27,7 @@ public class OptionServiceImpl implements OptionService {
     private final QuestionRepository questionRepository;
     private final CollaboratorRepository collaboratorRepository;
     private final OptionMapper optionMapper;
-    private final AuthorizationService authorizationService;
+    private final ValidationService validationService;
 
     /**
      * Retrieves a list of options associated with a specific question.
@@ -44,7 +44,7 @@ public class OptionServiceImpl implements OptionService {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new ResourceNotFoundException("Question not found with id: " + questionId));
 
-        if (!isUserAuthorized(question.getForm(), userId)) {
+        if (!validationService.isUserAuthorized(question.getForm(), userId)) {
             throw new UnauthorizedException("User is not authorized to view options for this question");
         }
 
@@ -73,7 +73,7 @@ public class OptionServiceImpl implements OptionService {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new ResourceNotFoundException("Question not found with id: " + questionId));
 
-        if (!authorizationService.isUserAuthorizedToEdit(question.getForm(), userId)) {
+        if (!validationService.isUserAuthorizedToEdit(question.getForm(), userId)) {
             throw new UnauthorizedException("User is not authorized to add options to this question");
         }
 
@@ -99,7 +99,7 @@ public class OptionServiceImpl implements OptionService {
         Option option = optionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Option not found with id: " + id));
 
-        if (!authorizationService.isUserAuthorizedToEdit(option.getQuestion().getForm(), userId)) {
+        if (!validationService.isUserAuthorizedToEdit(option.getQuestion().getForm(), userId)) {
             throw new UnauthorizedException("User is not authorized to update this option");
         }
 
@@ -107,7 +107,7 @@ public class OptionServiceImpl implements OptionService {
             Question question = questionRepository.findById(dto.getQuestionId())
                     .orElseThrow(() -> new ResourceNotFoundException("Question not found with id: " + dto.getQuestionId()));
 
-            if (!authorizationService.isUserAuthorizedToEdit(question.getForm(), userId)) {
+            if (!validationService.isUserAuthorizedToEdit(question.getForm(), userId)) {
                 throw new UnauthorizedException("User is not authorized to add options to this question");
             }
 
@@ -134,14 +134,11 @@ public class OptionServiceImpl implements OptionService {
         Option option = optionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Option not found with id: " + id));
 
-        if (!authorizationService.isUserAuthorizedToEdit(option.getQuestion().getForm(), userId)) {
+        if (!validationService.isUserAuthorizedToEdit(option.getQuestion().getForm(), userId)) {
             throw new UnauthorizedException("User is not authorized to delete this option");
         }
 
         optionRepository.deleteById(id);
     }
 
-    private boolean isUserAuthorized(Form form, Long userId) {
-        return authorizationService.isUserAuthorized(form, userId);
-    }
 }

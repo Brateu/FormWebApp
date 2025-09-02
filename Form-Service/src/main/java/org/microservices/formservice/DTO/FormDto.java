@@ -5,6 +5,8 @@ import org.microservices.formservice.enums.Visibility;
 import org.microservices.formservice.enums.Status;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Data Transfer Object for Form entity.
@@ -70,4 +72,9 @@ public class FormDto {
      * Visibility setting of the form (PUBLIC, PRIVATE).
      */
     private Visibility visibility;
+
+    /**
+     * List of questions contained in this form.
+     */
+    private List<QuestionDto> questions = new ArrayList<>();
 }

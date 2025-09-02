@@ -36,7 +36,7 @@ public class SecurityConfig {
      * The secret key used for JWT token validation.
      * Injected from application properties.
      */
-    @Value("${jwt.secret}")
+    @Value("${SECURITY_JWT_SECRET}")
     private String jwtSecret;
 
     /**
@@ -68,12 +68,12 @@ public class SecurityConfig {
                 .csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers(
-                            "/api/user/register", 
-                            "/api/user/login", 
-                            "/api/v1/auth/oauth2/**", 
-                            "/oauth2/**",
-                            "/api/v1/auth/oauth2/success",
-                            "/login/**",
+                                "/api/user/register",
+                                "/api/user/login",
+                                "/api/v1/auth/oauth2/**",
+                                "/oauth2/**",
+                                "/api/v1/auth/oauth2/success",
+                                "/login/**"  ,
                             "/api/forms/public",
                             "/api/forms/public/**"
                         ).permitAll()

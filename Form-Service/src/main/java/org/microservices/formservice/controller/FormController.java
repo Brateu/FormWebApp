@@ -26,7 +26,7 @@ public class FormController {
 
     /**
      * Retrieves all forms in the system.
-     * 
+     *
      * @return A list of all form DTOs
      */
     @GetMapping
@@ -36,7 +36,7 @@ public class FormController {
 
     /**
      * Retrieves a specific form by its ID.
-     * 
+     *
      * @param id The ID of the form to retrieve
      * @param userId The ID of the user making the request
      * @return The form DTO if found
@@ -48,7 +48,7 @@ public class FormController {
 
     /**
      * Creates a new form.
-     * 
+     *
      * @param formDto The form data to create
      * @param userId The ID of the user creating the form
      * @return The created form DTO
@@ -61,7 +61,7 @@ public class FormController {
 
     /**
      * Retrieves all forms created by or shared with the current user.
-     * 
+     *
      * @param userId The ID of the user making the request
      * @return A list of form DTOs
      */
@@ -72,7 +72,7 @@ public class FormController {
 
     /**
      * Updates the status of a form.
-     * 
+     *
      * @param id The ID of the form to update
      * @param status The new status value
      * @param userId The ID of the user making the request
@@ -88,7 +88,7 @@ public class FormController {
 
     /**
      * Updates the visibility of a form.
-     * 
+     *
      * @param id The ID of the form to update
      * @param visibility The new visibility value
      * @param userId The ID of the user making the request
@@ -104,7 +104,7 @@ public class FormController {
 
     /**
      * Retrieves all forms with a specific status.
-     * 
+     *
      * @param status The status to filter by
      * @return A list of form DTOs with the specified status
      */
@@ -115,7 +115,7 @@ public class FormController {
 
     /**
      * Retrieves all forms with a specific visibility.
-     * 
+     *
      * @param visibility The visibility to filter by
      * @return A list of form DTOs with the specified visibility
      */
@@ -126,7 +126,7 @@ public class FormController {
 
     /**
      * Retrieves all forms with public visibility.
-     * 
+     *
      * @return A list of public form DTOs
      */
     @GetMapping("/public")
@@ -136,7 +136,7 @@ public class FormController {
 
     /**
      * Retrieves a specific public form by its ID.
-     * 
+     *
      * @param id The ID of the public form to retrieve
      * @return The public form DTO if found
      */
@@ -147,7 +147,7 @@ public class FormController {
 
     /**
      * Creates a copy of an existing form.
-     * 
+     *
      * @param id The ID of the form to copy
      * @param userId The ID of the user making the copy
      * @return The newly created form copy DTO
@@ -159,7 +159,7 @@ public class FormController {
 
     /**
      * Locks a form to prevent further editing.
-     * 
+     *
      * @param id The ID of the form to lock
      * @param userId The ID of the user making the request
      * @return The updated form DTO
@@ -171,7 +171,7 @@ public class FormController {
 
     /**
      * Unlocks a form to allow editing.
-     * 
+     *
      * @param id The ID of the form to unlock
      * @param userId The ID of the user making the request
      * @return The updated form DTO
@@ -183,7 +183,7 @@ public class FormController {
 
     /**
      * Updates an existing form.
-     * 
+     *
      * @param id The ID of the form to update
      * @param formDto The updated form data
      * @param userId The ID of the user making the request
@@ -199,7 +199,7 @@ public class FormController {
 
     /**
      * Deletes a form.
-     * 
+     *
      * @param id The ID of the form to delete
      * @param userId The ID of the user making the request
      * @return No content response
