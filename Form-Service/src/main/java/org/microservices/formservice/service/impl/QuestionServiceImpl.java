@@ -46,12 +46,13 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional(readOnly = true)
     public List<QuestionDto> getQuestionsByForm(Long formId, Long userId) {
-        Form form = formRepository.findById(formId)
-                .orElseThrow(() -> new ResourceNotFoundException("Form not found with id: " + formId));
-
-        if (!isUserAuthorized(form, userId)) {
+        if (!validationService.isUserAuthorized(formId, userId)) {
             throw new UnauthorizedException("User is not authorized to view this form's questions");
         }
+
+        // Ensure form exists after authorization check
+        formRepository.findById(formId)
+                .orElseThrow(() -> new ResourceNotFoundException("Form not found with id: " + formId));
 
         List<Question> questions = questionRepository.findByFormIdWithOptionsOrdered(formId);
         return questionMapper.toDtoList(questions);
@@ -94,12 +95,12 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional
     public QuestionDto createQuestion(Long formId, QuestionDto questionDto, Long userId) {
-        Form form = formRepository.findById(formId)
-                .orElseThrow(() -> new ResourceNotFoundException("Form not found with id: " + formId));
-
-        if (!validationService.isUserAuthorizedToEdit(form, userId)) {
+        if (!validationService.isUserAuthorizedToEdit(formId, userId)) {
             throw new UnauthorizedException("User is not authorized to add questions to this form");
         }
+
+        Form form = formRepository.findById(formId)
+                .orElseThrow(() -> new ResourceNotFoundException("Form not found with id: " + formId));
 
         if (questionDto.getOrderIndex() == null) {
             Integer maxOrderIndex = questionRepository.findMaxOrderIndexByFormId(formId).orElse(-1);
@@ -151,12 +152,13 @@ public class QuestionServiceImpl implements QuestionService {
         }
 
         if (questionDto.getFormId() != null && !questionDto.getFormId().equals(question.getForm().getId())) {
-            Form newForm = formRepository.findById(questionDto.getFormId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Form not found with id: " + questionDto.getFormId()));
-
-            if (!validationService.isUserAuthorizedToEdit(newForm, userId)) {
+            // Validate authorization to move before loading the target form
+            if (!validationService.isUserAuthorizedToEdit(questionDto.getFormId(), userId)) {
                 throw new UnauthorizedException("User is not authorized to move question to the specified form");
             }
+
+            Form newForm = formRepository.findById(questionDto.getFormId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Form not found with id: " + questionDto.getFormId()));
 
             question.setForm(newForm);
         }
@@ -274,12 +276,13 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional
     public List<QuestionDto> reorderQuestions(Long formId, List<Long> questionIds, Long userId) {
-        Form form = formRepository.findById(formId)
-                .orElseThrow(() -> new ResourceNotFoundException("Form not found with id: " + formId));
-
-        if (!validationService.isUserAuthorizedToEdit(form, userId)) {
+        if (!validationService.isUserAuthorizedToEdit(formId, userId)) {
             throw new UnauthorizedException("User is not authorized to reorder questions in this form");
         }
+
+        // Ensure form exists after authorization check
+        formRepository.findById(formId)
+                .orElseThrow(() -> new ResourceNotFoundException("Form not found with id: " + formId));
 
         List<Question> questions = questionRepository.findAllById(questionIds);
         if (questions.size() != questionIds.size()) {

@@ -1,6 +1,7 @@
 package org.microservices.userservice.config;
 
 import lombok.RequiredArgsConstructor;
+import org.microservices.userservice.security.TokenRequiredFilter;
 import org.microservices.userservice.security.oauth2.OAuth2AuthenticationSuccessHandler;
 import org.microservices.userservice.security.oauth2.CustomOAuth2UserService;
 import org.springframework.context.annotation.Bean;
@@ -51,6 +52,11 @@ public class SecurityConfig {
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
     /**
+     * Custom filter to enforce token on sensitive endpoints without redirect behavior.
+     */
+    private final TokenRequiredFilter tokenRequiredFilter;
+
+    /**
      * Configures the security filter chain.
      * Sets up CSRF protection, request authorization rules, session management,
      * and OAuth2 login configuration.
@@ -64,17 +70,15 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/api/user/register",
-                                "/api/user/login",
-                                "/api/v1/auth/oauth2/**",
-                                "/oauth2/**",
-                                "/api/user/email/{email}/id"
-                        ).permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .exceptionHandling(e -> e
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(401);
+                        })
                 )
                 .oauth2Login(oauth2 -> oauth2
                         .userInfoEndpoint(userInfo -> userInfo
@@ -83,6 +87,7 @@ public class SecurityConfig {
                         .successHandler(oAuth2AuthenticationSuccessHandler)
                 );
 
+        http.addFilterBefore(tokenRequiredFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

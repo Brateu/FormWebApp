@@ -2,10 +2,7 @@ package org.microservices.userservice.controller;
 
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.microservices.userservice.DTO.AuthResponseDto;
-import org.microservices.userservice.DTO.LoginRequestDto;
-import org.microservices.userservice.DTO.RegisterRequestDto;
-import org.microservices.userservice.DTO.UserDto;
+import org.microservices.userservice.DTO.*;
 import org.microservices.userservice.entity.User;
 import org.microservices.userservice.exceptions.UserNotFoundException;
 import org.microservices.userservice.repository.UserRepository;
@@ -46,7 +43,7 @@ public class UserController {
      * @return ResponseEntity containing authentication response with JWT token
      */
     @PostMapping("/register")
-    public ResponseEntity<AuthResponseDto> register (@RequestBody RegisterRequestDto request) {
+    public ResponseEntity<AuthResponseDto> register (@jakarta.validation.Valid @RequestBody RegisterRequestDto request) {
         return ResponseEntity.ok(userService.register(request));
     }
 
@@ -94,8 +91,11 @@ public class UserController {
      * @return ResponseEntity containing the user details
      */
     @GetMapping("/details")
-    public ResponseEntity<UserDto> getCurrentUser(Authentication authentication) {
-        return ResponseEntity.ok(userService.getCurrentUser(authentication));
+    public ResponseEntity<UserDto> getCurrentUser(
+            Authentication authentication,
+            @RequestHeader(name = "Authorization", required = false) String authorizationHeader
+    ) {
+        return ResponseEntity.ok(userService.getCurrentUser(authentication, authorizationHeader));
     }
 
     /**
@@ -171,5 +171,35 @@ public class UserController {
                     .body(userOptional.get().getId());
         }
         throw UserNotFoundException.withEmail(email);
+    }
+    /**
+     * Handles the password change request for a user. This method verifies the given token
+     * for authentication and processes the password change based on the provided request details.
+     *
+     * @param token the authorization token from the request header, used to authenticate the user
+     * @param request an object containing the old password and new password details for the password change
+     * @return a {@code ResponseEntity} containing a message indicating the success or failure of the password change
+     */
+    @PostMapping("/change-password")
+    public ResponseEntity<String> changePassword(
+            @RequestHeader("Authorization") String token,
+            @jakarta.validation.Valid @RequestBody ChangePasswordRequestDto request
+    ) {
+        String message = userService.changePassword(token, request);
+        return ResponseEntity.ok(message);
+    }
+
+    /**
+     * Deactivates a user account based on the provided authorization token.
+     * This method invokes the user service to perform the deactivation logic
+     * and returns a success message if the operation is completed.
+     *
+     * @param token the authorization token provided in the request header; used to identify and authenticate the user
+     * @return a {@code ResponseEntity} containing a success message as {@code String} upon successful deactivation
+     */
+    @PostMapping("/deactivate-account")
+    public ResponseEntity<String> deactivateAccount(@RequestHeader("Authorization") String token){
+        String message = userService.deactivateAccount(token);
+        return ResponseEntity.ok(message);
     }
 }

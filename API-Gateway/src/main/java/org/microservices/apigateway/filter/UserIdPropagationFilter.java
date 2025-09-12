@@ -144,18 +144,22 @@ public class UserIdPropagationFilter implements GlobalFilter, Ordered {
      */
     Long extractUserId(Jwt jwt) {
         Object idClaim = jwt.getClaim("id");
-        if (idClaim == null) {
-            return null;
-        }
-
-        if (idClaim instanceof Number) {
-            return ((Number) idClaim).longValue();
-        } else if (idClaim instanceof String) {
-            try {
-                return Long.parseLong((String) idClaim);
-            } catch (NumberFormatException e) {
-                log.warn("Failed to parse user ID from JWT: {}", idClaim);
+        switch (idClaim) {
+            case null -> {
                 return null;
+            }
+            case Number number -> {
+                return number.longValue();
+            }
+            case String s -> {
+                try {
+                    return Long.parseLong(s);
+                } catch (NumberFormatException e) {
+                    log.warn("Failed to parse user ID from JWT: {}", idClaim);
+                    return null;
+                }
+            }
+            default -> {
             }
         }
 

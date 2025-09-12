@@ -47,4 +47,7 @@ public interface CollaboratorRepository extends JpaRepository<Collaborator, Long
      */
     boolean existsByFormIdAndUserIdAndRole(Long formId, Long userId, CollaboratorRole role);
 
+
+    @org.springframework.data.jpa.repository.Query("SELECT c.form.id FROM Collaborator c WHERE c.id = :id")
+    java.util.Optional<java.lang.Long> findFormIdByCollaboratorId(@org.springframework.data.repository.query.Param("id") Long id);
 }

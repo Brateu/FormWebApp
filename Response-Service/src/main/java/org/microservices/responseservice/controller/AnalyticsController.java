@@ -70,57 +70,37 @@ public class AnalyticsController {
     public ResponseEntity<Map<String, Object>> getCompletionRate(@PathVariable Long formId) {
         log.info("REST request to get completion rate for form ID: {}", formId);
         
-        // Calculate completion rate from statistics
-        Map<String, Object> statistics = responseService.getResponseStatistics(formId);
-        
-        Map<String, Long> responsesByStatus = (Map<String, Long>) statistics.get("responsesByStatus");
-        long totalResponses = (long) statistics.get("totalResponses");
-        long submittedResponses = responsesByStatus.getOrDefault("SUBMITTED", 0L);
-        long draftResponses = responsesByStatus.getOrDefault("DRAFT", 0L);
-        
-        double completionRate = totalResponses > 0 ? 
-                (double) submittedResponses / totalResponses * 100 : 0;
-        
-        Map<String, Object> completionData = Map.of(
-                "totalResponses", totalResponses,
-                "submittedResponses", submittedResponses,
-                "draftResponses", draftResponses,
-                "completionRate", completionRate
-        );
+        Map<String, Object> statistics = getStatisticsForForm(formId);
+        Map<String, Object> completionData = buildCompletionData(statistics);
         
         return ResponseEntity.ok(completionData);
     }
 
     /**
-     * Get response distribution by question for a form.
-     *
-     * @param formId The form ID
-     * @param questionId The question ID
-     * @return Distribution data
+     * Internal helpers to keep analytics controller lean.
      */
-    @GetMapping("/distribution/{formId}")
-    public ResponseEntity<Map<String, Object>> getResponseDistribution(
-            @PathVariable Long formId,
-            @RequestParam String questionId) {
-        
-        log.info("REST request to get response distribution for form ID: {} and question ID: {}", 
-                formId, questionId);
-        
-        // This would typically involve a custom aggregation query to count responses by answer
-        // For simplicity, we'll return a placeholder implementation
-        
-        Map<String, Object> distributionData = Map.of(
-                "formId", formId,
-                "questionId", questionId,
-                "distribution", Map.of(
-                        "Option A", 25,
-                        "Option B", 35,
-                        "Option C", 20,
-                        "Option D", 20
-                )
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> buildCompletionData(Map<String, Object> statistics) {
+        Map<String, Long> responsesByStatus = (Map<String, Long>) statistics.getOrDefault("responsesByStatus", Map.of());
+        long totalResponses = ((Number) statistics.getOrDefault("totalResponses", 0L)).longValue();
+        long submittedResponses = responsesByStatus.getOrDefault("SUBMITTED", 0L);
+        long draftResponses = responsesByStatus.getOrDefault("DRAFT", 0L);
+
+        double completionRate = totalResponses > 0
+                ? (double) submittedResponses / totalResponses * 100
+                : 0;
+
+        return Map.of(
+                "totalResponses", totalResponses,
+                "submittedResponses", submittedResponses,
+                "draftResponses", draftResponses,
+                "completionRate", completionRate
         );
-        
-        return ResponseEntity.ok(distributionData);
+    }
+
+    private Map<String, Object> getStatisticsForForm(Long formId) {
+        log.debug("Fetching response statistics for form ID: {}", formId);
+        return responseService.getResponseStatistics(formId);
     }
 
     /**
@@ -133,8 +113,7 @@ public class AnalyticsController {
     public ResponseEntity<Map<String, Object>> getAverageResponseTime(@PathVariable Long formId) {
         log.info("REST request to get average response time for form ID: {}", formId);
         
-        // Get from statistics
-        Map<String, Object> statistics = responseService.getResponseStatistics(formId);
+        Map<String, Object> statistics = getStatisticsForForm(formId);
         double avgResponseTimeSeconds = (double) statistics.get("averageResponseTimeSeconds");
         
         Map<String, Object> responseTimeData = Map.of(

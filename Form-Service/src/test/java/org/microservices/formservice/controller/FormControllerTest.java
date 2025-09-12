@@ -196,19 +196,6 @@ public class FormControllerTest {
         verify(formService).getPublicForms();
     }
 
-    @Test
-    void testCopyForm() {
-        // Setup
-        when(formService.copyForm(anyLong(), anyLong())).thenReturn(formDto);
-
-        // Execute
-        ResponseEntity<FormDto> response = formController.copyForm(1L, userId);
-
-        // Verify
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(formDto, response.getBody());
-        verify(formService).copyForm(1L, userId);
-    }
 
     @Test
     void testLockForm() {

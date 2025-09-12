@@ -51,7 +51,8 @@ security:
 logging:
   level:
     org.springframework: INFO
-    org.springframework.security: WARN
+    com.example: INFO
+    org.springframework.security: INFO
 
 swagger:
   enabled: true

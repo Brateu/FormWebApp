@@ -148,15 +148,6 @@ public interface ResponseService {
     int importResponsesFromCsv(Long formId, String csvData);
     
     /**
-     * Generate test responses for a form.
-     * 
-     * @param formId The form ID
-     * @param count The number of responses to generate
-     * @return The generated responses
-     */
-    List<ResponseDto> generateTestResponses(Long formId, int count);
-    
-    /**
      * Get response statistics for a form.
      * 
      * @param formId The form ID

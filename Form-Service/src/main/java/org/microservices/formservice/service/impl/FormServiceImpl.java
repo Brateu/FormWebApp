@@ -237,69 +237,6 @@ public class FormServiceImpl implements FormService {
                 .map(formMapper::toDto)
                 .toList();
     }
-
-    /**
-     * Creates a copy of an existing form with its associated questions and options.
-     * The copied form will be saved as a draft with private visibility and assigned to the requesting user.
-     * The method ensures that the user has the necessary permissions to copy the form.
-     *
-     * @param id the ID of the form to be copied
-     * @param userId the ID of the user requesting to copy the form
-     * @return a {@code FormDto} representing the copied form including its associated questions and options
-     * @throws ResourceNotFoundException if the form with the specified ID does not exist
-     * @throws UnauthorizedException if the user does not have permission to copy the form
-     */
-    @Override
-    @Transactional
-    public FormDto copyForm(Long id, Long userId) {
-        if (!validationService.isUserAuthorized(id, userId)) {
-            throw new UnauthorizedException("You don't have permission to copy this form");
-        }
-
-        Form originalForm = formRepo.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Form not found with ID: " + id));
-
-        Form newForm = new Form();
-        newForm.setName(originalForm.getName() + " (Copy)");
-        newForm.setDescription(originalForm.getDescription());
-        newForm.setAllowAnonymous(originalForm.isAllowAnonymous());
-        newForm.setResponseLimit(originalForm.getResponseLimit());
-        newForm.setStatus(Status.DRAFT);
-        newForm.setVisibility(Visibility.PRIVATE);
-        newForm.setCreatedBy(userId);
-        newForm.setCreatedAt(LocalDateTime.now());
-        newForm.setUpdatedAt(LocalDateTime.now());
-        newForm.setQuestions(new ArrayList<>());
-
-        Form savedForm = formRepo.save(newForm);
-        List<Question> originalQuestions = questionRepo.findByFormIdWithOptionsOrdered(id);
-        if (originalQuestions != null && !originalQuestions.isEmpty()) {
-            for (Question originalQuestion : originalQuestions) {
-                Question newQuestion = new Question();
-                newQuestion.setText(originalQuestion.getText());
-                newQuestion.setType(originalQuestion.getType());
-                newQuestion.setRequired(originalQuestion.isRequired());
-                newQuestion.setOrderIndex(originalQuestion.getOrderIndex());
-                newQuestion.setForm(savedForm);
-                newQuestion.setOptions(new ArrayList<>());
-
-                Question savedQuestion = questionRepo.save(newQuestion);
-
-                if (originalQuestion.getOptions() != null && !originalQuestion.getOptions().isEmpty()) {
-                    for (Option originalOption : originalQuestion.getOptions()) {
-                        Option newOption = new Option();
-                        newOption.setText(originalOption.getText());
-                        newOption.setImageUrl(originalOption.getImageUrl());
-                        savedQuestion.addOption(newOption);
-                    }
-                    questionRepo.save(savedQuestion);
-                }
-            }
-        }
-
-        return formMapper.toDto(formRepo.findById(savedForm.getId()).orElse(savedForm));
-    }
-
     /**
      * Locks a form for editing by setting its locked status to true. Ensures the user has
      * the appropriate authorization to lock the form before proceeding. Updates the

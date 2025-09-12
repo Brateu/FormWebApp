@@ -1,6 +1,7 @@
 package org.microservices.formservice.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.microservices.formservice.DTO.FormDto;
 import org.microservices.formservice.service.FormService;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/forms")
 @RequiredArgsConstructor
+@Slf4j
 public class FormController {
 
     /**
@@ -55,6 +57,7 @@ public class FormController {
      */
     @PostMapping
     public ResponseEntity<FormDto> createForm(@RequestBody FormDto formDto, @RequestHeader("X-User-ID") Long userId) {
+        log.info("REST request to create form: {}", formDto);
         formDto.setCreatedBy(userId);
         return ResponseEntity.ok(formService.createForm(formDto));
     }
@@ -144,19 +147,6 @@ public class FormController {
     public ResponseEntity<FormDto> getPublicFormById(@PathVariable Long id) {
         return ResponseEntity.ok(formService.getPublicFormById(id));
     }
-
-    /**
-     * Creates a copy of an existing form.
-     *
-     * @param id The ID of the form to copy
-     * @param userId The ID of the user making the copy
-     * @return The newly created form copy DTO
-     */
-    @PostMapping("/{id}/copy")
-    public ResponseEntity<FormDto> copyForm(@PathVariable Long id, @RequestHeader("X-User-ID") Long userId) {
-        return ResponseEntity.ok(formService.copyForm(id, userId));
-    }
-
     /**
      * Locks a form to prevent further editing.
      *

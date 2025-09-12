@@ -36,8 +36,10 @@ public class ResponseController {
      * @return The created response
      */
     @PostMapping
-    public ResponseEntity<ResponseDto> createResponse(@RequestBody ResponseDto responseDto) {
+    public ResponseEntity<ResponseDto> createResponse(@RequestHeader("X-User-ID") Long userId,
+            @RequestBody ResponseDto responseDto) {
         log.info("REST request to create response for form ID: {}", responseDto.getFormId());
+        responseDto.setUserId(userId);
         ResponseDto createdResponse = responseService.createResponse(responseDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdResponse);
     }
@@ -263,22 +265,4 @@ public class ResponseController {
         return ResponseEntity.ok(Map.of("importedCount", importedCount));
     }
 
-    /**
-     * Generate test responses for a form.
-     *
-     * @param formId The form ID
-     * @param count The number of responses to generate
-     * @return The generated responses
-     */
-    @PostMapping("/generate-test")
-    public ResponseEntity<List<ResponseDto>> generateTestResponses(
-            @RequestParam Long formId,
-            @RequestParam(defaultValue = "10") int count) {
-        
-        log.info("REST request to generate {} test responses for form ID: {}", count, formId);
-        
-        List<ResponseDto> testResponses = responseService.generateTestResponses(formId, count);
-        
-        return ResponseEntity.ok(testResponses);
-    }
 }

@@ -101,16 +101,16 @@ class UserControllerTest {
     @Test
     void getCurrentUser_ShouldReturnOkResponse_WithUserDto() {
         // Arrange
-        when(userService.getCurrentUser(any(Authentication.class))).thenReturn(userDto);
+        when(userService.getCurrentUser(any(Authentication.class), any())).thenReturn(userDto);
 
         // Act
-        ResponseEntity<UserDto> response = userController.getCurrentUser(authentication);
+        ResponseEntity<UserDto> response = userController.getCurrentUser(authentication, null);
 
         // Assert
         assertNotNull(response);
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(userDto, response.getBody());
-        verify(userService).getCurrentUser(authentication);
+        verify(userService).getCurrentUser(authentication, null);
     }
 
     @Test

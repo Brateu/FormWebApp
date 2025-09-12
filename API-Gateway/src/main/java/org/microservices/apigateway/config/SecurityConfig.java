@@ -74,8 +74,8 @@ public class SecurityConfig {
                                 "/oauth2/**",
                                 "/api/v1/auth/oauth2/success",
                                 "/login/**"  ,
-                            "/api/forms/public",
-                            "/api/forms/public/**"
+                                "/api/forms/public",
+                                "/api/forms/public/**"
                         ).permitAll()
                         .anyExchange().authenticated()
                 )

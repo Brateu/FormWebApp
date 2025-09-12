@@ -13,6 +13,7 @@ import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
+import org.microservices.responseservice.mappers.ResponseMapper;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -29,104 +30,183 @@ public class ResponseServiceImpl implements ResponseService {
 
     private final ResponseRepository responseRepository;
     private final MongoTemplate mongoTemplate;
+    private final ValidationService validationService;
+    private final ResponseMapper responseMapper;
 
+    /**
+     * Create and persist a new response after validating its contents.
+     * @param responseDto response payload to create
+     * @return created response as DTO
+     */
     @Override
     public ResponseDto createResponse(ResponseDto responseDto) {
         log.info("Creating response for form ID: {}", responseDto.getFormId());
-        Response response = mapToEntity(responseDto);
+        validationService.validateResponse(responseDto);
+
+        Response response = responseMapper.toEntity(responseDto);
         response.prePersist();
         Response savedResponse = responseRepository.save(response);
-        ResponseDto savedResponseDto = mapToDto(savedResponse);
 
-        return savedResponseDto;
+        return responseMapper.toDto(savedResponse);
     }
 
+    /**
+     * Update an existing response by ID. Preserves createdAt of the existing entity.
+     * @param id response identifier
+     * @param responseDto new data
+     * @return updated response as DTO
+     */
     @Override
     public ResponseDto updateResponse(String id, ResponseDto responseDto) {
         log.info("Updating response with ID: {}", id);
         return responseRepository.findById(id)
                 .map(existingResponse -> {
-                    Response response = mapToEntity(responseDto);
+                    Response response = responseMapper.toEntity(responseDto);
                     response.setId(id);
                     response.setCreatedAt(existingResponse.getCreatedAt());
                     response.prePersist();
                     Response updatedResponse = responseRepository.save(response);
-                    ResponseDto updatedResponseDto = mapToDto(updatedResponse);
 
-                    return updatedResponseDto;
+                    return responseMapper.toDto(updatedResponse);
                 })
-                .orElseThrow(() -> new RuntimeException("Response not found with ID: " + id));
+                .orElseThrow(() -> new java.util.NoSuchElementException("Response not found with ID: " + id));
     }
 
+    /**
+     * Retrieve a response by its ID.
+     * @param id response identifier
+     * @return optional DTO if found
+     */
     @Override
     public Optional<ResponseDto> getResponseById(String id) {
         log.info("Getting response with ID: {}", id);
-        return responseRepository.findById(id).map(this::mapToDto);
+        return responseRepository.findById(id).map(responseMapper::toDto);
     }
 
+    /**
+     * Delete a response by its ID.
+     * @param id response identifier
+     */
     @Override
     public void deleteResponse(String id) {
         log.info("Deleting response with ID: {}", id);
         responseRepository.deleteById(id);
     }
 
+    /**
+     * Page responses by form identifier.
+     * @param formId form identifier
+     * @param pageable pagination
+     * @return page of response DTOs
+     */
     @Override
     public Page<ResponseDto> getResponsesByFormId(Long formId, Pageable pageable) {
         log.info("Getting responses for form ID: {}", formId);
-        return responseRepository.findByFormId(formId, pageable).map(this::mapToDto);
+        return responseRepository.findByFormId(formId, pageable).map(responseMapper::toDto);
     }
 
+    /**
+     * Page responses by form and status.
+     * @param formId form identifier
+     * @param status response status filter
+     * @param pageable pagination
+     * @return page of response DTOs
+     */
     @Override
     public Page<ResponseDto> getResponsesByFormIdAndStatus(Long formId, String status, Pageable pageable) {
         log.info("Getting responses for form ID: {} with status: {}", formId, status);
-        return responseRepository.findByFormIdAndStatus(formId, status, pageable).map(this::mapToDto);
+        return responseRepository.findByFormIdAndStatus(formId, status, pageable).map(responseMapper::toDto);
     }
 
+    /**
+     * Page responses by submitting user.
+     * @param userId user identifier
+     * @param pageable pagination
+     * @return page of response DTOs
+     */
     @Override
     public Page<ResponseDto> getResponsesByUserId(Long userId, Pageable pageable) {
         log.info("Getting responses for user ID: {}", userId);
-        return responseRepository.findByUserId(userId, pageable).map(this::mapToDto);
+        return responseRepository.findByUserId(userId, pageable).map(responseMapper::toDto);
     }
 
+    /**
+     * List responses for a form submitted by a given user.
+     * @param formId form identifier
+     * @param userId user identifier
+     * @return list of response DTOs
+     */
     @Override
     public List<ResponseDto> getResponsesByFormIdAndUserId(Long formId, Long userId) {
         log.info("Getting responses for form ID: {} and user ID: {}", formId, userId);
         return responseRepository.findByFormIdAndUserId(formId, userId).stream()
-                .map(this::mapToDto)
+                .map(responseMapper::toDto)
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Page responses by form within a submittedAt date range.
+     * @param formId form identifier
+     * @param startDate inclusive start of range
+     * @param endDate inclusive end of range
+     * @param pageable pagination
+     * @return page of response DTOs
+     */
     @Override
     public Page<ResponseDto> getResponsesByDateRange(Long formId, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable) {
         log.info("Getting responses for form ID: {} between {} and {}", formId, startDate, endDate);
         return responseRepository.findByFormIdAndSubmittedAtBetween(formId, startDate, endDate, pageable)
-                .map(this::mapToDto);
+                .map(responseMapper::toDto);
     }
 
+    /**
+     * Search responses by a specific question's answer value.
+     * @param formId form identifier
+     * @param questionId question ID inside the response data
+     * @param answer value to match
+     * @param pageable pagination
+     * @return page of response DTOs matching search criteria
+     */
     @Override
     public Page<ResponseDto> searchResponsesByAnswer(Long formId, String questionId, Object answer, Pageable pageable) {
         log.info("Searching responses for form ID: {} with question ID: {} and answer: {}", formId, questionId, answer);
         return responseRepository.findByFormIdAndQuestionAnswer(formId, questionId, answer, pageable)
-                .map(this::mapToDto);
+                .map(responseMapper::toDto);
     }
 
+    /**
+     * Save a response as a draft (does not require full validation of answers).
+     * @param responseDto response payload to store as draft
+     * @return saved draft as DTO
+     */
     @Override
     public ResponseDto saveDraftResponse(ResponseDto responseDto) {
         log.info("Saving draft response for form ID: {} and user ID: {}", responseDto.getFormId(), responseDto.getUserId());
         responseDto.setStatus("DRAFT");
-        Response response = mapToEntity(responseDto);
+        Response response = responseMapper.toEntity(responseDto);
         response.prePersist();
         Response savedResponse = responseRepository.save(response);
-        return mapToDto(savedResponse);
+        return responseMapper.toDto(savedResponse);
     }
 
+    /**
+     * Fetch the most recently updated draft response for a form and user.
+     * @param formId form identifier
+     * @param userId user identifier
+     * @return optional draft response DTO
+     */
     @Override
     public Optional<ResponseDto> getLatestDraftResponse(Long formId, Long userId) {
         log.info("Getting latest draft response for form ID: {} and user ID: {}", formId, userId);
         return responseRepository.findFirstByFormIdAndUserIdAndStatusOrderByUpdatedAtDesc(formId, userId, "DRAFT")
-                .map(this::mapToDto);
+                .map(responseMapper::toDto);
     }
 
+    /**
+     * Mark a draft response as SUBMITTED and set submittedAt.
+     * @param id response identifier
+     * @return submitted response DTO
+     */
     @Override
     public ResponseDto submitResponse(String id) {
         log.info("Submitting response with ID: {}", id);
@@ -136,25 +216,27 @@ public class ResponseServiceImpl implements ResponseService {
                     response.setSubmittedAt(LocalDateTime.now());
                     response.prePersist();
                     Response submittedResponse = responseRepository.save(response);
-                    ResponseDto submittedResponseDto = mapToDto(submittedResponse);
 
-                    return submittedResponseDto;
+                    return responseMapper.toDto(submittedResponse);
                 })
-                .orElseThrow(() -> new RuntimeException("Response not found with ID: " + id));
+                .orElseThrow(() -> new java.util.NoSuchElementException("Response not found with ID: " + id));
     }
 
+    /**
+     * Export all responses for a form into a simple CSV string.
+     * Note: This is a basic exporter intended for analytics and backups.
+     * @param formId form identifier
+     * @return CSV content
+     */
     @Override
     public String exportResponsesToCsv(Long formId) {
         log.info("Exporting responses for form ID: {} to CSV", formId);
         List<Response> responses = responseRepository.findByFormId(formId);
 
-        // Simple CSV export implementation
         StringBuilder csv = new StringBuilder();
 
-        // Add header row
         csv.append("ID,Form ID,User ID,Status,Submitted At,Created At,Updated At,IP Address,User Agent\n");
 
-        // Add data rows
         for (Response response : responses) {
             csv.append(response.getId()).append(",")
                .append(response.getFormId()).append(",")
@@ -170,29 +252,35 @@ public class ResponseServiceImpl implements ResponseService {
         return csv.toString();
     }
 
+    /**
+     * Import responses from a CSV string. Assumes header row and fixed column order.
+     * @param formId form identifier to associate imported responses with
+     * @param csvData CSV contents
+     * @return number of created records
+     */
     @Override
     public int importResponsesFromCsv(Long formId, String csvData) {
         log.info("Importing responses for form ID: {} from CSV", formId);
 
-        // Simple CSV import implementation
         String[] lines = csvData.split("\n");
         if (lines.length <= 1) {
-            return 0; // Only header or empty file
+            return 0;
         }
 
         int importedCount = 0;
-        for (int i = 1; i < lines.length; i++) { // Skip header
+        for (int i = 1; i < lines.length; i++) {
             String[] fields = lines[i].split(",");
             if (fields.length >= 9) {
-                Response response = new Response();
-                response.setFormId(formId);
-                response.setUserId(fields[2].isEmpty() ? null : Long.parseLong(fields[2]));
-                response.setStatus(fields[3]);
-                response.setSubmittedAt(fields[4].isEmpty() ? null : LocalDateTime.parse(fields[4]));
-                response.setCreatedAt(LocalDateTime.parse(fields[5]));
-                response.setUpdatedAt(LocalDateTime.parse(fields[6]));
-                response.setIpAddress(fields[7].isEmpty() ? null : fields[7]);
-                response.setUserAgent(fields[8].isEmpty() ? null : fields[8]);
+                Response response = Response.builder()
+                        .formId(formId)
+                        .userId(fields[2].isEmpty() ? null : Long.parseLong(fields[2]))
+                        .status(fields[3])
+                        .submittedAt(fields[4].isEmpty() ? null : LocalDateTime.parse(fields[4]))
+                        .createdAt(LocalDateTime.parse(fields[5]))
+                        .updatedAt(LocalDateTime.parse(fields[6]))
+                        .ipAddress(fields[7].isEmpty() ? null : fields[7])
+                        .userAgent(fields[8].isEmpty() ? null : fields[8])
+                        .build();
 
                 responseRepository.save(response);
                 importedCount++;
@@ -202,43 +290,11 @@ public class ResponseServiceImpl implements ResponseService {
         return importedCount;
     }
 
-    @Override
-    public List<ResponseDto> generateTestResponses(Long formId, int count) {
-        log.info("Generating {} test responses for form ID: {}", count, formId);
-
-        List<Response> testResponses = new ArrayList<>();
-        Random random = new Random();
-
-        for (int i = 0; i < count; i++) {
-            Response response = new Response();
-            response.setFormId(formId);
-            response.setUserId(random.nextLong(1000) + 1); // Random user ID between 1 and 1000
-            response.setStatus("SUBMITTED");
-
-            // Generate random dates within the last 30 days
-            LocalDateTime now = LocalDateTime.now();
-            LocalDateTime randomDate = now.minusDays(random.nextInt(30));
-            response.setSubmittedAt(randomDate);
-            response.setCreatedAt(randomDate.minusMinutes(random.nextInt(60)));
-            response.setUpdatedAt(randomDate);
-
-            response.setIpAddress("192.168.1." + random.nextInt(255));
-            response.setUserAgent("Mozilla/5.0 Test User Agent");
-
-            // Generate random response data
-            Map<String, Object> responseData = new HashMap<>();
-            for (int j = 1; j <= 5; j++) {
-                responseData.put("question_" + j, "Answer " + random.nextInt(10));
-            }
-            response.setResponseData(responseData);
-
-            testResponses.add(response);
-        }
-
-        List<Response> savedResponses = responseRepository.saveAll(testResponses);
-        return savedResponses.stream().map(this::mapToDto).collect(Collectors.toList());
-    }
-
+    /**
+     * Compute basic statistics for responses of a form, such as totals and average submission time.
+     * @param formId form identifier
+     * @return map of statistics
+     */
     @Override
     public Map<String, Object> getResponseStatistics(Long formId) {
         log.info("Getting response statistics for form ID: {}", formId);
@@ -247,22 +303,18 @@ public class ResponseServiceImpl implements ResponseService {
 
         Map<String, Object> statistics = new HashMap<>();
 
-        // Total responses
         statistics.put("totalResponses", responses.size());
 
-        // Responses by status
         Map<String, Long> responsesByStatus = responses.stream()
                 .collect(Collectors.groupingBy(Response::getStatus, Collectors.counting()));
         statistics.put("responsesByStatus", responsesByStatus);
 
-        // Average response time (time between created and submitted)
         OptionalDouble avgResponseTime = responses.stream()
                 .filter(r -> r.getSubmittedAt() != null && r.getCreatedAt() != null)
                 .mapToLong(r -> ChronoUnit.SECONDS.between(r.getCreatedAt(), r.getSubmittedAt()))
                 .average();
         statistics.put("averageResponseTimeSeconds", avgResponseTime.orElse(0));
 
-        // Responses per day
         Map<LocalDateTime, Long> responsesPerDay = responses.stream()
                 .filter(r -> r.getSubmittedAt() != null)
                 .collect(Collectors.groupingBy(
@@ -273,29 +325,26 @@ public class ResponseServiceImpl implements ResponseService {
         return statistics;
     }
 
+    /**
+     * Build a time series of submitted responses grouped by day/week/month.
+     * @param formId form identifier
+     * @param startDate start of time window (inclusive)
+     * @param endDate end of time window (inclusive)
+     * @param interval grouping interval: hour, day, week or month
+     * @return list of entries with date and count
+     */
     @Override
     public List<Map<String, Object>> getResponseTimeSeries(Long formId, LocalDateTime startDate, LocalDateTime endDate, String interval) {
         log.info("Getting response time series for form ID: {} between {} and {} with interval: {}", 
                 formId, startDate, endDate, interval);
 
         // Define the time unit based on the interval
-        ChronoUnit timeUnit;
-        switch (interval.toLowerCase()) {
-            case "hour":
-                timeUnit = ChronoUnit.HOURS;
-                break;
-            case "day":
-                timeUnit = ChronoUnit.DAYS;
-                break;
-            case "week":
-                timeUnit = ChronoUnit.WEEKS;
-                break;
-            case "month":
-                timeUnit = ChronoUnit.MONTHS;
-                break;
-            default:
-                timeUnit = ChronoUnit.DAYS;
-        }
+        ChronoUnit timeUnit = switch (interval.toLowerCase()) {
+            case "hour" -> ChronoUnit.HOURS;
+            case "week" -> ChronoUnit.WEEKS;
+            case "month" -> ChronoUnit.MONTHS;
+            default -> ChronoUnit.DAYS;
+        };
 
         // Use MongoDB aggregation to get time series data
         Criteria criteria = Criteria.where("formId").is(formId)
@@ -330,47 +379,4 @@ public class ResponseServiceImpl implements ResponseService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Maps a Response entity to a ResponseDto.
-     * 
-     * @param response The Response entity
-     * @return The ResponseDto
-     */
-    private ResponseDto mapToDto(Response response) {
-        ResponseDto dto = new ResponseDto();
-        dto.setId(response.getId());
-        dto.setFormId(response.getFormId());
-        dto.setUserId(response.getUserId());
-        dto.setResponseData(response.getResponseData());
-        dto.setStatus(response.getStatus());
-        dto.setSubmittedAt(response.getSubmittedAt());
-        dto.setCreatedAt(response.getCreatedAt());
-        dto.setUpdatedAt(response.getUpdatedAt());
-        dto.setIpAddress(response.getIpAddress());
-        dto.setUserAgent(response.getUserAgent());
-        dto.setMetadata(response.getMetadata());
-        return dto;
-    }
-
-    /**
-     * Maps a ResponseDto to a Response entity.
-     * 
-     * @param dto The ResponseDto
-     * @return The Response entity
-     */
-    private Response mapToEntity(ResponseDto dto) {
-        Response response = new Response();
-        response.setId(dto.getId());
-        response.setFormId(dto.getFormId());
-        response.setUserId(dto.getUserId());
-        response.setResponseData(dto.getResponseData());
-        response.setStatus(dto.getStatus());
-        response.setSubmittedAt(dto.getSubmittedAt());
-        response.setCreatedAt(dto.getCreatedAt());
-        response.setUpdatedAt(dto.getUpdatedAt());
-        response.setIpAddress(dto.getIpAddress());
-        response.setUserAgent(dto.getUserAgent());
-        response.setMetadata(dto.getMetadata());
-        return response;
-    }
 }

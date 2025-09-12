@@ -39,7 +39,7 @@ public class RegisterRequestDto {
     @NotBlank(message = "Password cannot be blank")
     @Size(min = 8, message = "Password must be at least 8 characters long")
     @Pattern(
-            regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#&()–[{}]:;',?/*~$^+=<>.])[A-Za-z0-9!@#&()–[{}]:;',?/*~$^+=<>.]{8,}$",
+            regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-\\[\\]{}:;',.?/]).{8,}$",
             message = "Password must contain at least one digit, one uppercase letter, one lowercase letter, and one special character"
     )
     private String password;

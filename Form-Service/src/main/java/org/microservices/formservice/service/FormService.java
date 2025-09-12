@@ -89,14 +89,6 @@ public interface FormService {
      */
     FormDto getPublicFormById(Long id);
     /**
-     * Creates a copy of an existing form identified by its unique identifier for a specified user.
-     *
-     * @param id the unique identifier of the form to be copied
-     * @param userId the unique identifier of the user for whom the form is being copied
-     * @return a FormDto object representing the newly created copy of the form
-     */
-    FormDto copyForm(Long id, Long userId);
-    /**
      * Locks a form identified by its unique identifier for a specific user.
      * This operation restricts access or modifications to the form, locking it for further changes.
      *

@@ -74,12 +74,12 @@ public class CollaboratorServiceImpl implements CollaboratorService {
     @Override
     @Transactional
     public CollaboratorDto addCollaborator(Long formId, CollaboratorDto dto, Long userId) {
-        Form form = formRepository.findById(formId)
-                .orElseThrow(() -> new ResourceNotFoundException("Form not found with id: " + formId));
-
-        if (!form.getCreatedBy().equals(userId)) {
+        if (!validationService.isFormOwner(formId, userId)) {
             throw new UnauthorizedException("Only the form owner can add collaborators");
         }
+
+        Form form = formRepository.findById(formId)
+                .orElseThrow(() -> new ResourceNotFoundException("Form not found with id: " + formId));
 
         Collaborator collaborator = collaboratorMapper.toEntity(dto);
         collaborator.setForm(form);
@@ -125,12 +125,12 @@ public class CollaboratorServiceImpl implements CollaboratorService {
     @Override
     @Transactional
     public CollaboratorDto updateCollaborator(Long formId, CollaboratorDto dto, Long userId) {
-        Form form = formRepository.findById(formId)
-                .orElseThrow(() -> new ResourceNotFoundException("Form not found with id: " + formId));
-
-        if (!form.getCreatedBy().equals(userId)) {
+        if (!validationService.isFormOwner(formId, userId)) {
             throw new UnauthorizedException("Only the form owner can update collaborators");
         }
+
+        Form form = formRepository.findById(formId)
+                .orElseThrow(() -> new ResourceNotFoundException("Form not found with id: " + formId));
 
         Collaborator existingCollaborator = collaboratorRepository.findById(dto.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("Collaborator not found with id: " + dto.getId()));
@@ -153,10 +153,10 @@ public class CollaboratorServiceImpl implements CollaboratorService {
     @Override
     @Transactional
     public void removeCollaborator(Long id, Long userId) {
-        Collaborator collaborator = collaboratorRepository.findById(id)
+        Long formId = collaboratorRepository.findFormIdByCollaboratorId(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Collaborator not found with id: " + id));
 
-        if (!collaborator.getForm().getCreatedBy().equals(userId)) {
+        if (!validationService.isFormOwner(formId, userId)) {
             throw new UnauthorizedException("Only the form owner can remove collaborators");
         }
 

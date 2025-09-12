@@ -171,7 +171,7 @@ class UserServiceImplTest {
         // We don't need to mock userMapper since it's initialized in the service
 
         // Act
-        UserDto result = userService.getCurrentUser(authentication);
+        UserDto result = userService.getCurrentUser(authentication, null);
 
         // Assert
         assertNotNull(result);
@@ -188,7 +188,7 @@ class UserServiceImplTest {
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
         // Act & Assert
-        assertThrows(UserServiceException.class, () -> userService.getCurrentUser(authentication));
+        assertThrows(UserServiceException.class, () -> userService.getCurrentUser(authentication, null));
         verify(authentication).getName();
         verify(userRepository).findByEmail("test@example.com");
         verify(userMapper, never()).userToUserDto(any(User.class));

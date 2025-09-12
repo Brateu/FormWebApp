@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,9 +34,14 @@ public class ResponseDto {
     private Long userId;
     
     /**
-     * The response data, mapping question IDs to answers.
+     * The response answers as a polymorphic list of answered questions.
      */
-    private Map<String, Object> responseData;
+    private List<AnsweredQuestionDto> answeredQuestions;
+
+    /**
+     * The question definitions used for validation (offline, no FormStructure).
+     */
+    private List<QuestionDefinitionDto> questionDefinitions;
     
     /**
      * The status of the response (DRAFT, SUBMITTED).
