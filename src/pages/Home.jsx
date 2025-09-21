@@ -1,10 +1,23 @@
 import React, { useContext } from 'react'
+import axios from "../context/AxiosInstance"
 import {CircleUser, ClipboardList, Plus, Search} from 'lucide-react' 
 import { NavLink } from 'react-router-dom'
 import { FormsContext } from '../context/FormsContext'
 
 const Home = () => {
-    const { search, setSearch, isAuthenticated, navigate } = useContext(FormsContext);
+    const { search, setSearch, isAuthenticated, setIsAuthenticated, navigate } = useContext(FormsContext);
+
+    const handleLogout = async () => {
+        try {
+            await axios.post('/api/user/logout');
+        } catch (e) {
+
+        } finally {
+            localStorage.removeItem("jwtToken");
+            setIsAuthenticated(false);
+            navigate('/login');
+        }
+    }
   return (
     <div>
         <div className='flex items-center py-5 font-medium justify-between'>
@@ -22,7 +35,7 @@ const Home = () => {
                 <CircleUser size={35} className='cursor-pointer'/>
                 <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-5'>
                     <div className='flex flex-col gap-2 w-36 py-3 px-5 bg-slate-100 text-gray-500 rounded '>
-                        <p className='cursor-pointer hover:text-black '>Logout</p>
+                        <p onClick={handleLogout} className='cursor-pointer hover:text-black '>Logout</p>
                     </div>
                 </div>
             </div>
