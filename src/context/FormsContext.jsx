@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
+import axios from '../context/AxiosInstance';
 
 export const FormsContext = createContext();
 const FormsContextProvider = (props) => {
@@ -18,54 +19,111 @@ const FormsContextProvider = (props) => {
       text: "Untitled Question",
       type: "multipleChoice",
       required: false,
-      image: null,
+      imageUrl: null,
       options: [
-        {text: "Option 1", image: null},
-        {text: "Option 2", image: null}
+        {text: "Option 1", imageUrl: null},
+        {text: "Option 2", imageUrl: null}
       ]
     }, {
       id: uuidv4(),
       text: "Demo Question",
       type: "shortAnswer",
       required: false,
-      image: null,
+      imageUrl: null,
       options: []
     }, {
       id: uuidv4(),
       text: "Long Question",
       type: "paragraph",
       required: false,
-      image: null,
+      imageUrl: null,
       options: []
     }, {
       id: uuidv4(),
       text: "Checkboxes",
       type: "checkboxes",
       required: false,
-      image: null,
+      imageUrl: null,
       options: [
-        {text: "Option 1", image: null},
-        {text: "Option 2", image: null}
+        {text: "Option 1", imageUrl: null},
+        {text: "Option 2", imageUrl: null}
       ]
     }, {
       id: uuidv4(),
       text: "Date Question",
       type: "date",
       required: false,
-      image: null,
+      imageUrl: null,
       options: []
     }, {
       id: uuidv4(),
       text: "Time Question",
       type: "time",
       required: false,
-      image: null,
+      imageUrl: null,
       options: []
-    }
-    ]
+    }]
   })
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
+
+  const QUESTION_TYPE_MAP = {
+    shortAnswer: 'SHORT_TEXT',          
+    paragraph: 'LONG_TEXT',
+    multipleChoice: 'MULTI_CHOICE',
+    checkboxes: 'SINGLE_CHOICE',
+    date: 'DATE',
+    time: 'TIME',
+  };
+
+  const mapFormToDto = (uiForm) => {
+    return {
+      name: uiForm.title || 'Untitled Form',
+      description: uiForm.description || '',
+      allowAnonymous: !uiForm.auth,
+      responseLimit: 0,
+      locked: false,
+      status: 'DRAFT',
+      visibility: 'PRIVATE',
+      questions: (uiForm.questions || []).map((q, idx) => ({
+        text: q.text || 'Untitled Question',
+        type: QUESTION_TYPE_MAP[q.type] || (q.type ? q.type.toUpperCase() : 'SHORT_TEXT'),
+        required: !!q.required,
+        orderIndex: idx,
+        imageUrl: q.imageUrl || null,
+        options: (q.options || []).map((opt) => ({
+          text: opt.text || '',
+          imageUrl: opt.imageUrl || null,
+        })),
+      })),
+    };
+  };
+
+  const createForm = async () => {
+    try {
+      setSaving(true);
+      const payload = mapFormToDto(form);
+      const { data } = await axios.post('/api/forms', payload);
+      navigate('/')
+      return data; 
+    } catch (err) {
+      console.error('Create form failed', err);
+      throw err;
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  const fileToDataUrl = (file) => {
+    return new Promise((resolve, reject) => {
+      if (!file) return resolve(null);
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  } 
 
   const handleAddQuestion = (afterId) => {
 
@@ -75,7 +133,7 @@ const FormsContextProvider = (props) => {
       type: "multipleChoice",
       required: false,
       options: [
-        {text: "Option 1", image: null}
+        {text: "Option 1", imageUrl: null}
       ]
     };
 
@@ -184,7 +242,8 @@ const FormsContextProvider = (props) => {
     form, setForm,
     activeQuestionId, setActiveQuestionId,
     handleAddQuestion, handleDeleteQuestion, handleUpdateQuestion, handleDuplicateQuestion,
-    answers, setAnswers
+    answers, setAnswers,
+    fileToDataUrl, createForm, saving
   }
   return (
     <FormsContext.Provider value={value}>

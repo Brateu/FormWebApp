@@ -12,12 +12,12 @@ import { IconButton, MenuItem, Select } from '@mui/material';
 
 const SingleQuestion = ( { question, isActive, onClick} ) => {
 
-  const { handleAddQuestion, handleDuplicateQuestion, handleDeleteQuestion, handleUpdateQuestion } = useContext(FormsContext);
+  const { handleAddQuestion, handleDuplicateQuestion, handleDeleteQuestion, handleUpdateQuestion, fileToDataUrl } = useContext(FormsContext);
   const hiddenFileInput = useRef(null);
   const hiddenOptionFileInputs = useRef([]);
 
   const addNewOption = () => {
-    const newOptions = [...question.options, {text: `Option ${question.options.length + 1}`, image: null}];
+    const newOptions = [...question.options, {text: `Option ${question.options.length + 1}`, imageUrl: null}];
     handleUpdateQuestion(question.id, {options: newOptions});
   }
 
@@ -45,22 +45,38 @@ const SingleQuestion = ( { question, isActive, onClick} ) => {
     }
   }
 
-  const handleFileChange = (e) => {
-    const file = URL.createObjectURL(e.target.files[0]);
-    handleUpdateQuestion(question.id, {image: file})
+  const handleFileChange = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    if (file.size > 3 * 1024 * 1024) {
+      alert("Image too large (max ~ 3MB).");
+      e.target.value = '';
+      return;
+    }
+    const dataUrl = await fileToDataUrl(file);
+    handleUpdateQuestion(question.id, {imageUrl: dataUrl});
+    e.target.value = '';
   }
 
-  const handleOptionFileChange = (index, e) => {
-    const file = URL.createObjectURL(e.target.files[0]);
+  const handleOptionFileChange = async (index, e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    if (file.size > 3 * 1024 * 1024) {
+      alert("Image too large (max ~ 3MB).");
+      e.target.value = '';
+      return;
+    }
+    const dataUrl = await fileToDataUrl(file);
     const options = question.options.slice();
-    options[index].image = file;
-    handleUpdateQuestion(question.id, {options: options});
+    options[index] = { ...options[index], imageUrl: dataUrl };
+    handleUpdateQuestion(question.id, { options });
+    e.target.value = '';
   }
 
   const handleOptionImageDelete = (index) => {
     const options = question.options.slice();
-    options[index].image = null;
-    handleUpdateQuestion(question.id, {options: options});
+    options[index] = { ...options[index], imageUrl: null };
+    handleUpdateQuestion(question.id, { options });
   }
 
   return !isActive ? (
@@ -69,8 +85,8 @@ const SingleQuestion = ( { question, isActive, onClick} ) => {
         {question.text || "Untitled Question"}
       </h3>
       {
-        question.image ? (
-          <img src={question.image} alt="" className='max-w-xs rounded shadow mt-3 ml-6' />
+        question.imageUrl ? (
+          <img src={question.imageUrl} alt="" className='max-w-xs rounded shadow mt-3 ml-6' />
         ) : null
       }
       <div>
@@ -88,7 +104,7 @@ const SingleQuestion = ( { question, isActive, onClick} ) => {
                       <Circle color='rgb(218,220,224)' size={20} />
                       <p>{opt.text}</p>
                     </div>
-                    <img src={opt.image} alt="" className='max-w-[150px] rounded shadow mt-2 ml-6' />
+                    <img src={opt.imageUrl} alt="" className='max-w-[150px] rounded shadow mt-2 ml-6' />
                   </div>
                 ))
               }
@@ -102,7 +118,7 @@ const SingleQuestion = ( { question, isActive, onClick} ) => {
                       <Square color='rgb(218,220,224)' size={20} />
                       <p>{opt.text}</p>
                     </div>
-                    <img src={opt.image} alt="" className='max-w-[150px] rounded shadow mt-2 ml-6' />
+                    <img src={opt.imageUrl} alt="" className='max-w-[150px] rounded shadow mt-2 ml-6' />
                   </div>
                 ))
               }
@@ -139,10 +155,10 @@ const SingleQuestion = ( { question, isActive, onClick} ) => {
         </Select>
       </div>
       {
-        question.image ? (
+        question.imageUrl ? (
           <div className='my-2'>
-            <X onClick={() => handleUpdateQuestion(question.id, {image: null})} className='absolute rounded-full bg-white cursor-pointer'/>
-            <img src={question.image} alt="" className='max-w-xs rounded shadow' />
+            <X onClick={() => handleUpdateQuestion(question.id, { imageUrl: null })} className='absolute rounded-full bg-white cursor-pointer'/>
+            <img src={question.imageUrl} alt="" className='max-w-xs rounded shadow' />
           </div>
         )  : null
       }
@@ -168,10 +184,10 @@ const SingleQuestion = ( { question, isActive, onClick} ) => {
                     </IconButton>
                   </div>
                   {
-                    option.image ? (
+                    option.imageUrl ? (
                       <div className='mt-2 ml-9'>
                         <X onClick={() => handleOptionImageDelete(index)} className='absolute rounded-full bg-white cursor-pointer' />
-                        <img src={option.image} alt="" className='max-w-xs rounded shadow' />
+                        <img src={option.imageUrl} alt="" className='max-w-xs rounded shadow' />
                       </div>
                     ) : null
                   }
