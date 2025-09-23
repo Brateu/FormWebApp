@@ -4,13 +4,13 @@ import { Navigate } from "react-router-dom";
 
 
 function ProtectedRoute({children}){
-    const { isAuthenticated } = useContext(FormsContext);
+    const { isAuthenticated, authReady } = useContext(FormsContext);
 
-    if (!isAuthenticated) {
-        return <Navigate to="/login" replace/>;
+    if (!authReady) {
+        return null;
     }
 
-    return children;
+    return isAuthenticated ? children : <Navigate to="/login" replace />;
 }
 
 export default ProtectedRoute;

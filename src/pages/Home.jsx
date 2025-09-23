@@ -1,11 +1,36 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import axios from "../context/AxiosInstance"
 import {CircleUser, ClipboardList, Plus, Search} from 'lucide-react' 
 import { NavLink } from 'react-router-dom'
 import { FormsContext } from '../context/FormsContext'
 
 const Home = () => {
-    const { search, setSearch, isAuthenticated, setIsAuthenticated, navigate } = useContext(FormsContext);
+    const { search, setSearch, setIsAuthenticated, navigate, getUserIdFromToken, startNewForm } = useContext(FormsContext);
+
+    const [forms, setForms] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+
+    const fetchForms = async () => {
+        setLoading(true);
+        setError('');
+        try {
+            const userId = getUserIdFromToken();
+            if (!userId) {
+                setError('Missing user id. Please login again.');
+                return;
+            }
+            const { data } = await axios.get('/api/forms/user', {
+                headers: { 'X-User-ID': userId },
+            });
+            setForms(Array.isArray(data) ? data : []);
+        } catch (e) {
+            console.error('Failed to fetch forms', e);
+            setError('Failed to load forms.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleLogout = async () => {
         try {
@@ -18,6 +43,11 @@ const Home = () => {
             navigate('/login');
         }
     }
+
+    useEffect(() => {
+        fetchForms();
+    }, []);
+    
   return (
     <div>
         <div className='flex items-center py-5 font-medium justify-between'>
@@ -43,13 +73,30 @@ const Home = () => {
 
         <div className='flex flex-col bg-gray-100 items-start'>
             <p className='py-5 px-5 '> Start a new Form</p>
-            <Plus onClick={() => navigate('/forms/new')} size={100} className='rounded-lg hover:scale-110 transition ease-in-out cursor-pointer w-36' />
+            <Plus onClick={() => { startNewForm(); navigate('/forms/new') }} size={100} className='rounded-lg hover:scale-110 transition ease-in-out cursor-pointer w-36' />
             <p className='py-5 px-8 '>Blank Form</p>
         </div>
 
-        <div className='flex '>
-            <p className='py-5 px-3 items-start'>Recent Forms</p>
-
+        <div className='px-5 mt-6 '>
+            <p className='py-2 text-sm text-gray-600'>Recent Forms</p>
+            {loading ? (
+                <p className='px-1 text-gray-500'>Loading...</p>
+            ) : error ? (
+                <p className='px-1 text-red-500'>{error}</p>
+            ) : forms.length === 0 ? (
+                <p className='px-1 text-gray-500'>No forms yet.</p>
+            ) : (
+                <ul className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+                    {forms.map((f) => (
+                        <li key={f.id} onClick={() => navigate(`/forms/${f.id}/edit`)} className='border rounded-lg p-4 bg-white hover:shadow cursor-pointer'>
+                            <p className='font-medium truncate'>{f.name || 'Untitled Form'}</p>
+                            <p className='text-sm text-gray-500 mt-1'>
+                                {f.createdAt ? new Date(f.createdAt).toLocaleString() : '-'}
+                            </p>
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
 
 

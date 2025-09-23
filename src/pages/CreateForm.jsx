@@ -1,13 +1,21 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect } from 'react'
 import FormHeader from '../components/FormHeader'
 import { FormsContext } from '../context/FormsContext'
-import { ToggleLeft, ToggleRight } from 'lucide-react';
+import { ToggleLeft, ToggleRight, Plus } from 'lucide-react';
 import QuestionsList from '../components/QuestionsList';
 import { IconButton } from '@mui/material';
+import { useParams } from 'react-router-dom';
 
 const CreateForm = () => {
 
-    const { form, setForm, createForm, saving } = useContext(FormsContext);
+    const { form, setForm, createForm, updateForm, loadForm, saving, handleAddQuestion } = useContext(FormsContext);
+    const { id } = useParams();
+
+    useEffect(() => {
+      if (id) {
+        loadForm(id).catch(() => {});
+      }
+    }, [id]);
 
   return (
     <div className='bg-purple-100 pb-5'>
@@ -21,15 +29,19 @@ const CreateForm = () => {
             !form.auth ? (<IconButton> <ToggleLeft onClick={() => setForm({...form, auth: true})} className='cursor-pointer' size={35} color='red' /> </IconButton>) : (<IconButton> <ToggleRight onClick={() => setForm({...form, auth: false})} size={35} color='green' className='cursor-pointer' /> </IconButton>)
           }
         </div>
+        <div onClick={() => handleAddQuestion()} className='flex flex-row items-center max-w-[190px] gap-4 pl-5 pb-1 mb-1 cursor-pointer hover:text-[rgb(103,58,183)] '>
+          <p>Add Question</p>
+          <Plus></Plus>
+        </div>
       </div>
       <QuestionsList />
       <div className='flex justify-end mx-50'>
         <button
-          onClick={() => createForm()}
+          onClick={() => (id ? updateForm(id) : createForm())}
           disabled={saving}
           className={`mt-2 mb-1 px-5 py-2 rounded text-white ${saving ? 'bg-purple-300 cursor-not-allowed' : 'bg-[rgb(103,58,183)] hover:bg-[rgb(131,58,183)]'}`}
         >
-          {saving ? 'Saving…' : 'Save form'}
+          {id ? (saving ? 'Saving…' : 'Save changes') : (saving ? 'Creating...' : 'Create Form')}
         </button>
       </div>
     </div>

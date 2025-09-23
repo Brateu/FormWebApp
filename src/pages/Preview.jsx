@@ -1,11 +1,20 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import PreviewHeader from '../components/PreviewHeader'
 import { FormsContext } from '../context/FormsContext'
 import PreviewList from '../components/PreviewList';
+import { useParams } from 'react-router-dom';
 
 const Preview = () => {
 
-  const { form } = useContext(FormsContext);
+  const { form, loadForm } = useContext(FormsContext);
+  const { id } = useParams();
+
+
+  useEffect(() => {
+    if (id) {
+      loadForm(id).catch(() => {})
+    }
+  }, [id]);
 
   return (
     <div className='bg-purple-100 pb-5'>

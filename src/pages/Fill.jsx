@@ -1,12 +1,14 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { FormsContext } from '../context/FormsContext'
 import FillList from '../components/FillList'
+import { useParams } from 'react-router-dom'
 
 
 const Fill = () => {
 
-    const { form, answers } = useContext(FormsContext);
+    const { form, answers, loadForm } = useContext(FormsContext);
     const [errorMessage, setErrorMessage] = useState('');
+    const { id } = useParams();
 
     const isAnswered = (value, questionType) => {
       if (value === null){
@@ -53,6 +55,12 @@ const Fill = () => {
       alert("Thank you! Your answers have been saved locally! ");
     }
 
+    useEffect(() => {
+      if (id) {
+        loadForm(id).catch(() => {});
+      }
+    }, [id]);
+
   return (
     <div className='bg-purple-100 pt-3 pb-10'>
       <div className='mx-70 my-3 rounded-lg border-t-8 border-b-2 border-b-[rgb(218,220,224)] border-x-2 border-x-[rgb(218,220,224)] border-[rgb(103,58,183)] bg-white '>
@@ -64,10 +72,13 @@ const Fill = () => {
         </div>
       </div>
       <FillList />
+      {form.locked && (
+        <p className='ml-70 text-red-500 text-sm'>This form is locked, so it cannot be filled!</p>
+      )}
       <div className='flex flex-row items-center gap-3 mt-5 ml-70'>
-        <div onClick={() => handleSubmit()} className='w-[90px] bg-[rgb(103,58,183)] px-5 py-2 rounded text-white hover:bg-[rgb(131,58,183)] cursor-pointer'>
+        <button disabled={form.locked}  onClick={() => handleSubmit()} className='w-[90px] bg-[rgb(103,58,183)] px-5 py-2 rounded text-white hover:bg-[rgb(131,58,183)] cursor-pointer disabled:cursor-not-allowed disabled:bg-gray-300 disabled:hover:bg-gray-300'>
           Submit
-        </div>
+        </button>
         {
           errorMessage ? (
             <p className='text-red-500'>{errorMessage}</p>

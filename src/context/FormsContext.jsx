@@ -2,6 +2,7 @@ import React, { createContext, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import axios from '../context/AxiosInstance';
+import { toast } from 'react-toastify'
 
 export const FormsContext = createContext();
 const FormsContextProvider = (props) => {
@@ -14,6 +15,7 @@ const FormsContextProvider = (props) => {
     description: '',
     auth: false,
     published: false,
+    locked: false,
     questions: [{
       id: uuidv4(),
       text: "Untitled Question",
@@ -64,7 +66,31 @@ const FormsContextProvider = (props) => {
       options: []
     }]
   })
+
+  const newBlankForm = () => ({
+    title: '',
+    description: '',
+    auth: false,
+    published: false,
+    locked: false,
+    questions: [{
+      id: uuidv4(),
+      text: "Demo Question",
+      type: "shortAnswer",
+      required: false,
+      imageUrl: null,
+      options: []
+    }]
+  });
+
+  const startNewForm = () => {
+    setForm(newBlankForm());
+    setActiveQuestionId(null);
+    setAnswers({});
+  };
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authReady, setAuthReady] = useState(false);
   const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
 
@@ -77,15 +103,24 @@ const FormsContextProvider = (props) => {
     time: 'TIME',
   };
 
+  const DTO_TO_UI_TYPE = {
+  SHORT_TEXT: 'shortAnswer',
+  LONG_TEXT: 'paragraph',
+  MULTI_CHOICE: 'multipleChoice',
+  SINGLE_CHOICE: 'checkboxes',
+  DATE: 'date',
+  TIME: 'time',
+};
+
   const mapFormToDto = (uiForm) => {
     return {
       name: uiForm.title || 'Untitled Form',
       description: uiForm.description || '',
       allowAnonymous: !uiForm.auth,
       responseLimit: 0,
-      locked: false,
-      status: 'DRAFT',
-      visibility: 'PRIVATE',
+      locked: uiForm.locked,
+      status: uiForm.published === true ? 'ACTIVE' : 'DRAFT',
+      visibility: uiForm.published === true ? 'PUBLIC' : 'PRIVATE',
       questions: (uiForm.questions || []).map((q, idx) => ({
         text: q.text || 'Untitled Question',
         type: QUESTION_TYPE_MAP[q.type] || (q.type ? q.type.toUpperCase() : 'SHORT_TEXT'),
@@ -100,11 +135,36 @@ const FormsContextProvider = (props) => {
     };
   };
 
+  const mapToUiForm = (beForm) => {
+    return {
+      title: beForm.name,
+      description: beForm.description,
+      auth: !beForm.allowAnonymous,
+      published: beForm.visibility === 'PUBLIC' ? true : false,
+      locked: beForm.locked,
+      questions: beForm.questions.slice().sort((a,b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0))
+      .map((q) => ({
+        id: String(q.id),
+        text: q.text || '',
+        type: DTO_TO_UI_TYPE[q.type] || 'shortAnswer',
+        required: !!q.required,
+        imageUrl: q.imageUrl || null,
+        options: (q.options || []).map((opt) => ({
+          text: opt.text || '',
+          imageUrl: opt.imageUrl || null,
+        }))
+      }))
+    }
+  }
+
+
   const createForm = async () => {
     try {
       setSaving(true);
       const payload = mapFormToDto(form);
-      const { data } = await axios.post('/api/forms', payload);
+      const userId = getUserIdFromToken();
+      if (!userId) return;
+      const { data } = await axios.post('/api/forms', payload, { headers: { 'X-User-ID': userId }});
       navigate('/')
       return data; 
     } catch (err) {
@@ -114,6 +174,60 @@ const FormsContextProvider = (props) => {
       setSaving(false);
     }
   }
+
+  const loadForm = async (id) => {
+    const userId = getUserIdFromToken();
+    if (!userId) return;
+    const { data } = await axios.get(`/api/forms/${id}`);
+    setForm(mapToUiForm(data));
+  }
+
+  const updateForm = async (id) => {
+    const payload = mapFormToDto(form);
+    const userId = getUserIdFromToken();
+    if (!userId) return;
+    const { data } = await axios.put(`/api/forms/${id}`, payload, { headers: { 'X-User-ID': userId }});
+    navigate('/');
+    return data;
+  }
+
+  const handleFormShare = async (id) => {
+    if (!id) return;
+    const origin = window.location.origin;
+    const shareUrl = `${origin}/forms/${id}/fill`;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      toast.success('Link copied to clipboard');
+    } catch (err){
+      console.error('Copy to clipboard failed', err);
+    }
+  }
+
+  const safeDecodeBase64 = (str) => {
+        try {
+            const b64 = str.replace(/-/g, '+').replace(/_/g, '/');
+            const pad = b64.length % 4;
+            const b64p = pad ? b64 + '='.repeat(4 - pad) : b64;
+            return atob(b64p);
+        } catch (_) {
+            return null;
+        }
+    };
+
+    const getUserIdFromToken = () => {
+        const jwt = localStorage.getItem('jwtToken');
+        if (!jwt) return null;
+        const parts = jwt.split('.');
+        if (parts.length < 2) return null;
+        const json = safeDecodeBase64(parts[1]);
+        if (!json) return null;
+        try {
+            const payload = JSON.parse(json);
+            return payload.userId || payload.id || payload.sub || null;
+        } catch (_) {
+            return null;
+        }
+    };
 
   const fileToDataUrl = (file) => {
     return new Promise((resolve, reject) => {
@@ -131,6 +245,7 @@ const FormsContextProvider = (props) => {
       id: uuidv4(),
       text: "Untitled question",
       type: "multipleChoice",
+      imageUrl: null,
       required: false,
       options: [
         {text: "Option 1", imageUrl: null}
@@ -232,8 +347,12 @@ const FormsContextProvider = (props) => {
   }
 
   useEffect(() => {
-    console.log(answers);
-  }, [answers])
+    const token = localStorage.getItem("jwtToken");
+    if (token) {
+      setIsAuthenticated(true);
+    }
+    setAuthReady(true);
+  }, [])
 
   const value = {
     search, setSearch, 
@@ -243,7 +362,8 @@ const FormsContextProvider = (props) => {
     activeQuestionId, setActiveQuestionId,
     handleAddQuestion, handleDeleteQuestion, handleUpdateQuestion, handleDuplicateQuestion,
     answers, setAnswers,
-    fileToDataUrl, createForm, saving
+    fileToDataUrl, createForm, saving, safeDecodeBase64, getUserIdFromToken,
+    loadForm, updateForm, authReady, startNewForm, handleFormShare,
   }
   return (
     <FormsContext.Provider value={value}>
