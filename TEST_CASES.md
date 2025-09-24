@@ -276,7 +276,7 @@ TestCase - Scenario - Očekivano - Dobijeno - {kod}
 TEST_CASES — Response Service
 
 --------------------------------------------------------------------------------------------------------------------------
-Sistem: FormApp (Response-Service @ http://localhost:8060/api/responses/...), 
+Sistem: FormApp (Response-Service @ http://localhost:8060/api/responses/...)
 --------------------------------------------------------------------------------------------------------------------------
 TestCase - Scenario - Očekivano - Dobijeno - {kod}
 
