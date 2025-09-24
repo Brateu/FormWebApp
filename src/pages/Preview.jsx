@@ -2,19 +2,21 @@ import React, { useContext, useEffect } from 'react'
 import PreviewHeader from '../components/PreviewHeader'
 import { FormsContext } from '../context/FormsContext'
 import PreviewList from '../components/PreviewList';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 
 const Preview = () => {
 
   const { form, loadForm } = useContext(FormsContext);
   const { id } = useParams();
+  const location = useLocation();
+  const useLocal = location.state?.useLocal === true;
 
 
   useEffect(() => {
-    if (id) {
+    if (id && !useLocal) {
       loadForm(id).catch(() => {})
     }
-  }, [id]);
+  }, [id, useLocal]);
 
   return (
     <div className='bg-purple-100 pb-5'>

@@ -1,18 +1,21 @@
 import { ArrowLeft, CircleCheck, CircleMinus, Paperclip } from 'lucide-react'
 import React, { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
-import { FormsContext } from '../context/FormsContext'
+import { FormsContext, useFormAccess } from '../context/FormsContext'
 import { useParams } from 'react-router-dom'
 
 const PreviewHeader = () => {
 
     const { form, handleFormShare } = useContext(FormsContext);
     const { id } = useParams();
+    const { canEdit } = useFormAccess(id);
+
+    const arrowLeft = canEdit ? `/forms/${id}/edit` : id === 'undefined' ? '/forms/new' : '/';
 
   return (
     <div className='flex flex-row items-center justify-between py-5 bg-white'>
       <div className='flex items-center gap-5'>
-        <NavLink to={`/forms/${id}/edit`}>
+        <NavLink to={arrowLeft}>
             <ArrowLeft />
         </NavLink>
         <p className='text-lg'>Preview Mode</p>

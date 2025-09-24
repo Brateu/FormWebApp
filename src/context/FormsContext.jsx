@@ -1,10 +1,45 @@
-import React, { createContext, useEffect, useState } from 'react'
+import React, { createContext, useEffect, useState, useContext } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import axios from '../context/AxiosInstance';
 import { toast } from 'react-toastify'
 
 export const FormsContext = createContext();
+
+export const ROLE = {
+  OWNER: 'OWNER',
+  EDITOR: 'EDITOR',
+  VIEWER: 'VIEWER',
+  NONE: 'NONE',
+};
+
+const getRoleForForm = (form, collaborators, userId) => {
+  if (!form || !userId) return { role: ROLE.NONE, isOwner: false };
+  const isOwner = Number(form.createdBy) === Number(userId);
+  if (isOwner) return { role: ROLE.OWNER, isOwner: true };
+
+  const c = (collaborators || []).find(x => Number(x.userId) === Number(userId));
+  return { role: c?.role ?? ROLE.NONE, isOwner: false };
+};
+
+const useFormAccess = (formId) => {
+  const { form, collaboratorsByFormId, getUserIdFromToken } = useContext(FormsContext);
+  const userId = getUserIdFromToken();
+  const collaborators = collaboratorsByFormId?.[formId] || [];
+
+  const { role, isOwner } = getRoleForForm(form, collaborators, userId);
+
+  const canEdit = isOwner || role === ROLE.EDITOR;        
+  const canManageCollaborators = isOwner;                 
+  const canPublish = isOwner || role === ROLE.EDITOR;                             
+  const canLock = isOwner || role === ROLE.EDITOR;                                
+  const canDelete = isOwner;
+
+  return { role, isOwner, canEdit, canManageCollaborators, canPublish, canLock, canDelete };
+};
+
+export { useFormAccess };
+
 const FormsContextProvider = (props) => {
 
   const [activeQuestionId, setActiveQuestionId] = useState(null);
@@ -16,6 +51,7 @@ const FormsContextProvider = (props) => {
     auth: false,
     published: false,
     locked: false,
+    createdBy: '',
     questions: [{
       id: uuidv4(),
       text: "Untitled Question",
@@ -73,6 +109,7 @@ const FormsContextProvider = (props) => {
     auth: false,
     published: false,
     locked: false,
+    createdBy: '',
     questions: [{
       id: uuidv4(),
       text: "Demo Question",
@@ -89,6 +126,9 @@ const FormsContextProvider = (props) => {
     setAnswers({});
   };
 
+  const [collaboratorsByFormId, setCollaboratorsByFormId] = useState({});
+  const getCollaborators = (formId) => collaboratorsByFormId[String(formId)] || [];
+
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authReady, setAuthReady] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -97,8 +137,8 @@ const FormsContextProvider = (props) => {
   const QUESTION_TYPE_MAP = {
     shortAnswer: 'SHORT_TEXT',          
     paragraph: 'LONG_TEXT',
-    multipleChoice: 'MULTI_CHOICE',
-    checkboxes: 'SINGLE_CHOICE',
+    multipleChoice: 'SINGLE_CHOICE',
+    checkboxes: 'MULTI_CHOICE',
     date: 'DATE',
     time: 'TIME',
   };
@@ -106,11 +146,11 @@ const FormsContextProvider = (props) => {
   const DTO_TO_UI_TYPE = {
   SHORT_TEXT: 'shortAnswer',
   LONG_TEXT: 'paragraph',
-  MULTI_CHOICE: 'multipleChoice',
-  SINGLE_CHOICE: 'checkboxes',
+  MULTI_CHOICE: 'checkboxes',
+  SINGLE_CHOICE: 'multipleChoice',
   DATE: 'date',
   TIME: 'time',
-};
+  };
 
   const mapFormToDto = (uiForm) => {
     return {
@@ -135,6 +175,30 @@ const FormsContextProvider = (props) => {
     };
   };
 
+  const mapFormToDtoCreation = (uiForm) => {
+    return {
+      name: uiForm.title || 'Untitled Form',
+      description: uiForm.description || '',
+      allowAnonymous: !uiForm.auth,
+      responseLimit: 0,
+      locked: uiForm.locked,
+      createdBy: getUserIdFromToken(),
+      status: uiForm.published === true ? 'ACTIVE' : 'DRAFT',
+      visibility: uiForm.published === true ? 'PUBLIC' : 'PRIVATE',
+      questions: (uiForm.questions || []).map((q, idx) => ({
+        text: q.text || 'Untitled Question',
+        type: QUESTION_TYPE_MAP[q.type] || (q.type ? q.type.toUpperCase() : 'SHORT_TEXT'),
+        required: !!q.required,
+        orderIndex: idx,
+        imageUrl: q.imageUrl || null,
+        options: (q.options || []).map((opt) => ({
+          text: opt.text || '',
+          imageUrl: opt.imageUrl || null,
+        })),
+      })),
+    };
+  };
+
   const mapToUiForm = (beForm) => {
     return {
       title: beForm.name,
@@ -142,6 +206,7 @@ const FormsContextProvider = (props) => {
       auth: !beForm.allowAnonymous,
       published: beForm.visibility === 'PUBLIC' ? true : false,
       locked: beForm.locked,
+      createdBy: beForm.createdBy,
       questions: beForm.questions.slice().sort((a,b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0))
       .map((q) => ({
         id: String(q.id),
@@ -161,7 +226,7 @@ const FormsContextProvider = (props) => {
   const createForm = async () => {
     try {
       setSaving(true);
-      const payload = mapFormToDto(form);
+      const payload = mapFormToDtoCreation(form);
       const userId = getUserIdFromToken();
       if (!userId) return;
       const { data } = await axios.post('/api/forms', payload, { headers: { 'X-User-ID': userId }});
@@ -178,7 +243,9 @@ const FormsContextProvider = (props) => {
   const loadForm = async (id) => {
     const userId = getUserIdFromToken();
     if (!userId) return;
-    const { data } = await axios.get(`/api/forms/${id}`);
+    const { data } = await axios.get(`/api/forms/${id}`, {
+      headers: { 'X-User-ID': userId }
+    });
     setForm(mapToUiForm(data));
   }
 
@@ -202,6 +269,64 @@ const FormsContextProvider = (props) => {
       console.error('Copy to clipboard failed', err);
     }
   }
+
+  const addCollaborator = async (formId, payload) => {
+    const userId = getUserIdFromToken();
+    if (!userId) {
+      toast.error('You must be logged in.');
+      throw new Error('Not authenticated');
+    }
+    if (!formId) {
+      toast.warn('Save the form first before adding collaborators.');
+      throw new Error('Missing formId');
+    }
+
+    try {
+      const { data } = await axios.post(
+        `/api/forms/${formId}/collaborators`,
+        payload,
+        { headers: { 'X-User-ID': userId } }
+      );
+
+      setCollaboratorsByFormId(prev => {
+        const list = prev[formId] || [];
+        return { ...prev, [formId]: [...list, data] };
+      });
+
+      toast.success('Collaborator added');
+      return data;
+    } catch (err) {
+      console.error('Add collaborator failed', err);
+      const msg = err?.response?.data?.message || err?.response?.data?.error || 'Could not add collaborator';
+      toast.error(msg);
+      throw err;
+    }
+  };
+
+  const loadCollaborators = async (formId) => {
+    const userId = getUserIdFromToken();
+    if (!userId) return [];
+    const { data } = await axios.get(`/api/forms/${formId}/collaborators`, {
+      headers: { 'X-User-ID': userId },
+    });
+    setCollaboratorsByFormId(prev => ({ ...prev, [formId]: data || [] }));
+    return data;
+  };
+
+  const removeCollaborator = async (formId, collabId) => {
+    const userId = getUserIdFromToken();
+    if (!userId) return;
+
+    await axios.delete(`/api/forms/${formId}/collaborators/${collabId}`, {
+      headers: { 'X-User-ID': userId },
+    });
+
+    setCollaboratorsByFormId(prev => {
+      const list = prev[formId] || [];
+      return { ...prev, [formId]: list.filter(c => String(c.id) !== String(collabId)) };
+    });
+    toast.success('Collaborator removed');
+  };
 
   const safeDecodeBase64 = (str) => {
         try {
@@ -363,7 +488,8 @@ const FormsContextProvider = (props) => {
     handleAddQuestion, handleDeleteQuestion, handleUpdateQuestion, handleDuplicateQuestion,
     answers, setAnswers,
     fileToDataUrl, createForm, saving, safeDecodeBase64, getUserIdFromToken,
-    loadForm, updateForm, authReady, startNewForm, handleFormShare,
+    loadForm, updateForm, authReady, startNewForm, handleFormShare, 
+    addCollaborator, loadCollaborators, removeCollaborator, collaboratorsByFormId, getCollaborators
   }
   return (
     <FormsContext.Provider value={value}>

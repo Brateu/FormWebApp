@@ -5,7 +5,7 @@ import { FormsContext } from '../context/FormsContext';
 const SingleQFill = ({ question, value, onChange }) => {
 
     const { answers } = useContext(FormsContext);
-    const hasAnyImage = question.options.some((option) => option.image);
+    const hasAnyImage = question.options.some((option) => option.imageUrl);
     const [selectedOption, setSelectedOption] = useState(null);
     const [selectedOptions, setSelectedOptions] = useState([]);
     const [month, setMonth] = useState('');
@@ -150,8 +150,8 @@ const SingleQFill = ({ question, value, onChange }) => {
         }
       </div>
       {
-        question.image ? (
-            <img src={question.image} alt="" className='mb-5 ml-2 max-w-sm rounded shadow' />
+        question.imageUrl ? (
+            <img src={question.imageUrl} alt="" className='mb-5 ml-2 max-w-sm rounded shadow' />
         ): null
       }
       {
@@ -179,7 +179,7 @@ const SingleQFill = ({ question, value, onChange }) => {
                                             }
                                         }} className='flex flex-col items-center cursor-pointer'>
                                             <div className={`py-8 px-3 border rounded shadow ${isSelected ? 'border-[rgb(103,58,183)] border-2' : 'border-gray-300'}`}>
-                                                <img src={option.image} alt="" className='w-[250px] h-[150px] object-cover mb-2' />
+                                                <img src={option.imageUrl} alt="" className='w-[250px] h-[150px] object-cover mb-2' />
                                             </div>
                                             <div className='flex items-center gap-4 my-3'>
                                                 {

@@ -8,6 +8,7 @@ import Fill from './pages/Fill'
 import Login from './pages/Login'
 import ProtectedRoute from './components/ProtectedRoute'
 import { ToastContainer } from 'react-toastify'
+import EditGuard from './components/EditGuard'
 
 const App = () => {
   return (
@@ -25,7 +26,11 @@ const App = () => {
         <Route path='/forms/:id/preview' element={<Preview/>} />
         <Route path='/forms/:id/fill' element={<Fill/>} />
         <Route path='/login' element={<Login/>} />
-        <Route path='/forms/:id/edit' element={<CreateForm />} />
+        <Route path='/forms/:id/edit' element={
+          <EditGuard>
+            <CreateForm />
+          </EditGuard>
+        } />
       </Routes>
     </div>
   )

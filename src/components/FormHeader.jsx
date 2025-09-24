@@ -1,18 +1,40 @@
-import { CircleUser, ClipboardList, EllipsisVertical, Eye, Lock, Share, Trash2, UserPlus } from 'lucide-react'
-import React, { useContext, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
-import { NavLink } from 'react-router-dom'
-import { FormsContext } from '../context/FormsContext'
+import { CircleUser, ClipboardList, EllipsisVertical, Eye, Lock, Share, Trash2, UserPlus } from 'lucide-react';
+import React, { useContext, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import { FormsContext } from '../context/FormsContext';
 import { Button, IconButton } from '@mui/material';
 import axios from '../context/AxiosInstance';
-import { toast } from 'react-toastify'
+import { toast } from 'react-toastify';
+import CollaboratorsModal from './CollaboratorsModal';
+import { useFormAccess } from '../context/FormsContext';
 
 const FormHeader = ({title}) => {
 
     const { form, setForm, navigate, getUserIdFromToken, handleFormShare } = useContext(FormsContext);
+    const [isCollabOpen, setCollabOpen] = useState(false);
     const { id } = useParams();
 
+    const { isOwner, canEdit, canManageCollaborators, canPublish, canLock, canDelete } = useFormAccess(id);
+
+    const questions = canEdit ? `/forms/${id}/edit` : id ? '/' : '/forms/new';
+
+    const goPreview = () => {
+      const targetId = id || form?.id;
+        navigate(`/forms/${targetId}/preview`, { state: { useLocal: true }})
+    }
+
+    const openCollaborators = () => {
+      if (!id) {
+        toast.warn("Save the form first to add collaborators.");
+        return;
+      }
+      if (!canManageCollaborators) return;
+      setCollabOpen(true);
+    };
+
     const handleFormDelete = async () => {
+      if (!canDelete) return;
       const userId = getUserIdFromToken();
       if (!userId || !id) return;
       try {
@@ -24,6 +46,7 @@ const FormHeader = ({title}) => {
     }
 
     const handleTogglePublish = async () => {
+      if (!canPublish) return;
       const userId = getUserIdFromToken();
       if (!userId) return;
 
@@ -52,7 +75,8 @@ const FormHeader = ({title}) => {
     }
 
     const handleFormLock = async () => {
-      const userId = getUserIdFromToken();
+      if (!canLock) return;
+      const userId = getUserIdFromToken();      
       if (!id) return;
 
       const nextLocked = !form.locked;
@@ -86,6 +110,10 @@ const FormHeader = ({title}) => {
       }
     }
 
+    useEffect(() => {
+      setCollabOpen(false);
+    }, [id]);
+
   return (
     <div className='flex items-center justify-between py-5 bg-white'>
       <div className='flex items-end gap-5'>
@@ -96,37 +124,41 @@ const FormHeader = ({title}) => {
       </div>
 
       <ul className='hidden sm:flex gap-5 text-lg '>
-        <NavLink to={`/forms/${id}/edit`} className='flex flex-col items-center gap-1'>
+        <NavLink to={questions} className='flex flex-col items-center gap-1'>
             <p>Questions</p>
             <hr className='w-1/2 border-none h-[1.5px] bg-gray-700 hidden'/>
         </NavLink>
-        <NavLink to={`/forms/${id}/responses`} className='flex flex-col items-center gap-1'>
+        {id && (
+          <NavLink to={`/forms/${id}/responses`} className='flex flex-col items-center gap-1'>
             <p>Responses</p>
             <hr className='w-1/2 border-none h-[1.5px] bg-gray-700 hidden' />
-        </NavLink>
+          </NavLink>
+        )}
       </ul>
 
       <div className='flex items-center gap-3'>
-        <IconButton>
-          <NavLink to={`/forms/${id}/preview`}>
+        <IconButton onClick={() => goPreview()}>
             <Eye size={28} color='black'/>
-          </NavLink>
         </IconButton>
-        <IconButton>
+        {canManageCollaborators && (
+          <IconButton onClick={() => openCollaborators()}>
             <UserPlus size={25} color='black' />
-        </IconButton>
+          </IconButton>
+        )}
         {
-          !form.published ? (
+          canPublish && (
+            !form.published ? (
             <button onClick={() => handleTogglePublish()} className='rounded cursor-pointer hover:bg-[rgb(103,58,200)] bg-[rgb(103,58,183)] text-white px-5 py-1.5'>
               Publish
             </button>
-          ) : (
+            ) : (
             <button onClick={() => handleTogglePublish()} className='border rounded hover:bg-gray-100 cursor-pointer border-[rgb(103,58,183)] text-[rgb(103,58,183)] bg-white px-5 py-1.5'>
               Published
             </button>
+            )
           )
         }
-        {id && (
+        {id && canDelete && (
           <IconButton onClick={() => handleFormDelete()}>
             <Trash2 size={25} color='black' />
           </IconButton>
@@ -136,7 +168,8 @@ const FormHeader = ({title}) => {
             <Share size={25} color='black' />
         </IconButton>
         )}
-        {id && form.locked ? (
+        {id && (
+          form.locked ? (
           <IconButton onClick={() => handleFormLock()} >
             <Lock size={25} color='red' />
           </IconButton>
@@ -144,8 +177,10 @@ const FormHeader = ({title}) => {
           <IconButton onClick={() => handleFormLock()} >
             <Lock size={25} color='black' />
           </IconButton>
+        )
         )}
       </div>
+      <CollaboratorsModal open={isCollabOpen} onClose={() => setCollabOpen(false)} formId={Number(id)} />
     </div>
   )
 }

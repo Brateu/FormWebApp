@@ -54,7 +54,7 @@ const SingleQuestion = ( { question, isActive, onClick} ) => {
       return;
     }
     const dataUrl = await fileToDataUrl(file);
-    handleUpdateQuestion(question.id, {imageUrl: dataUrl});
+    handleUpdateQuestion(question.id, { imageUrl: dataUrl });
     e.target.value = '';
   }
 
