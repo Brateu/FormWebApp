@@ -270,3 +270,334 @@ TestCase - Scenario - Očekivano - Dobijeno - {kod}
 
 **6)** TC06 - Delete Collaborator - 204 - 204 -
 {} 
+
+-------------------------------------------------------------------------------------------------------------------------
+
+TEST_CASES — Response Service
+
+--------------------------------------------------------------------------------------------------------------------------
+Sistem: FormApp (Response-Service @ http://localhost:8060/api/responses/...), 
+--------------------------------------------------------------------------------------------------------------------------
+TestCase - Scenario - Očekivano - Dobijeno - {kod}
+
+**1)** TC01 - Create (SUBMITTED) - 201 - 201 - 
+**{
+  "formId": 4,
+  "answeredQuestions": [
+    { "questionId": "12", "type": "TEXT",   "value": "Pera Perić" },
+    { "questionId": "13", "type": "CHOICE", "value": "8"          },
+    { "questionId": "14", "type": "NUMBER", "value": 5            }
+  ],
+  "questionDefinitions": [
+    {
+      "id": "12",
+      "text": "Vaše puno ime",
+      "type": "TEXT",
+      "required": true,
+      "options": [],
+      "validationRules": {}
+    },
+    {
+      "id": "13",
+      "text": "Koji paket koristite?",
+      "type": "CHOICE",
+      "required": true,
+      "options": [
+        { "id": "8", "text": "Basic" },
+        { "id": "9", "text": "Pro" }
+      ],
+      "validationRules": {}
+    },
+    {
+      "id": "14",
+      "text": "Ocenite uslugu (1–5)",
+      "type": "NUMBER",
+      "required": true,
+      "options": [],
+      "validationRules": {}
+    }
+  ]
+}**
+
+**2)** TC02 - Get by ID - 200 - 200 - http://localhost:8060/api/responses/68d323377c967db7497c4f63
+
+**3)** TC03 - Get List of All Responses - 200 - 200 - http://localhost:8060/api/responses/form/4
+
+**4)** TC04 - Get Response by User ID - 200 - 200 - http://localhost:8060/api/responses/user/23
+
+**5)** TC05 - Create DRAFT - 201 - 201 - 
+**{
+  "formId": 4,
+  "userId": 23,
+  "status": "DRAFT",
+  "answeredQuestions": [
+    { "questionId": "12", "type": "TEXT",   "value": "Neko Ime" },
+    { "questionId": "13", "type": "CHOICE", "value": "9" }
+  ],
+  "questionDefinitions": [
+    {
+      "id": "12",
+      "text": "Vaše puno ime",
+      "type": "TEXT",
+      "required": true,
+      "options": [],
+      "validationRules": {}
+    },
+    {
+      "id": "13",
+      "text": "Koji paket koristite?",
+      "type": "CHOICE",
+      "required": true,
+      "options": [
+        { "id": "8", "text": "Basic" },
+        { "id": "9", "text": "Pro" }
+      ],
+      "validationRules": {}
+    }
+  ]
+}**
+
+**6)** TC06 - Update DRAFT - 200 - 200 - 
+**{
+  "formId": 4,
+  "status": "DRAFT",
+  "answeredQuestions": [
+    { "questionId": "12", "type": "TEXT",   "value": "Petar Petrović" },
+    { "questionId": "13", "type": "CHOICE", "value": "9" },
+    { "questionId": "14", "type": "NUMBER", "value": 4 }
+  ],
+  "questionDefinitions": [
+    {
+      "id": "12",
+      "text": "Vaše puno ime",
+      "type": "TEXT",
+      "required": true,
+      "options": [],
+      "validationRules": {}
+    },
+    {
+      "id": "13",
+      "text": "Koji paket koristite?",
+      "type": "CHOICE",
+      "required": true,
+      "options": [
+        { "id": "8", "text": "Basic" },
+        { "id": "9", "text": "Pro" }
+      ],
+      "validationRules": {}
+    },
+    {
+      "id": "14",
+      "text": "Ocenite uslugu (1–5)",
+      "type": "NUMBER",
+      "required": true,
+      "options": [],
+      "validationRules": {}
+    }
+  ]
+}**
+
+**7)** TC07 - Delete Response - 204 - 204 - http://localhost:8060/api/responses/68d328647c967db7497c4f67
+
+**8)** TC08 - Filtriranje po formi - 200 - 200 - http://localhost:8060/api/responses/form/4?page=0&size=20&sort=submittedAt&direction=DESC
+
+**9)** TC09 - Filtriranje po statusu - 200 - 200 - http://localhost:8060/api/responses/form/4?status=SUBMITTED&page=0&size=10
+
+**10)** TC10 - Filtriranje po datumu- 200 - 200 - http://localhost:8060/api/responses/form/4?startDate=2025-08-01T00:00:00&endDate=2025-09-23T23:59:59
+
+**11)** TC11 - Filtriranje po korisniku - 200 - 200 - http://localhost:8060/api/responses/user/23?page=0&size=20
+
+**12)** TC12 - Filtriranje po odgovoru - 200 - 200 - http://localhost:8060/api/responses/search?formId=4&questionId=12&answer=Pera&page=0&size=20
+
+**13)** TC13 - Load DRAFT - 200 - 200 - http://localhost:8060/api/responses/draft?formId=4&userId=23
+
+**14)** TC14 - Submit DRAFT - 200 - 200 - http://localhost:8060/api/responses/68d327ad7c967db7497c4f66/submit
+
+**15)** TC15 - Export CSV - 200 - 200 - http://localhost:8060/api/responses/export/csv?formId=4
+
+**16)** TC16 - Import CSV - 200 - 200 - http://localhost:8060/api/responses/import/csv?formId=4
+
+**17)** TC17 - Raspodela kroz vreme - 200 - 200 - http://localhost:8060/api/analytics/time-series/4
+
+**18)** TC18 - Statistic of Form - 200 - 200 - http://localhost:8060/api/analytics/statistics/4
+
+**19)** TC19 - Completion rate - 200 - 200 - http://localhost:8060/api/analytics/completion-rate/4
+
+**20)** TC20 - Average Response Time - 200 - 200 - http://localhost:8060/api/analytics/response-time/4
+
+**21)** TC21 - Create SUBMITTED - empty answers - 400 - 400 - http://localhost:8060/api/responses
+
+**22)** TC22 - Offline Validation without Definition - 400 - 400 - http://localhost:8060/api/responses
+
+**23)** TC23 - Create SUBMITTED with Invalid Question ID - 400 - 400 -
+
+**{
+  "formId": 4,
+  "answeredQuestions": [
+    { "questionId": "12", "type": "TEXT",   "value": "Pera Perić" },
+    { "questionId": "13", "type": "CHOICE", "value": "8"          },
+    { "questionId": "14", "type": "NUMBER", "value": 5            }
+  ],
+  "questionDefinitions": [
+    {
+      "id": "999",
+      "text": "Vaše puno ime",
+      "type": "TEXT",
+      "required": true,
+      "options": [],
+      "validationRules": {}
+    },
+    {
+      "id": "13",
+      "text": "Koji paket koristite?",
+      "type": "CHOICE",
+      "required": true,
+      "options": [
+        { "id": "8", "text": "Basic" },
+        { "id": "9", "text": "Pro" }
+      ],
+      "validationRules": {}
+    },
+    {
+      "id": "14",
+      "text": "Ocenite uslugu (1–5)",
+      "type": "NUMBER",
+      "required": true,
+      "options": [],
+      "validationRules": {}
+    }
+  ]
+}**
+
+**24)** TC24 - Create SUBMITTED - Single Choice with More Options - 400 - 400 -
+**{
+  "formId": 4,
+  "status": "SUBMITTED",
+  "answeredQuestions": [
+    { "questionId": "13", "type": "SINGLE_CHOICE", "value": ["8","9"] }
+  ],
+  "questionDefinitions": [
+    { "id": "13", "type": "CHOICE", "required": true,
+      "options": [{ "id":"8" }, { "id":"9" }] }
+  ]
+}**
+
+**25)** TC25 - Create SUBMITTED with Wrong Form ID - 400 - **201** -
+**{
+  "formId": 90,
+  "answeredQuestions": [
+    { "questionId": "12", "type": "TEXT",   "value": "Pera Perić" },
+    { "questionId": "13", "type": "CHOICE", "value": "8"          },
+    { "questionId": "14", "type": "NUMBER", "value": 5            }
+  ],
+  "questionDefinitions": [
+    {
+      "id": "12",
+      "text": "Vaše puno ime",
+      "type": "TEXT",
+      "required": true,
+      "options": [],
+      "validationRules": {}
+    },
+    {
+      "id": "13",
+      "text": "Koji paket koristite?",
+      "type": "CHOICE",
+      "required": true,
+      "options": [
+        { "id": "8", "text": "Basic" },
+        { "id": "9", "text": "Pro" }
+      ],
+      "validationRules": {}
+    },
+    {
+      "id": "14",
+      "text": "Ocenite uslugu (1–5)",
+      "type": "NUMBER",
+      "required": true,
+      "options": [],
+      "validationRules": {}
+    }
+  ]
+}**
+
+
+**26)** TC26 - Multi Choice with Invalid Option - 400 - 400 -
+
+**{
+  "formId": 4,
+  "status": "SUBMITTED",
+  "answeredQuestions": [
+    { "questionId": "15", "type": "MULTI_CHOICE", "value": ["999"] }
+  ],
+  "questionDefinitions": [
+    {
+      "id": "15",
+      "type": "MULTI_CHOICE",
+      "required": true,
+      "options": [
+        { "id": "6", "text": "Brzina" },
+        { "id": "7", "text": "Vektor" }
+      ]
+    }
+  ]
+}**
+
+
+**27)** TC27 - Number with String - 400 - 400 - 
+**{
+  "formId": 4,
+  "status": "SUBMITTED",
+  "answeredQuestions": [
+    { "questionId": "14", "type": "NUMBER", "value": "abc" }
+  ],
+  "questionDefinitions": [
+    { "id": "14", "type": "NUMBER", "required": true }
+  ]
+}**
+
+**28)** TC28 -  Wrong Date Format - 400 - 400 - 
+
+**{
+  "formId": 4,
+  "status": "SUBMITTED",
+  "answeredQuestions": [
+    { "questionId": "16", "type": "DATE", "value": "23-09-2025" },
+    { "questionId": "17", "type": "TIME", "value": "25:99" }
+  ],
+  "questionDefinitions": [
+    { "id": "16", "type": "DATE", "required": false },
+    { "id": "17", "type": "TIME", "required": false }
+  ]
+}**
+
+**29)** TC29 - Draft without Form ID - 400 - **201** - 
+**{
+  "status": "DRAFT",
+  "userId": 23
+}**
+
+
+**30)** TC30 - Update Invalid Response ID - 404 - 404 - 
+
+http://localhost:8060/api/responses/90
+
+**{
+  "formId": 4,
+  "status": "DRAFT"
+}** 
+
+**31)** TC31 - Submit Response with Invalid ID - 404 - 404 - http://localhost:8060/api/responses/17/submit
+
+**32)** TC32 - Delete Invalid Response ID - 404 - **201** - http://localhost:8060/api/responses/28
+
+**33)** TC33 - Invalid Page - 404 - 404 - http://localhost:8060/api/responses/form/4?page=-1&size=0
+
+**34)** TC34 - Invalid Size - 404 - 404 - http://localhost:8060/api/responses/form/4?page=15&size=-1
+
+**35)** TC35 - Invalid Date Range - 400 - 400 - http://localhost:8060/api/responses/form/4?startDate=2025-09-30T00:00:00&endDate=2025-08-01T00:00:00
+
+**36)** TC36 - Search without Answer - 400 - 400 - http://localhost:8060/api/responses/search?formId=4&questionId=12
+
+**37)** TC37 - Time-series without Date - 400 - 400 - http://localhost:8060/api/analytics/time-series/4
+
