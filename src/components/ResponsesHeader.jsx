@@ -8,7 +8,7 @@ import axios from '../context/AxiosInstance';
 import { toast } from 'react-toastify';
 import CollaboratorsModal from './CollaboratorsModal';
 
-const FormHeader = () => {
+const ResponsesHeader = () => {
 
     const { form, setForm, navigate, getUserIdFromToken, handleFormShare, useFormAccess } = useContext(FormsContext);
     const [isCollabOpen, setCollabOpen] = useState(false);
@@ -119,7 +119,7 @@ const FormHeader = () => {
         <NavLink to='/'>
             <ClipboardList size={50} />
         </NavLink>
-        <input onChange={(e) => setForm({...form, title: e.target.value})} type="text" value={form.title} placeholder={`${form.title} || 'Untitled form`} className='outline-none placeholder:text-black placeholder:text-lg border-b-2 border-transparent focus:border-[rgb(103,58,183)] py-2 px-3 w-45'/>
+        <input disabled={true} type="text" placeholder={`${form.title}` || 'Untitled Form'} className='outline-none placeholder:text-black placeholder:text-base border-b-2 border-transparent focus:border-[rgb(103,58,183)] py-2 px-3 w-45'/>
       </div>
 
       <ul className='hidden sm:flex gap-5 text-lg '>
@@ -184,4 +184,4 @@ const FormHeader = () => {
   )
 }
 
-export default FormHeader
+export default ResponsesHeader

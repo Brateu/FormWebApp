@@ -6,40 +6,6 @@ import { toast } from 'react-toastify'
 
 export const FormsContext = createContext();
 
-export const ROLE = {
-  OWNER: 'OWNER',
-  EDITOR: 'EDITOR',
-  VIEWER: 'VIEWER',
-  NONE: 'NONE',
-};
-
-const getRoleForForm = (form, collaborators, userId) => {
-  if (!form || !userId) return { role: ROLE.NONE, isOwner: false };
-  const isOwner = Number(form.createdBy) === Number(userId);
-  if (isOwner) return { role: ROLE.OWNER, isOwner: true };
-
-  const c = (collaborators || []).find(x => Number(x.userId) === Number(userId));
-  return { role: c?.role ?? ROLE.NONE, isOwner: false };
-};
-
-const useFormAccess = (formId) => {
-  const { form, collaboratorsByFormId, getUserIdFromToken } = useContext(FormsContext);
-  const userId = getUserIdFromToken();
-  const collaborators = collaboratorsByFormId?.[formId] || [];
-
-  const { role, isOwner } = getRoleForForm(form, collaborators, userId);
-
-  const canEdit = isOwner || role === ROLE.EDITOR;        
-  const canManageCollaborators = isOwner;                 
-  const canPublish = isOwner || role === ROLE.EDITOR;                             
-  const canLock = isOwner || role === ROLE.EDITOR;                                
-  const canDelete = isOwner;
-
-  return { role, isOwner, canEdit, canManageCollaborators, canPublish, canLock, canDelete };
-};
-
-export { useFormAccess };
-
 const FormsContextProvider = (props) => {
 
   const [activeQuestionId, setActiveQuestionId] = useState(null);
@@ -134,6 +100,15 @@ const FormsContextProvider = (props) => {
   const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
 
+  const RESPONSE_TYPE_MAP = {
+    shortAnswer: 'TEXT',          
+    paragraph: 'LONG_TEXT',
+    multipleChoice: 'CHOICE',
+    checkboxes: 'MULTI_CHOICE',
+    date: 'DATE',
+    time: 'TIME',
+  };
+
   const QUESTION_TYPE_MAP = {
     shortAnswer: 'SHORT_TEXT',          
     paragraph: 'LONG_TEXT',
@@ -201,6 +176,7 @@ const FormsContextProvider = (props) => {
 
   const mapToUiForm = (beForm) => {
     return {
+      id: beForm.id,
       title: beForm.name,
       description: beForm.description,
       auth: !beForm.allowAnonymous,
@@ -215,6 +191,7 @@ const FormsContextProvider = (props) => {
         required: !!q.required,
         imageUrl: q.imageUrl || null,
         options: (q.options || []).map((opt) => ({
+          id: opt.id,
           text: opt.text || '',
           imageUrl: opt.imageUrl || null,
         }))
@@ -222,6 +199,72 @@ const FormsContextProvider = (props) => {
     }
   }
 
+  const toResposePayload = (form, answers) => {
+    const answeredQuestions = form.questions.map((q) => {
+      const raw = answers[q.id];
+
+      let value = null;
+      switch (q.type) {
+        case 'multipleChoice':
+          value = String(raw) ?? null;
+          break;
+        case 'checkboxes':
+          value = Array.isArray(raw) ? raw.map((v) => String(v)) : '';
+          break;
+        case 'shortAnswer':
+        case 'paragraph':
+          value = typeof raw === 'string' ? raw : '';
+          break;
+        case 'date': {
+          if (raw && raw.year && raw.month && raw.day) {
+            const mm = String(raw.month).padStart(2, '0');
+            const dd = String(raw.day).padStart(2, '0');
+            value = `${raw.year}-${mm}-${dd}`;
+          }
+          break;
+        }
+        case 'time': {
+          if (raw && raw.hours && raw.minutes) {
+            const hh = String(raw.hours).padStart(2, '0');
+            const mm = String(raw.minutes).padStart(2, '0');
+            value = `${hh}:${mm}`
+          }
+          break
+        }
+        default:
+          value = raw ?? null;
+          break;
+      }
+
+      return {
+        questionId: String(q.id),
+        type: RESPONSE_TYPE_MAP[q.type] || (q.type ? q.type.toUpperCase() : 'SHORT_TEXT'),
+        value
+      }
+    })
+
+    const questionDefinitions = form.questions.map((q) => ({
+      id: String(q.id),
+      text:q.text,
+      type: RESPONSE_TYPE_MAP[q.type] || (q.type ? q.type.toUpperCase() : 'SHORT_TEXT'),
+      required: !!q.required,
+      options: (q.type === 'multipleChoice' || q.type === 'checkboxes' ? 
+        (q.options || []).map((opt) => ({
+          id: String(opt.id),
+          text: opt.text ?? ''
+        })) : []),
+      validationRules: {}
+    }));
+
+    return {
+      formId: Number(form.id),
+      answeredQuestions,
+      questionDefinitions,
+      status: 'SUBMITTED',
+      userAgent: navigator.userAgent,
+      metadata: { fromUI: true }
+    }
+  }
 
   const createForm = async () => {
     try {
@@ -471,6 +514,38 @@ const FormsContextProvider = (props) => {
     setActiveQuestionId((prevActive) => (prevActive === id ? null : prevActive));
   }
 
+  const ROLE = {
+    OWNER: 'OWNER',
+    EDITOR: 'EDITOR',
+    VIEWER: 'VIEWER',
+    NONE: 'NONE',
+  };
+
+  const getRoleForForm = (form, collaborators, userId) => {
+    if (!form || !userId) return { role: ROLE.NONE, isOwner: false };
+    const isOwner = Number(form.createdBy) === Number(userId);
+    if (isOwner) return { role: ROLE.OWNER, isOwner: true };
+
+    const c = (collaborators || []).find(x => Number(x.userId) === Number(userId));
+    return { role: c?.role ?? ROLE.NONE, isOwner: false };
+  };
+
+  const useFormAccess = (formId) => {
+    const { form, collaboratorsByFormId, getUserIdFromToken } = useContext(FormsContext);
+    const userId = getUserIdFromToken();
+    const collaborators = collaboratorsByFormId?.[formId] || [];
+
+    const { role, isOwner } = getRoleForForm(form, collaborators, userId);
+
+    const canEdit = isOwner || role === ROLE.EDITOR;        
+    const canManageCollaborators = isOwner;                 
+    const canPublish = isOwner || role === ROLE.EDITOR;                             
+    const canLock = isOwner || role === ROLE.EDITOR;                                
+    const canDelete = isOwner;
+
+    return { role, isOwner, canEdit, canManageCollaborators, canPublish, canLock, canDelete };
+  };
+
   useEffect(() => {
     const token = localStorage.getItem("jwtToken");
     if (token) {
@@ -489,7 +564,8 @@ const FormsContextProvider = (props) => {
     answers, setAnswers,
     fileToDataUrl, createForm, saving, safeDecodeBase64, getUserIdFromToken,
     loadForm, updateForm, authReady, startNewForm, handleFormShare, 
-    addCollaborator, loadCollaborators, removeCollaborator, collaboratorsByFormId, getCollaborators
+    addCollaborator, loadCollaborators, removeCollaborator, collaboratorsByFormId, getCollaborators,
+    toResposePayload, useFormAccess, ROLE
   }
   return (
     <FormsContext.Provider value={value}>

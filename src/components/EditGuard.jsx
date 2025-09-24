@@ -1,13 +1,12 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { FormsContext } from '../context/FormsContext';
-import { useFormAccess, ROLE } from '../context/FormsContext';
 import { toast } from 'react-toastify';
 
 const EditGuard = ({ children }) => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { loadForm, loadCollaborators } = useContext(FormsContext);
+  const { loadForm, loadCollaborators, useFormAccess, ROLE } = useContext(FormsContext);
   const [loading, setLoading] = useState(true);
   const { role, isOwner, canEdit } = useFormAccess(Number(id));
 

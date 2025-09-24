@@ -17,24 +17,24 @@ const SingleQFill = ({ question, value, onChange }) => {
     const [timeError, setTimeError] = useState('');
 
     const handleMultipleChoice = (option) => {
-        if (selectedOption === option) {
-            setSelectedOption((prev) => {
+        if (selectedOption === option.id) {
+            setSelectedOption(() => {
                 onChange(null);
                 return null;
             });
         } else {
-            setSelectedOption((prev) => {
-                onChange(option.text);
-                return option
+            setSelectedOption(() => {
+                onChange(option.id);
+                return option.id
             });
         }   
     }
 
-    const handleCheckboxes = (option) => {
+    const handleCheckboxes = (optionId) => {
         setSelectedOptions((prevOptions) => {
-            const newVal = prevOptions.includes(option)
-                ? prevOptions.filter((opt) => opt !== option)
-                : [...prevOptions, option];
+            const newVal = prevOptions.includes(optionId)
+                ? prevOptions.filter((opt) => opt !== optionId)
+                : [...prevOptions, optionId];
             onChange(newVal);
             return newVal;
         })
@@ -164,10 +164,10 @@ const SingleQFill = ({ question, value, onChange }) => {
                                 question.options.map((option, index) => {
                                     let isSelected = false;
                                     if (question.type === 'multipleChoice') {
-                                        isSelected = (option === selectedOption);
+                                        isSelected = (option.id === selectedOption);
                                     }
                                     else {
-                                        isSelected = selectedOptions.includes(option.text)
+                                        isSelected = selectedOptions.includes(option.id)
                                     }
 
                                     return (
@@ -175,7 +175,7 @@ const SingleQFill = ({ question, value, onChange }) => {
                                             if (question.type === 'multipleChoice') {
                                                 handleMultipleChoice(option);
                                             } else {
-                                                handleCheckboxes(option.text);
+                                                handleCheckboxes(option.id);
                                             }
                                         }} className='flex flex-col items-center cursor-pointer'>
                                             <div className={`py-8 px-3 border rounded shadow ${isSelected ? 'border-[rgb(103,58,183)] border-2' : 'border-gray-300'}`}>
@@ -210,9 +210,9 @@ const SingleQFill = ({ question, value, onChange }) => {
                                 question.options.map((option, index) => {
                                     let isSelected = false;
                                     if (question.type === 'multipleChoice') {
-                                        isSelected = (option === selectedOption);
+                                        isSelected = (option.id === selectedOption);
                                     } else {
-                                        isSelected = selectedOptions.includes(option.text);
+                                        isSelected = selectedOptions.includes(option.id);
                                     }
 
                                     return (
@@ -220,7 +220,7 @@ const SingleQFill = ({ question, value, onChange }) => {
                                             if (question.type === 'multipleChoice') {
                                                 handleMultipleChoice(option);
                                             } else {
-                                                handleCheckboxes(option.text);
+                                                handleCheckboxes(option.id);
                                             }
                                         }} className='flex items-center gap-5'>
                                             {

@@ -1,12 +1,14 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { FormsContext } from '../context/FormsContext'
-import FillList from '../components/FillList'
-import { useParams } from 'react-router-dom'
+import axios from '../context/AxiosInstance';
+import { FormsContext } from '../context/FormsContext';
+import FillList from '../components/FillList';
+import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 
 const Fill = () => {
 
-    const { form, answers, loadForm } = useContext(FormsContext);
+    const { form, answers, loadForm, getUserIdFromToken, toResposePayload } = useContext(FormsContext);
     const [errorMessage, setErrorMessage] = useState('');
     const { id } = useParams();
 
@@ -38,7 +40,8 @@ const Fill = () => {
       return true;
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
+      const userId = getUserIdFromToken();
       for (const q of form.questions) {
         if (q.required) {
           const val = answers[q.id];
@@ -50,9 +53,17 @@ const Fill = () => {
         }
       }
 
-      console.log("Your answers: ", answers);
-      localStorage.setItem("userAnswers", JSON.stringify(answers));
-      alert("Thank you! Your answers have been saved locally! ");
+      try {
+        const payload = toResposePayload(form, answers);
+        await axios.post('/api/responses', payload, {
+          headers: { 'X-User-ID': userId }
+        })
+        
+        toast.success("Answers are saved!")
+      } catch (err) {
+        console.error(err);
+        toast.error("Answers aren't saved, please try again.")
+      }    
     }
 
     useEffect(() => {
