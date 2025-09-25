@@ -18,6 +18,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4  
 
+      - name: Detect changed services
+        id: changed-services
+        uses: tj-actions/changed-files@v44
+        with:
+          separator: ","
+          files: |
+            User-Service/**
+            Form-Service/**
+            API-Gateway/**
+            Response-Service/**
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
