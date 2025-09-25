@@ -83,7 +83,7 @@ jobs:
           push: true
           tags: ${{ env.DOCKER_USERNAME }}/form-service:latest
           
-      - name: Build and push Form-Service
+      - name: Build and push Response-Service
         if: contains(steps.changed-services.outputs.all_changed_files, 'Response-Service/')
         uses: docker/build-push-action@v5
         with:
