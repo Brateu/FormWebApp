@@ -37,3 +37,54 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Setup From-Service .env
+        if: contains(steps.changed-services.outputs.all_changed_files, 'Form-Service/')
+        run: |
+          cd Form-Service
+          echo "SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }}" > .env
+          echo "SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}" >> .env
+          echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}" >> .env
+
+      - name: Setup User-Service .env
+        if: contains(steps.changed-services.outputs.all_changed_files, 'User-Service/')
+        run: |
+          cd User-Service
+          echo "SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL2 }}" > .env
+          echo "SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}" >> .env
+          echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}" >> .env
+          echo "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID=${{ secrets.SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_ID }}" >> .env
+          echo "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET=${{ secrets.SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT_SECRET }}" >> .env
+          echo "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENT_ID=${{ secrets.SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENT_SECRET }}" >> .env
+          echo "SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENT_SECRET=${{ secrets.SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GITHUB_CLIENT_SECRET }}" >> .env
+          echo "SECURITY_JWT_SECRET=${{ secrets.SECURITY_JWT_SECRET }}" >> .env
+          echo "SECURITY_JWT_TOKEN_EXPIRATION=${{ secrets.SECURITY_JWT_TOKEN_EXPIRATION }}" >> .env
+
+      - name: Setup API-Gateway .env
+        if: contains(steps.changed-services.outputs.all_changed_files, 'API-Gateway/')
+        run: |
+          cd API-Gateway
+          echo "SECURITY_JWT_SECRET=${{ secrets.SECURITY_JWT_SECRET }}" >> .env
+          echo "SECURITY_JWT_TOKEN_EXPIRATION=${{ secrets.SECURITY_JWT_TOKEN_EXPIRATION }}" >> .env
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
