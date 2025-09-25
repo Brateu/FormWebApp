@@ -1,0 +1,19 @@
+name: Docker Build (mp-backend only)
+
+on:
+  push:
+    branches:
+      - backend  
+    paths:
+      - 'User-Service/**'
+      - 'Form-Service/**'
+      - 'API-Gateway/**'
+      - 'Response-Service/**'
+env:
+  DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4  
