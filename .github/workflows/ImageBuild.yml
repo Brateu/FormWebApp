@@ -67,8 +67,37 @@ jobs:
           echo "SECURITY_JWT_SECRET=${{ secrets.SECURITY_JWT_SECRET }}" >> .env
           echo "SECURITY_JWT_TOKEN_EXPIRATION=${{ secrets.SECURITY_JWT_TOKEN_EXPIRATION }}" >> .env
 
+      - name: Build and push User-Service
+        if: contains(steps.changed-services.outputs.all_changed_files, 'User-Service/')
+        uses: docker/build-push-action@v5
+        with:
+          context: User-Service
+          push: true
+          tags: ${{ env.DOCKER_USERNAME }}/user-service:latest
 
+      - name: Build and push Form-Service
+        if: contains(steps.changed-services.outputs.all_changed_files, 'Form-Service/')
+        uses: docker/build-push-action@v5
+        with:
+          context: Form-Service
+          push: true
+          tags: ${{ env.DOCKER_USERNAME }}/form-service:latest
+          
+      - name: Build and push Form-Service
+        if: contains(steps.changed-services.outputs.all_changed_files, 'Response-Service/')
+        uses: docker/build-push-action@v5
+        with:
+          context: Response-Service
+          push: true
+          tags: ${{ env.DOCKER_USERNAME }}/response-service:latest
 
+      - name: Build and push API-Gateway
+        if: contains(steps.changed-services.outputs.all_changed_files, 'API-Gateway/')
+        uses: docker/build-push-action@v5
+        with:
+          context: API-Gateway
+          push: true
+          tags: ${{ env.DOCKER_USERNAME }}/api-gateway:latest
 
 
 
