@@ -1,4 +1,4 @@
-name: Docker Build (mp-backend only)
+name: Docker Build Images
 
 on:
   push:
