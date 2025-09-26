@@ -47,9 +47,9 @@ const Fill = () => {
           const val = answers[q.id];
 
           if (!isAnswered(val, q.type)) {
-            setErrorMessage("Please answer all required questions!");
+            toast.warn("Please answer all required questions!")
             return
-          }
+          } 
         }
       }
 

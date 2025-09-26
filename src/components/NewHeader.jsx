@@ -17,7 +17,7 @@ const NewHeader = () => {
 
     const goPreview = () => {
       const targetId = id || form?.id;
-        navigate(`/forms/${targetId}/preview`, { state: { useLocal: true }})
+        navigate(`/forms/new/preview`, { state: { useLocal: true }})
     }
 
   return (

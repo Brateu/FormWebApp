@@ -361,7 +361,7 @@ const FormsContextProvider = (props) => {
 
   const loadCollaborators = async (formId) => {
     const userId = getUserIdFromToken();
-    if (!userId) return [];
+    if (!userId || !formId) return [];
     const { data } = await axios.get(`/api/forms/${formId}/collaborators`, {
       headers: { 'X-User-ID': userId },
     });

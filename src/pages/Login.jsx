@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react'
 import axios from '../context/AxiosInstance'
 import { FormsContext } from '../context/FormsContext';
+import { toast } from 'react-toastify';
 
 const Login = () => {
 
@@ -42,6 +43,7 @@ const Login = () => {
   
       } catch (error) {
         console.error("Login failed: ", error.response?.data || error.message);
+        toast.error(error.response.data.message);
       }
     }
     else{

@@ -10,6 +10,7 @@ import { ToastContainer } from 'react-toastify'
 import CreateNew from './pages/CreateNew'
 import EditRouteGuard from './components/EditRouteGuard'
 import ProtectedRoute from './components/ProtectedRoute';
+import PreviewNew from './pages/PreviewNew'
 
 const App = () => {
   return (
@@ -23,9 +24,15 @@ const App = () => {
           </ProtectedRoute>
         }/>
         <Route path='/forms/new' element={
-          <EditRouteGuard>
+          <ProtectedRoute >
             <CreateNew/>
-          </EditRouteGuard>} />
+          </ProtectedRoute> 
+        }/>
+        <Route path='/forms/new/preview' element={
+          <ProtectedRoute>
+            <PreviewNew />
+          </ProtectedRoute>
+        } />
         <Route path='/forms/:id/responses' element={
           <EditRouteGuard>
             <Responses />

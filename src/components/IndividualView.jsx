@@ -23,7 +23,7 @@ const IndividualView = ({
 
   // Helper za render odgovora po tipu
   const renderValue = (q, ansMap) => {
-    const question = current.questionDefinitions === null ? q : current.questionDefinitions.find(quest => quest.id === q.id);
+    const question = (current.questionDefinitions === null || current.questionDefinitions === undefined) ? q : current.questionDefinitions.find(quest => quest.id === q.id);
   
     const v = ansMap[q.id];
     if (v === null || v === '') return <span className="text-gray-400">—</span>;
