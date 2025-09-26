@@ -39,6 +39,6 @@ public class Option {
     /**
      * URL to an image associated with the option, if any.
      */
-    @Column(name = "image_url")
+    @Column(name = "image_url", columnDefinition = "TEXT")
     private String imageUrl;
 }

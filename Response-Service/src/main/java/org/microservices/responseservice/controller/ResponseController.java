@@ -36,7 +36,7 @@ public class ResponseController {
      * @return The created response
      */
     @PostMapping
-    public ResponseEntity<ResponseDto> createResponse(@RequestHeader("X-User-ID") Long userId,
+    public ResponseEntity<ResponseDto> createResponse(@RequestHeader(value = "X-User-ID", required = false) Long userId,
             @RequestBody ResponseDto responseDto) {
         log.info("REST request to create response for form ID: {}", responseDto.getFormId());
         responseDto.setUserId(userId);

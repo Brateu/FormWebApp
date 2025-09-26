@@ -44,7 +44,7 @@ public class FormController {
      * @return The form DTO if found
      */
     @GetMapping("/{id}")
-    public ResponseEntity<FormDto> getFormById(@PathVariable Long id, @RequestHeader("X-User-ID") Long userId) {
+    public ResponseEntity<FormDto> getFormById(@PathVariable Long id, @RequestHeader(value = "X-User-ID", required = false) Long userId) {
         return ResponseEntity.ok(formService.getFormById(id, userId));
     }
 

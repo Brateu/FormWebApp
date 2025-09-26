@@ -2,6 +2,7 @@ package org.microservices.formservice.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.microservices.formservice.DTO.FormDto;
+import org.microservices.formservice.DTO.OptionDto;
 import org.microservices.formservice.DTO.QuestionDto;
 import org.microservices.formservice.entity.Form;
 import org.microservices.formservice.entity.Option;
@@ -11,6 +12,7 @@ import org.microservices.formservice.enums.Visibility;
 import org.microservices.formservice.exception.ResourceNotFoundException;
 import org.microservices.formservice.exception.UnauthorizedException;
 import org.microservices.formservice.mappers.FormMapper;
+import org.microservices.formservice.mappers.FormToDto;
 import org.microservices.formservice.repository.CollaboratorRepository;
 import org.microservices.formservice.repository.FormRepository;
 import org.microservices.formservice.repository.QuestionRepository;
@@ -42,6 +44,7 @@ public class FormServiceImpl implements FormService {
     private final FormMapper formMapper;
     private final ValidationService validationService;
     private final QuestionService questionService;
+    private final FormToDto formToDto;
 
     /**
      * Retrieves a list of all forms and maps them to DTO objects.
@@ -68,12 +71,12 @@ public class FormServiceImpl implements FormService {
     @Override
     @Transactional(readOnly = true)
     public FormDto getFormById(Long id, Long userId) {
-        if (!validationService.isUserAuthorized(id, userId)) {
+        if (!validationService.isUserAuthorized(id, userId) && userId != null) {
             throw new UnauthorizedException("You don't have permission to access this form");
         }
 
         Form form = formRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Form not found with ID: " + id));
-        return formMapper.toDto(form);
+        return formToDto.formDto(form);
     }
 
     /**
@@ -179,8 +182,8 @@ public class FormServiceImpl implements FormService {
      */
     @Override
     public FormDto updateFormVisibility(Long id, Visibility visibility, Long userId) {
-        if (!validationService.isFormOwner(id, userId)) {
-            throw new UnauthorizedException("Only the form owner can change visibility settings");
+        if (!validationService.isFormOwner(id, userId) && !validationService.isCollaboratorEditor(id, userId)) {
+            throw new UnauthorizedException("Only the form owner or editor can change visibility settings");
         }
 
         Form form = formRepo.findById(id)
@@ -305,29 +308,52 @@ public class FormServiceImpl implements FormService {
             throw new UnauthorizedException("You don't have permission to update this form");
         }
 
-        // Check if visibility is being updated and if user is the owner
-        if (formDto.getVisibility() != null && !validationService.isFormOwner(id, userId)) {
-            throw new UnauthorizedException("Only the form owner can change visibility settings");
-        }
-
         Form form = formRepo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Form not found with ID: " + id));
 
         form.setName(formDto.getName());
         form.setDescription(formDto.getDescription());
         form.setAllowAnonymous(formDto.isAllowAnonymous());
-
+        form.setLocked(formDto.isLocked());
         if (formDto.getStatus() != null) {
             form.setStatus(formDto.getStatus());
         }
-
         if (formDto.getVisibility() != null) {
             form.setVisibility(formDto.getVisibility());
         }
-
         form.setUpdatedAt(LocalDateTime.now());
 
-        return formMapper.toDto(formRepo.save(form));
+        form.getQuestions().clear();
+
+
+        if (formDto.getQuestions() != null) {
+            int idx = 0;
+            for (QuestionDto qd : formDto.getQuestions()) {
+                Question q = new Question();
+                q.setText(qd.getText());
+                q.setType(qd.getType());
+                q.setRequired(qd.isRequired());
+                q.setOrderIndex(qd.getOrderIndex() != null ? qd.getOrderIndex() : idx++);
+                q.setImageUrl(qd.getImageUrl());
+                q.setUserId(userId);
+                q.setForm(form);
+
+                if (qd.getOptions() != null) {
+                    for (OptionDto od : qd.getOptions()) {
+                        Option o = new Option();
+                        o.setText(od.getText());
+                        o.setImageUrl(od.getImageUrl());
+                        o.setQuestion(q);
+                        q.getOptions().add(o);
+                    }
+                }
+
+                form.getQuestions().add(q);
+            }
+        }
+        System.out.println(form.getQuestions().getFirst().getImageUrl());
+        Form saved = formRepo.save(form);
+        return formMapper.toDto(saved);
     }
 
     /**
@@ -342,17 +368,14 @@ public class FormServiceImpl implements FormService {
      * @throws UnauthorizedException if the user is not authorized to delete the form
      */
     @Override
+    @Transactional
     public void deleteForm(Long id, Long userId) {
         if (!validationService.isFormOwner(id, userId)) {
             throw new UnauthorizedException("Only the form owner can delete this form");
         }
 
-        // Check if form exists
-        if (!formRepo.existsById(id)) {
-            throw new ResourceNotFoundException("Form not found with ID: " + id);
-        }
+        Form form = formRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("Form not found with ID: " + id));
 
-        collabRepo.deleteByFormId(id);
         formRepo.deleteById(id);
     }
 

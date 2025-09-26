@@ -2,6 +2,7 @@ package org.microservices.responseservice.service.impl;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.microservices.responseservice.mappers.Mapper;
 import org.mockito.ArgumentCaptor;
 import org.microservices.responseservice.dto.AnsweredQuestionDto;
 import org.microservices.responseservice.dto.ResponseDto;
@@ -27,6 +28,7 @@ public class ResponseServiceImplTest {
     private ValidationService validationService;
     private ResponseServiceImpl service;
     private ResponseMapper responseMapper;
+    private Mapper mapper;
 
     @BeforeEach
     void setUp() {
@@ -34,7 +36,7 @@ public class ResponseServiceImplTest {
         mongoTemplate = mock(MongoTemplate.class);
         validationService = mock(ValidationService.class);
         responseMapper = new ResponseMapperTestImpl();
-        service = new ResponseServiceImpl(responseRepository, mongoTemplate, validationService, responseMapper);
+        service = new ResponseServiceImpl(responseRepository, mongoTemplate, validationService, responseMapper,mapper);
     }
 
     private ResponseDto sampleDto() {

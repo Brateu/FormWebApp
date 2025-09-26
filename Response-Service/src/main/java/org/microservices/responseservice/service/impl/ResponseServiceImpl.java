@@ -3,6 +3,7 @@ package org.microservices.responseservice.service.impl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.microservices.responseservice.dto.ResponseDto;
+import org.microservices.responseservice.mappers.Mapper;
 import org.microservices.responseservice.model.Response;
 import org.microservices.responseservice.repository.ResponseRepository;
 import org.microservices.responseservice.service.ResponseService;
@@ -32,6 +33,7 @@ public class ResponseServiceImpl implements ResponseService {
     private final MongoTemplate mongoTemplate;
     private final ValidationService validationService;
     private final ResponseMapper responseMapper;
+    private final Mapper mapper;
 
     /**
      * Create and persist a new response after validating its contents.
@@ -43,11 +45,11 @@ public class ResponseServiceImpl implements ResponseService {
         log.info("Creating response for form ID: {}", responseDto.getFormId());
         validationService.validateResponse(responseDto);
 
-        Response response = responseMapper.toEntity(responseDto);
+        Response response = mapper.toEntity(responseDto);
         response.prePersist();
         Response savedResponse = responseRepository.save(response);
 
-        return responseMapper.toDto(savedResponse);
+        return mapper.toDto(savedResponse);
     }
 
     /**
@@ -102,7 +104,7 @@ public class ResponseServiceImpl implements ResponseService {
     @Override
     public Page<ResponseDto> getResponsesByFormId(Long formId, Pageable pageable) {
         log.info("Getting responses for form ID: {}", formId);
-        return responseRepository.findByFormId(formId, pageable).map(responseMapper::toDto);
+        return responseRepository.findByFormId(formId, pageable).map(mapper::toDto);
     }
 
     /**

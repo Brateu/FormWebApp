@@ -57,6 +57,8 @@ public class Question {
     @Column(nullable = false)
     private Integer orderIndex = 0;
 
+    @Column(name = "image_url", columnDefinition = "TEXT")
+    private String imageUrl;
     /**
      * ID of the user who created or last modified the question.
      */
