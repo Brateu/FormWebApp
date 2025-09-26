@@ -14,30 +14,32 @@ const IndividualView = ({
   const goPrev = () => setIndex((i) => Math.max(0, i - 1));
   const goNext = () => setIndex((i) => Math.min(total - 1, i + 1));
 
-  const getOptionId = (o) => (o?.id ?? o?.optionId ?? o?.value);
   const getOptionText = (o) => (o?.text);
 
   const findOptionById = (q, id) => {
     const opts = q?.options || [];
-    return opts.find(o => String(getOptionId(o)) === String(id));
+    return opts.find(o => String(o.id) === String(id));
   };
 
   // Helper za render odgovora po tipu
   const renderValue = (q, ansMap) => {
+    const question = current.questionDefinitions === null ? q : current.questionDefinitions.find(quest => quest.id === q.id);
+  
     const v = ansMap[q.id];
-    if (v == null) return <span className="text-gray-400">—</span>;
+    if (v === null || v === '') return <span className="text-gray-400">—</span>;
 
-    if (q.type === 'SHORT_TEXT' || q.type === 'LONG_TEXT') {
+    if (question.type === 'TEXT' || question.type === 'LONG_TEXT') {
       return <span>{String(v)}</span>;
     }
 
-    if (q.type === 'CHOICE' || q.type === "SINGLE_CHOICE") {
+    if (question.type === 'CHOICE') {
       // v je optionId
-      const opt = findOptionById(q,v);
-      return <span>{opt ? getOptionText(opt) : String(v)}</span>;
+      
+      const opt = findOptionById(question,v);
+      return <span>{opt ? opt.text : 'kamen'}</span>;
     }
 
-    if (q.type === 'MULTI_CHOICE' || q.type === 'CHECKBOX') {
+    if (question.type === 'MULTI_CHOICE') {
       // v je niz optionId-ova
       const ids = Array.isArray(v) ? v : [];
       if (!ids.length) return <span className="text-gray-400">—</span>;
@@ -49,7 +51,7 @@ const IndividualView = ({
       return <span>{labels.join(', ') || '—'}</span>;
     }
 
-    if (q.type === 'DATE' || q.type === 'TIME') {
+    if (question.type === 'DATE' || q.type === 'TIME') {
       return <span>{typeof v === 'string' ? v : JSON.stringify(v)}</span>;
     }
 

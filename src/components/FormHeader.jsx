@@ -16,7 +16,7 @@ const FormHeader = () => {
 
     const { isOwner, canEdit, canManageCollaborators, canPublish, canLock, canDelete } = useFormAccess(id);
 
-    const questions = canEdit ? `/forms/${id}/edit` : id ? '/' : '/forms/new';
+    const questions = canEdit ? `/forms/${id}/edit` : id ? `/forms/${id}/edit` : '/forms/new';
 
     const goPreview = () => {
       const targetId = id || form?.id;
@@ -119,7 +119,7 @@ const FormHeader = () => {
         <NavLink to='/'>
             <ClipboardList size={50} />
         </NavLink>
-        <input onChange={(e) => setForm({...form, title: e.target.value})} type="text" value={form.title} placeholder={`${form.title} || 'Untitled form`} className='outline-none placeholder:text-black placeholder:text-lg border-b-2 border-transparent focus:border-[rgb(103,58,183)] py-2 px-3 w-45'/>
+        <input disabled={!canEdit} onChange={(e) => setForm({...form, title: e.target.value})} type="text" value={form.title} placeholder={`${form.title} || 'Untitled form`} className='outline-none placeholder:text-black placeholder:text-lg border-b-2 border-transparent focus:border-[rgb(103,58,183)] py-2 px-3 w-45'/>
       </div>
 
       <ul className='hidden sm:flex gap-5 text-lg '>
@@ -167,7 +167,7 @@ const FormHeader = () => {
             <Share size={25} color='black' />
         </IconButton>
         )}
-        {id && (
+        {id && canEdit &&(
           form.locked ? (
           <IconButton onClick={() => handleFormLock()} >
             <Lock size={25} color='red' />

@@ -8,6 +8,7 @@ const Home = () => {
     const { search, setSearch, setIsAuthenticated, navigate, getUserIdFromToken, startNewForm } = useContext(FormsContext);
 
     const [forms, setForms] = useState([]);
+    const [filteredForms, setFilteredForms] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
@@ -43,10 +44,18 @@ const Home = () => {
             navigate('/login');
         }
     }
-
+    
     useEffect(() => {
         fetchForms();
     }, []);
+
+    useEffect(() => {
+        let ff = forms.slice();
+        if (search) {
+            ff = ff.filter(f => f.name.toLowerCase().includes(search.toLowerCase()));
+        }
+        setFilteredForms(ff);
+    }, [forms, search])
     
   return (
     <div>
@@ -87,7 +96,7 @@ const Home = () => {
                 <p className='px-1 text-gray-500'>No forms yet.</p>
             ) : (
                 <ul className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
-                    {forms.map((f) => (
+                    {filteredForms.map((f) => (
                         <li key={f.id} onClick={() => navigate(`/forms/${f.id}/edit`)} className='border rounded-lg p-4 bg-white hover:shadow cursor-pointer'>
                             <p className='font-medium truncate'>{f.name || 'Untitled Form'}</p>
                             <p className='text-sm text-gray-500 mt-1'>

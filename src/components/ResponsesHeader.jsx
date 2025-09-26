@@ -16,7 +16,7 @@ const ResponsesHeader = () => {
 
     const { isOwner, canEdit, canManageCollaborators, canPublish, canLock, canDelete } = useFormAccess(id);
 
-    const questions = canEdit ? `/forms/${id}/edit` : id ? '/' : '/forms/new';
+    const questions = canEdit ? `/forms/${id}/edit` : id ? `/forms/${id}/edit` : '/forms/new';
 
     const goPreview = () => {
       const targetId = id || form?.id;
@@ -167,7 +167,7 @@ const ResponsesHeader = () => {
             <Share size={25} color='black' />
         </IconButton>
         )}
-        {id && (
+        {id && canEdit && (
           form.locked ? (
           <IconButton onClick={() => handleFormLock()} >
             <Lock size={25} color='red' />

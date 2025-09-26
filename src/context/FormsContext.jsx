@@ -206,10 +206,10 @@ const FormsContextProvider = (props) => {
       let value = null;
       switch (q.type) {
         case 'multipleChoice':
-          value = String(raw) ?? null;
+          value = raw === undefined ? null : String(raw);
           break;
         case 'checkboxes':
-          value = Array.isArray(raw) ? raw.map((v) => String(v)) : '';
+          value = Array.isArray(raw) ? raw.map((v) => String(v)) : [];
           break;
         case 'shortAnswer':
         case 'paragraph':
@@ -238,7 +238,7 @@ const FormsContextProvider = (props) => {
 
       return {
         questionId: String(q.id),
-        type: RESPONSE_TYPE_MAP[q.type] || (q.type ? q.type.toUpperCase() : 'SHORT_TEXT'),
+        type: q.type === 'time' ? 'TEXT' : RESPONSE_TYPE_MAP[q.type] || (q.type ? q.type.toUpperCase() : 'LONG_TEXT'),
         value
       }
     })
@@ -246,7 +246,7 @@ const FormsContextProvider = (props) => {
     const questionDefinitions = form.questions.map((q) => ({
       id: String(q.id),
       text:q.text,
-      type: RESPONSE_TYPE_MAP[q.type] || (q.type ? q.type.toUpperCase() : 'SHORT_TEXT'),
+      type: q.type === 'time' ? 'TEXT' : RESPONSE_TYPE_MAP[q.type] || (q.type ? q.type.toUpperCase() : 'SHORT_TEXT'),
       required: !!q.required,
       options: (q.type === 'multipleChoice' || q.type === 'checkboxes' ? 
         (q.options || []).map((opt) => ({
@@ -285,11 +285,24 @@ const FormsContextProvider = (props) => {
 
   const loadForm = async (id) => {
     const userId = getUserIdFromToken();
-    if (!userId) return;
-    const { data } = await axios.get(`/api/forms/${id}`, {
-      headers: { 'X-User-ID': userId }
-    });
-    setForm(mapToUiForm(data));
+    if (!userId) {
+      try {
+        const { data } = await axios.get(`/api/forms/${id}`);
+        setForm(mapToUiForm(data));
+      } catch (err) {
+        console.error('Error without user', err);
+      }
+    } else {
+      try {
+        const { data } = await axios.get(`/api/forms/${id}`, {
+          headers: {'X-User-ID': userId }
+        });
+        setForm(mapToUiForm(data));
+      } catch (err) {
+        console.error("Form loading failed!");
+        navigate('/');
+      }
+    }
   }
 
   const updateForm = async (id) => {
@@ -537,13 +550,14 @@ const FormsContextProvider = (props) => {
 
     const { role, isOwner } = getRoleForForm(form, collaborators, userId);
 
+    const canAccess = Boolean(userId) && (isOwner || role === ROLE.EDITOR || ROLE.VIEWER);
     const canEdit = isOwner || role === ROLE.EDITOR;        
     const canManageCollaborators = isOwner;                 
     const canPublish = isOwner || role === ROLE.EDITOR;                             
     const canLock = isOwner || role === ROLE.EDITOR;                                
     const canDelete = isOwner;
 
-    return { role, isOwner, canEdit, canManageCollaborators, canPublish, canLock, canDelete };
+    return { canAccess, role, isOwner, canEdit, canManageCollaborators, canPublish, canLock, canDelete };
   };
 
   useEffect(() => {

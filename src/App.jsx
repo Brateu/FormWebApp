@@ -6,9 +6,10 @@ import Responses from './pages/Responses'
 import Preview from './pages/Preview'
 import Fill from './pages/Fill'
 import Login from './pages/Login'
-import ProtectedRoute from './components/ProtectedRoute'
 import { ToastContainer } from 'react-toastify'
-import EditGuard from './components/EditGuard'
+import CreateNew from './pages/CreateNew'
+import EditRouteGuard from './components/EditRouteGuard'
+import ProtectedRoute from './components/ProtectedRoute';
 
 const App = () => {
   return (
@@ -21,16 +22,25 @@ const App = () => {
             <Home/>
           </ProtectedRoute>
         }/>
-        <Route path='/forms/new' element={<CreateForm/>} />
-        <Route path='/forms/:id/responses' element={<Responses />} />
-        <Route path='/forms/:id/preview' element={<Preview/>} />
+        <Route path='/forms/new' element={
+          <EditRouteGuard>
+            <CreateNew/>
+          </EditRouteGuard>} />
+        <Route path='/forms/:id/responses' element={
+          <EditRouteGuard>
+            <Responses />
+          </EditRouteGuard>} />
+        <Route path='/forms/:id/preview' element={
+          <EditRouteGuard>
+            <Preview/>
+          </EditRouteGuard>} />
         <Route path='/forms/:id/fill' element={<Fill/>} />
         <Route path='/login' element={<Login/>} />
         <Route path='/forms/:id/edit' element={
-          <EditGuard>
+          <EditRouteGuard>
             <CreateForm />
-          </EditGuard>
-        } />
+          </EditRouteGuard>
+        }/>
       </Routes>
     </div>
   )

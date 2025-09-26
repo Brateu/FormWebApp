@@ -11,8 +11,8 @@ const ByQuestionView = ({
   const questions = form?.questions || [];
   const q = questions.find(x => String(x.id) === String(selectedQuestionId)) || questions[0];
 
-  const agg = aggregates?.[q?.id] || { totalResponses: 0, distribution: [], freeText: [] };
-  const total = agg.totalResponses || 0;
+  const agg = aggregates?.[q?.id] || { totalResponses: 0, distribution: [], samples: [] };
+  const total = agg.totalAnswers || 0;
 
   return (
     <div className="p-5">
@@ -33,8 +33,14 @@ const ByQuestionView = ({
           </select>
         </div>
 
-        <div className="text-sm text-gray-600">
-          Responses: <span className="font-medium">{total}</span>
+        <div className='flex flex-col justify-start gap-3'>
+          <div className="text-sm text-gray-600">
+            Responses: <span className="font-medium">{total}</span>
+          </div>
+
+          <div className="text-sm text-gray-600">
+            Response missing: <span className="font-medium">{agg.missing}</span>
+          </div>
         </div>
       </div>
 
@@ -59,31 +65,23 @@ const ByQuestionView = ({
         ) : (
           <>
             {/* Choice-like questions (distribution) */}
-            {(q?.type === 'MULTI_CHOICE' || q?.type === 'SINGLE_CHOICE' || q?.type === 'CHECKBOX') && (
+            {(q?.type === 'multipleChoice' || q?.type === 'checkboxes') && (
               <div className="space-y-3">
                 {agg.distribution?.length ? (
                   agg.distribution.map((row) => {
-                    const pct = total ? Math.round((row.count / total) * 100) : 0;
-                    const opt = (q.options || []).find(o => String(o.id) === String(row.optionId));
+                    const opt = (q.options || []).find(o => String(o.id) === String(row.key));
                     return (
                       <div key={row.optionId} className="border rounded p-3">
                         <div className="flex items-center gap-3">
-                          {opt?.imageUrl ? (
-                            <img src={opt.imageUrl} alt="" className="w-16 h-16 object-cover rounded border" />
-                          ) : (
-                            <div className="w-16 h-16 border rounded flex items-center justify-center text-gray-300">
-                              <Image size={18} />
-                            </div>
-                          )}
                           <div className="flex-1">
                             <div className="flex items-center justify-between text-sm">
                               <span className="font-medium">{opt?.text || row.optionText || 'Option'}</span>
-                              <span className="text-gray-500">{row.count} ({pct}%)</span>
+                              <span className="text-gray-500">{row.count} ({row.percent}%)</span>
                             </div>
                             <div className="mt-2 h-2 bg-gray-100 rounded">
                               <div
                                 className="h-2 rounded bg-[rgb(103,58,183)]"
-                                style={{ width: `${pct}%` }}
+                                style={{ width: `${row.percent}%` }}
                               />
                             </div>
                           </div>
@@ -98,10 +96,10 @@ const ByQuestionView = ({
             )}
 
             {/* Free text answers */}
-            {(q?.type === 'SHORT_TEXT' || q?.type === 'LONG_TEXT') && (
+            {(q?.type === 'shortAnswer' || q?.type === 'paragraph') && (
               <div className="space-y-2">
-                {agg.freeText?.length ? (
-                  agg.freeText.map((t, i) => (
+                {agg.samples?.length ? (
+                  agg.samples.map((t, i) => (
                     <div key={i} className="border rounded p-3 text-sm">
                       {t}
                     </div>
@@ -113,10 +111,10 @@ const ByQuestionView = ({
             )}
 
             {/* Date/Time answers */}
-            {(q?.type === 'DATE' || q?.type === 'TIME') && (
+            {(q?.type === 'date' || q?.type === 'time') && (
               <div className="space-y-2">
-                {agg.freeText?.length ? (
-                  agg.freeText.map((t, i) => (
+                {agg.samples?.length ? (
+                  agg.samples.map((t, i) => (
                     <div key={i} className="border rounded p-3 text-sm">
                       {t}
                     </div>

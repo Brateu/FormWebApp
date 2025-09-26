@@ -4,7 +4,7 @@ import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-ki
 import { FormsContext } from '../context/FormsContext'
 import SortableQuestion from './SortableQuestion'
 
-const QuestionsList = () => {
+const QuestionsList = ({ canEdit }) => {
 
   const { form, setForm, activeQuestionId, setActiveQuestionId } = useContext(FormsContext);
 
@@ -34,7 +34,7 @@ const QuestionsList = () => {
             key={q.id} 
             question={q}
             isActive={q.id === activeQuestionId}
-            onClick={() => setActiveQuestionId(q.id)}
+            onClick={canEdit ? () => setActiveQuestionId(q.id): null}
             />
           ))
         }

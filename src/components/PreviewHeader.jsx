@@ -10,7 +10,7 @@ const PreviewHeader = () => {
     const { id } = useParams();
     const { canEdit } = useFormAccess(id);
 
-    const arrowLeft = canEdit ? `/forms/${id}/edit` : id === 'undefined' ? '/forms/new' : '/';
+    const arrowLeft = canEdit ? `/forms/${id}/edit` : id === 'undefined' ? '/forms/new' : `/forms/${id}/edit`;
 
   return (
     <div className='flex flex-row items-center justify-between py-5 bg-white'>
