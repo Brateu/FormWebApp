@@ -10,6 +10,10 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
+/**
+ * Validator for MULTI_CHOICE/MULTIPLE_CHOICE question types.
+ * Supported rules: minSelections, maxSelections.
+ */
 public class MultiChoiceAnswerValidator implements AnswerValidator {
     @Override
     public boolean supports(String type) {

@@ -13,13 +13,23 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Manual mapper for converting between Response entity and ResponseDto.
+ * Handles polymorphic responseData map and optional question definitions embedded in metadata.
+ */
 @Component
 @RequiredArgsConstructor
 public class Mapper {
     private final ObjectMapper objectMapper;
+    
 
-    /* =============== DTO -> ENTITY =============== */
-
+    /**
+     * Map ResponseDto to Response entity.
+     * Copies scalar fields, flattens answeredQuestions into responseData map,
+     * and carries questionDefinitions via metadata under key 'questionDefinitions'.
+     * @param dto source DTO
+     * @return mapped entity or null
+     */
     public Response toEntity(ResponseDto dto) {
         if (dto == null) return null;
 
@@ -33,16 +43,13 @@ public class Mapper {
         e.setUpdatedAt(dto.getUpdatedAt());
         e.setIpAddress(dto.getIpAddress());
         e.setUserAgent(dto.getUserAgent());
-
-        // answeredQuestions[] -> responseData map
+        
         e.setResponseData(toResponseData(dto.getAnsweredQuestions()));
-
-        // metadata (+ questionDefinitions u metapolje)
+        
         Map<String, Object> meta = dto.getMetadata() != null
                 ? new HashMap<>(dto.getMetadata())
                 : new HashMap<>();
         if (dto.getQuestionDefinitions() != null) {
-            // Može direktno da se snimi kao lista DTO objekata — Mongo će je upisati kao ugnežđene dokumente
             meta.put("questionDefinitions", dto.getQuestionDefinitions());
         }
         e.setMetadata(meta);
@@ -50,19 +57,26 @@ public class Mapper {
         return e;
     }
 
+    /**
+     * Convert a list of AnsweredQuestionDto into a responseData map keyed by questionId.
+     */
     private Map<String, Object> toResponseData(List<AnsweredQuestionDto> list) {
         if (list == null) return Collections.emptyMap();
         Map<String, Object> m = new LinkedHashMap<>();
         for (AnsweredQuestionDto aq : list) {
             if (aq == null || aq.getQuestionId() == null) continue;
-            // vrednost ostavi “as is” (String, List, broj…), jer je polymorphic
             m.put(aq.getQuestionId(), aq.getValue());
         }
         return m;
     }
 
-    /* =============== ENTITY -> DTO =============== */
-
+    /**
+     * Map Response entity to ResponseDto.
+     * Copies scalar fields and expands responseData into answeredQuestions.
+     * If metadata contains 'questionDefinitions', uses it to enrich answered questions and preserve order.
+     * @param e source entity
+     * @return mapped DTO or null
+     */
     public ResponseDto toDto(Response e) {
         if (e == null) return null;
 
@@ -78,11 +92,10 @@ public class Mapper {
         dto.setUserAgent(e.getUserAgent());
         dto.setMetadata(e.getMetadata());
 
-        // questionDefinitions iz metadata (ako postoje)
         List<QuestionDefinitionDto> defs = readQuestionDefinitions(e.getMetadata());
         dto.setQuestionDefinitions(defs);
 
-        // responseData -> answeredQuestions[]
+        // map responseData entries to answeredQuestions preserving definition order when available
         Map<String, Object> data = e.getResponseData() != null ? e.getResponseData() : Collections.emptyMap();
         if (!data.isEmpty()) {
             List<AnsweredQuestionDto> answered;
@@ -91,7 +104,6 @@ public class Mapper {
                 Map<String, QuestionDefinitionDto> byId = defs.stream()
                         .collect(Collectors.toMap(QuestionDefinitionDto::getId, Function.identity()));
 
-                // zadrži redosled po defs (lepši prikaz na UI)
                 answered = new ArrayList<>(defs.size());
                 for (QuestionDefinitionDto d : defs) {
                     AnsweredQuestionDto aq = new AnsweredQuestionDto();
@@ -101,18 +113,16 @@ public class Mapper {
                     answered.add(aq);
                 }
 
-                // ubaci eventualne dodatne ključeve iz responseData kojih nema u defs
                 for (Map.Entry<String, Object> en : data.entrySet()) {
                     if (!byId.containsKey(en.getKey())) {
                         AnsweredQuestionDto extra = new AnsweredQuestionDto();
                         extra.setQuestionId(en.getKey());
-                        extra.setType(null); // ne znamo tip bez definicije
+                        extra.setType(null);
                         extra.setValue(en.getValue());
                         answered.add(extra);
                     }
                 }
             } else {
-                // bez definicija — samo prevedi mapu u listu
                 answered = data.entrySet().stream().map(en -> {
                     AnsweredQuestionDto aq = new AnsweredQuestionDto();
                     aq.setQuestionId(en.getKey());
@@ -130,6 +140,10 @@ public class Mapper {
         return dto;
     }
 
+    /**
+     * Read question definitions from metadata map under key 'questionDefinitions'.
+     * Accepts either a real List<QuestionDefinitionDto> or a list of maps convertible via ObjectMapper.
+     */
     @SuppressWarnings("unchecked")
     private List<QuestionDefinitionDto> readQuestionDefinitions(Map<String, Object> meta) {
         if (meta == null) return null;
@@ -137,11 +151,9 @@ public class Mapper {
         if (raw == null) return null;
 
         try {
-            // ako je već prava lista
             if (raw instanceof List<?> list && (list.isEmpty() || list.get(0) instanceof QuestionDefinitionDto)) {
                 return (List<QuestionDefinitionDto>) raw;
             }
-            // ako je lista Map-ova (uobičajeno pri čitanju iz Mongo)
             return objectMapper.convertValue(raw, new TypeReference<List<QuestionDefinitionDto>>() {});
         } catch (IllegalArgumentException ex) {
             return null;

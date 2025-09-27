@@ -6,6 +6,10 @@ import org.springframework.stereotype.Component;
 import java.util.Objects;
 
 @Component
+/**
+ * Validator for CHOICE/SINGLE_CHOICE question types.
+ * Ensures the selected option exists among provided options.
+ */
 public class ChoiceAnswerValidator implements AnswerValidator {
     @Override
     public boolean supports(String type) {

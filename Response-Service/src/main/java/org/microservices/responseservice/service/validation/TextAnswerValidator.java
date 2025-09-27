@@ -7,6 +7,7 @@ import java.util.Map;
 
 /**
  * Validator for TEXT and LONG_TEXT question types.
+ * Supported rules: trim, minLength, maxLength, pattern (regex).
  */
 @Component
 public class TextAnswerValidator implements AnswerValidator {

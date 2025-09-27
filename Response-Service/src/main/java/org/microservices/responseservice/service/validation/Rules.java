@@ -5,6 +5,10 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Helper utilities for extracting typed validation rule values from a generic Map.
+ * All methods are null-safe and tolerant to strings and numbers.
+ */
 public final class Rules {
     private Rules() {}
 

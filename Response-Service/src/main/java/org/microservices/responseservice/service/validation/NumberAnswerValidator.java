@@ -7,6 +7,10 @@ import java.util.List;
 import java.util.Map;
 
 @Component
+/**
+ * Validator for numeric-like question types (NUMBER, INTEGER, DECIMAL, RATING, SCALE).
+ * Supported rules: integerOnly, allowedNumbers, min, max, step.
+ */
 public class NumberAnswerValidator implements AnswerValidator {
     @Override
     public boolean supports(String type) {
@@ -43,13 +47,12 @@ public class NumberAnswerValidator implements AnswerValidator {
         }
 
         if (rules != null) {
-            // allowedNumbers list takes precedence
             List<Double> allowed = Rules.doubleListRule(rules, "allowedNumbers");
             if (!allowed.isEmpty()) {
                 if (!containsNumber(allowed, value)) {
                     throw new IllegalArgumentException("Value not in allowed list for question " + q.getId());
                 }
-                return; // allowed list satisfied; skip other checks
+                return;
             }
 
             Double min = Rules.doubleRule(rules, "min");
@@ -64,7 +67,6 @@ public class NumberAnswerValidator implements AnswerValidator {
             }
 
             if (step != null && step > 0) {
-                // Align to arithmetic progression starting at min (or 0 if min is null)
                 double origin = (min != null) ? min : 0.0;
                 double diff = (value - origin);
                 double rem = Math.abs(diff % step);

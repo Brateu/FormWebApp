@@ -4,35 +4,38 @@
 FormApp is a modern, microservices-based application for creating, managing, and sharing forms. It provides a comprehensive solution for form creation, user management, and secure API access. The application is built using a microservices architecture, with each service responsible for a specific domain of functionality.
 
 ## Architecture
-The application consists of three main microservices:
+The application consists of four main microservices:
 
 1. **API Gateway**: Serves as the entry point for all client requests, handles authentication, and routes requests to the appropriate microservices.
 2. **User Service**: Manages user accounts, authentication, and authorization.
 3. **Form Service**: Handles form creation, management, questions, options, and collaboration.
+4. **Response Service**: Manages form responses, drafts, submissions, exports/imports, and analytics.
 
 ### System Architecture Diagram
 ```
-┌─────────────┐      ┌─────────────┐
-│             │      │             │
-│   Client    │─────▶│ API Gateway │
-│             │◀─────│             │
-└─────────────┘      └──────┬──────┘
-                           │
-                           │
-                ┌──────────┴──────────┐
-                │                     │
-        ┌───────▼────────┐   ┌────────▼───────┐
-        │                │   │                │
-        │  User Service  │   │  Form Service  │
-        │                │   │                │
-        └───────┬────────┘   └────────┬───────┘
-                │                     │
-                │                     │
-        ┌───────▼────────┐   ┌────────▼───────┐
-        │                │   │                │
-        │  User Database │   │ Form Database  │
-        │                │   │                │
-        └────────────────┘   └────────────────┘
+                   ┌───────────────────┐
+                   │       Client      │
+                   │  (Web/Mobile/UI)  │
+                   └─────────┬─────────┘
+                             │ HTTPS + JWT
+                    ┌────────▼──────────┐
+                    │    API Gateway    │
+                    │ (Auth, Routing)   │
+                    └──┬──────┬──────┬──┘
+                       │      │      │  Reactive Routing
+        ┌──────────────▼┐  ┌──▼───────────┐  ┌───────────────▼ ┐
+        │  User Service │  │  Form Service│  │ Response Service│
+        │ (Auth, Users) │  │ (Forms, Q&A) │  │ (Responses, ANA)│
+        └───────┬───────┘  └────┬──────── ┘  └────────┬────────┘
+                │               │                     │
+        ┌───────▼───────┐  ┌────▼─────────┐    ┌──────▼────────── ┐
+        │ User Database │  │ Form Database│    │ Response Storage │
+        └───────────────┘  └──────────────┘    └──────────────────┘
+
+Notes:
+- Client communicates only with API Gateway; Gateway validates JWT and forwards requests.
+- Gateway fan-outs to User/Form/Response services; services persist to their own stores.
+- Optional inter-service calls (e.g., Form -> User) go via HTTP/Feign and are omitted for clarity.
 ```
 
 ### Communication Flow
@@ -83,6 +86,18 @@ Key responsibilities:
 
 [More details](./Form-Service/README.md)
 
+### Response Service
+The Response Service manages responses to forms, including drafts, submissions, search, CSV import/export, and analytics.
+
+Key responsibilities:
+- Create, update, delete responses
+- Draft and submit workflow
+- Search and pagination
+- CSV export/import
+- Analytics (statistics, time series, completion rate)
+
+[More details](./Response-Service/README.md)
+
 ## Environment Variables Setup
 
 This project uses environment variables to store sensitive information such as database credentials, OAuth2 client secrets, and JWT configuration. This approach enhances security by keeping sensitive information out of the codebase.
@@ -109,7 +124,7 @@ The User Service requires the following environment variables:
 
 ```
 # Database Configuration
-SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/User
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/userdb
 SPRING_DATASOURCE_USERNAME=your-db-username
 SPRING_DATASOURCE_PASSWORD=your-db-password
 
@@ -130,9 +145,25 @@ The Form Service requires the following environment variables:
 
 ```
 # Database Configuration
-SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/postgres
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5433/formdb
 SPRING_DATASOURCE_USERNAME=your-db-username
 SPRING_DATASOURCE_PASSWORD=your-db-password
+```
+
+#### Response Service
+
+The Response Service requires the following environment variables (MongoDB):
+
+```
+# MongoDB Configuration
+RESPONSE_DB_HOST=localhost
+RESPONSE_DB_PORT=27017
+RESPONSE_DB_NAME=responses
+RESPONSE_DB_USERNAME=your-mongo-username
+RESPONSE_DB_PASSWORD=your-mongo-password
+
+# Optional JWT validation in service (when not delegated to Gateway)
+SECURITY_JWT_SECRET=your-jwt-secret
 ```
 
 ### PostgreSQL Database Setup
@@ -177,14 +208,22 @@ This project uses PostgreSQL as the database for all services. Follow these step
              dialect: org.hibernate.dialect.PostgreSQLDialect
      ```
 
-5. **Testing the PostgreSQL Connection**:
-   - You can test your PostgreSQL connection using the psql command-line tool:
+5. **Testing the Databases**:
+   - Test PostgreSQL connections using the psql command-line tool:
      ```bash
      # Test User-Service database connection
-     psql -h localhost -p 5432 -U postgres -d User -c "SELECT 1"
+     psql -h localhost -p 5432 -U ${USER_DB_USERNAME:-postgres} -d userdb -c "SELECT 1"
 
      # Test Form-Service database connection
-     psql -h localhost -p 5432 -U postgres -d postgres -c "SELECT 1"
+     psql -h localhost -p 5433 -U ${FORM_DB_USERNAME:-postgres} -d formdb -c "SELECT 1"
+     ```
+   - Test MongoDB (Response-Service) using mongosh or MongoDB Compass:
+     ```bash
+     # With mongosh
+     mongosh --host localhost --port 27017 -u ${RESPONSE_DB_USERNAME} -p ${RESPONSE_DB_PASSWORD} --authenticationDatabase admin <<'EOF'
+     use responses
+     db.runCommand({ ping: 1 })
+     EOF
      ```
    - If the connection is successful, you should see a result like:
      ```
@@ -259,17 +298,19 @@ This project is containerized using Docker, making it easy to set up and run in 
 Once the application is running, you can access the services at:
 
 - API Gateway: http://localhost:8080
-- User Service: http://localhost:8082
-- Form Service: http://localhost:8081
+- User Service: http://localhost:8070
+- Form Service: http://localhost:8090
+- Response Service: http://localhost:8060
 
 ### Database Access
 
-The PostgreSQL databases are exposed on the following ports:
+The databases are exposed on the following ports:
 
-- User Database: localhost:5432
-- Form Database: localhost:5433
+- User PostgreSQL: localhost:5432 (DB name: userdb)
+- Form PostgreSQL: localhost:5433 (DB name: formdb)
+- Response MongoDB: localhost:27017 (DB name: responses)
 
-You can connect to these databases using a PostgreSQL client like pgAdmin or DBeaver.
+You can connect using clients like pgAdmin/DBeaver (PostgreSQL) and MongoDB Compass/mongo shell (MongoDB).
 
 ### Security Considerations
 
@@ -332,5 +373,5 @@ The application uses environment variables for configuration. These are loaded f
 
 - User-Service: http://localhost:8070/swagger-ui.html
 - Form-Service: http://localhost:8090/swagger-ui.html
-- Response-Service: http://localhost:8095/swagger-ui.html
+- Response-Service: http://localhost:8060/swagger-ui.html
 - API-Gateway: http://localhost:8080

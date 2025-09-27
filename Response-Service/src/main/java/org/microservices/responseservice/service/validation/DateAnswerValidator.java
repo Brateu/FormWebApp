@@ -8,6 +8,10 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
 
+/**
+ * Validator for DATE question type. Accepts ISO-8601 yyyy-MM-dd strings or LocalDate.
+ * Supports rules: minDate, maxDate (ISO), pastOnly, futureOnly, minAgeYears, maxAgeYears.
+ */
 @Component
 public class DateAnswerValidator implements AnswerValidator {
     @Override
@@ -34,7 +38,7 @@ public class DateAnswerValidator implements AnswerValidator {
 
         Map<String, Object> rules = q.getValidationRules();
         if (rules != null) {
-            String minDateStr = Rules.strRule(rules, "minDate"); // ISO yyyy-MM-dd
+            String minDateStr = Rules.strRule(rules, "minDate");
             String maxDateStr = Rules.strRule(rules, "maxDate");
             Boolean pastOnly = Rules.boolRule(rules, "pastOnly");
             Boolean futureOnly = Rules.boolRule(rules, "futureOnly");
@@ -94,7 +98,7 @@ public class DateAnswerValidator implements AnswerValidator {
             if (raw instanceof String s) {
                 String v = s.trim();
                 if (v.isEmpty()) return null;
-                return LocalDate.parse(v); // expects ISO-8601 yyyy-MM-dd
+                return LocalDate.parse(v);
             }
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("Invalid date format for question " + qid + ": " + e.getMessage());

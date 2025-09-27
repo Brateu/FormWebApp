@@ -39,6 +39,8 @@ The API Gateway routes requests to the following microservices:
   - Path: `/api/user/**`
 - **Form Service**: Manages forms, questions, and collaborators
   - Path: `/api/forms/**`
+- **Response Service**: Manages form responses and analytics
+  - Path: `/api/responses/**` and `/api/analytics/**`
 
 ## Security
 - All requests except public endpoints require a valid JWT token

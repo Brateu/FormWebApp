@@ -12,18 +12,27 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Mapper for converting between Response entity and ResponseDto using MapStruct.
- * Located in the 'mappers' package as requested.
+ * MapStruct-based mapper between Response entity and ResponseDto.
+ * Populates responseData from answeredQuestions after mapping and vice versa when needed.
  */
 @Mapper(componentModel = "spring")
 public interface ResponseMapper {
 
+    /**
+     * Convert entity to DTO. answeredQuestions will be supplied by a custom step if needed.
+     */
     @Mapping(target = "answeredQuestions", ignore = true)
     ResponseDto toDto(Response response);
 
+    /**
+     * Convert DTO to entity. responseData is derived in @AfterMapping.
+     */
     @Mapping(target = "responseData", ignore = true)
     Response toEntity(ResponseDto dto);
 
+    /**
+     * After-mapping hook to populate entity.responseData from dto.answeredQuestions.
+     */
     @AfterMapping
     default void mapAnsweredQuestionsToResponseData(ResponseDto dto, @MappingTarget Response response) {
         if (dto == null) return;

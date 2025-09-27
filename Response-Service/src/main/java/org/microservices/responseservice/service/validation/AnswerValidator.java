@@ -4,6 +4,7 @@ import org.microservices.responseservice.dto.QuestionDefinitionDto;
 
 /**
  * Strategy interface for validating an answer for a given question definition.
+ * Implementations are stateless and Spring components residing in the validation package.
  */
 public interface AnswerValidator {
     /**
