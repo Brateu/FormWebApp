@@ -13,23 +13,11 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * Manual mapper for converting between Response entity and ResponseDto.
- * Handles polymorphic responseData map and optional question definitions embedded in metadata.
- */
 @Component
 @RequiredArgsConstructor
 public class Mapper {
     private final ObjectMapper objectMapper;
-    
 
-    /**
-     * Map ResponseDto to Response entity.
-     * Copies scalar fields, flattens answeredQuestions into responseData map,
-     * and carries questionDefinitions via metadata under key 'questionDefinitions'.
-     * @param dto source DTO
-     * @return mapped entity or null
-     */
     public Response toEntity(ResponseDto dto) {
         if (dto == null) return null;
 
@@ -43,9 +31,9 @@ public class Mapper {
         e.setUpdatedAt(dto.getUpdatedAt());
         e.setIpAddress(dto.getIpAddress());
         e.setUserAgent(dto.getUserAgent());
-        
+
         e.setResponseData(toResponseData(dto.getAnsweredQuestions()));
-        
+
         Map<String, Object> meta = dto.getMetadata() != null
                 ? new HashMap<>(dto.getMetadata())
                 : new HashMap<>();
@@ -57,9 +45,6 @@ public class Mapper {
         return e;
     }
 
-    /**
-     * Convert a list of AnsweredQuestionDto into a responseData map keyed by questionId.
-     */
     private Map<String, Object> toResponseData(List<AnsweredQuestionDto> list) {
         if (list == null) return Collections.emptyMap();
         Map<String, Object> m = new LinkedHashMap<>();
@@ -70,13 +55,6 @@ public class Mapper {
         return m;
     }
 
-    /**
-     * Map Response entity to ResponseDto.
-     * Copies scalar fields and expands responseData into answeredQuestions.
-     * If metadata contains 'questionDefinitions', uses it to enrich answered questions and preserve order.
-     * @param e source entity
-     * @return mapped DTO or null
-     */
     public ResponseDto toDto(Response e) {
         if (e == null) return null;
 
@@ -95,7 +73,6 @@ public class Mapper {
         List<QuestionDefinitionDto> defs = readQuestionDefinitions(e.getMetadata());
         dto.setQuestionDefinitions(defs);
 
-        // map responseData entries to answeredQuestions preserving definition order when available
         Map<String, Object> data = e.getResponseData() != null ? e.getResponseData() : Collections.emptyMap();
         if (!data.isEmpty()) {
             List<AnsweredQuestionDto> answered;
@@ -140,10 +117,6 @@ public class Mapper {
         return dto;
     }
 
-    /**
-     * Read question definitions from metadata map under key 'questionDefinitions'.
-     * Accepts either a real List<QuestionDefinitionDto> or a list of maps convertible via ObjectMapper.
-     */
     @SuppressWarnings("unchecked")
     private List<QuestionDefinitionDto> readQuestionDefinitions(Map<String, Object> meta) {
         if (meta == null) return null;

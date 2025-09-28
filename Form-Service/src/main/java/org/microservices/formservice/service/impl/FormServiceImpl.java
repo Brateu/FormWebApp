@@ -22,8 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * The FormServiceImpl class is an implementation of the FormService interface.
@@ -323,35 +322,79 @@ public class FormServiceImpl implements FormService {
         }
         form.setUpdatedAt(LocalDateTime.now());
 
-        form.getQuestions().clear();
+        Map<Long, Question> existingQuestionsById = new HashMap<>();
+        for (Question q : form.getQuestions()) {
+            if (q.getId() != null) {
+                existingQuestionsById.put(q.getId(), q);
+            }
+        }
 
+        Set<Long> incomingQuestionIds = new HashSet<>();
 
         if (formDto.getQuestions() != null) {
-            int idx = 0;
             for (QuestionDto qd : formDto.getQuestions()) {
-                Question q = new Question();
+                if (qd.getId() != null) {
+                    incomingQuestionIds.add(qd.getId());
+                }
+            }
+        }
+
+        form.getQuestions().removeIf(q -> q.getId() != null && !incomingQuestionIds.contains(q.getId()));
+
+        int idx = 0;
+        if (formDto.getQuestions() != null) {
+            for (QuestionDto qd : formDto.getQuestions()) {
+                Question q = (qd.getId() != null) ? existingQuestionsById.get(qd.getId()) : null;
+
+                if (q == null) {
+                    q = new Question();
+                    q.setForm(form);
+                    q.setUserId(userId);
+                    form.getQuestions().add(q);
+                }
+
                 q.setText(qd.getText());
                 q.setType(qd.getType());
                 q.setRequired(qd.isRequired());
                 q.setOrderIndex(qd.getOrderIndex() != null ? qd.getOrderIndex() : idx++);
                 q.setImageUrl(qd.getImageUrl());
-                q.setUserId(userId);
-                q.setForm(form);
+
+                Map<Long, Option> existingOptionsById = new HashMap<>();
+                for (Option o : q.getOptions()) {
+                    if (o.getId() != null) {
+                        existingOptionsById.put(o.getId(), o);
+                    }
+                }
+
+                Set<Long> incomingOptionIds = new HashSet<>();
+                if (qd.getOptions() != null) {
+                    for (OptionDto od : qd.getOptions()) {
+                        if (od.getId() != null) {
+                            incomingOptionIds.add(od.getId());
+                        }
+                    }
+                }
+
+                q.getOptions().removeIf(o -> o.getId() != null && !incomingOptionIds.contains(o.getId()));
 
                 if (qd.getOptions() != null) {
                     for (OptionDto od : qd.getOptions()) {
-                        Option o = new Option();
+                        Option o = (od.getId() != null) ? existingOptionsById.get(od.getId()) : null;
+                        if (o == null) {
+                            o = new Option();
+                            o.setQuestion(q);
+                            q.getOptions().add(o);
+                        }
                         o.setText(od.getText());
                         o.setImageUrl(od.getImageUrl());
-                        o.setQuestion(q);
-                        q.getOptions().add(o);
+
                     }
                 }
 
                 form.getQuestions().add(q);
             }
         }
-        System.out.println(form.getQuestions().getFirst().getImageUrl());
+
         Form saved = formRepo.save(form);
         return formMapper.toDto(saved);
     }
