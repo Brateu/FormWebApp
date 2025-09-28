@@ -52,6 +52,17 @@ jobs:
           echo "SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }}" > .env
           echo "SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}" >> .env
           echo "SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}" >> .env
+          
+      - name: Setup Response-Service .env
+        if: |
+          (github.event_name != 'workflow_dispatch' && contains(steps.changed-services.outputs.all_changed_files, 'Response-Service/'))
+        run: |
+          cd Response-Service
+          echo "RESPONSE_DB_HOST=${{ secrets.RESPONSE_DB_HOST }}" > .env
+          echo "RESPONSE_DB_PORT=${{ secrets.RESPONSE_DB_PORT }}" >> .env
+          echo "RESPONSE_DB_NAME=${{ secrets.RESPONSE_DB_NAME }}" >> .env
+          echo "RESPONSE_DB_USERNAME=${{ secrets.RESPONSE_DB_USERNAME }}" >> .env
+          echo "RESPONSE_DB_PASSWORD=${{ secrets.RESPONSE_DB_PASSWORD }}" >> .env
 
       - name: Setup User-Service .env
         if: github.event_name == 'workflow_dispatch' || contains(steps.changed-services.outputs.all_changed_files, 'User-Service/')
