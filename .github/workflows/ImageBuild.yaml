@@ -9,13 +9,6 @@ on:
       - 'Form-Service/**'
       - 'API-Gateway/**'
       - 'Response-Service/**'
-  workflow_dispatch:
-    inputs:
-      build_all:
-        description: 'Build all 4 services manually'
-        required: false
-        default: true
-        type: boolean
 env:
   DOCKER_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   
@@ -46,7 +39,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: Setup From-Service .env
-        if: github.event_name == 'workflow_dispatch' || contains(steps.changed-services.outputs.all_changed_files, 'Form-Service/')
+        if: contains(steps.changed-services.outputs.all_changed_files, 'Form-Service/')
         run: |
           cd Form-Service
           echo "SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }}" > .env
@@ -55,7 +48,7 @@ jobs:
           
       - name: Setup Response-Service .env
         if: |
-          (github.event_name != 'workflow_dispatch' && contains(steps.changed-services.outputs.all_changed_files, 'Response-Service/'))
+          contains(steps.changed-services.outputs.all_changed_files, 'Response-Service/')
         run: |
           cd Response-Service
           echo "RESPONSE_DB_HOST=${{ secrets.RESPONSE_DB_HOST }}" > .env
@@ -65,7 +58,7 @@ jobs:
           echo "RESPONSE_DB_PASSWORD=${{ secrets.RESPONSE_DB_PASSWORD }}" >> .env
 
       - name: Setup User-Service .env
-        if: github.event_name == 'workflow_dispatch' || contains(steps.changed-services.outputs.all_changed_files, 'User-Service/')
+        if: contains(steps.changed-services.outputs.all_changed_files, 'User-Service/')
         run: |
           cd User-Service
           echo "SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL2 }}" > .env
@@ -79,14 +72,14 @@ jobs:
           echo "SECURITY_JWT_TOKEN_EXPIRATION=${{ secrets.SECURITY_JWT_TOKEN_EXPIRATION }}" >> .env
 
       - name: Setup API-Gateway .env
-        if: github.event_name == 'workflow_dispatch' || contains(steps.changed-services.outputs.all_changed_files, 'API-Gateway/')
+        if: contains(steps.changed-services.outputs.all_changed_files, 'API-Gateway/')
         run: |
           cd API-Gateway
           echo "SECURITY_JWT_SECRET=${{ secrets.SECURITY_JWT_SECRET }}" >> .env
           echo "SECURITY_JWT_TOKEN_EXPIRATION=${{ secrets.SECURITY_JWT_TOKEN_EXPIRATION }}" >> .env
 
       - name: Build and push User-Service
-        if: github.event_name == 'workflow_dispatch' || contains(steps.changed-services.outputs.all_changed_files, 'User-Service/')
+        if: contains(steps.changed-services.outputs.all_changed_files, 'User-Service/')
         uses: docker/build-push-action@v5
         with:
           context: User-Service
@@ -94,7 +87,7 @@ jobs:
           tags: ${{ env.DOCKER_USERNAME }}/user-service:latest
 
       - name: Build and push Form-Service
-        if: github.event_name == 'workflow_dispatch' || contains(steps.changed-services.outputs.all_changed_files, 'Form-Service/')
+        if: contains(steps.changed-services.outputs.all_changed_files, 'Form-Service/')
         uses: docker/build-push-action@v5
         with:
           context: Form-Service
@@ -102,7 +95,7 @@ jobs:
           tags: ${{ env.DOCKER_USERNAME }}/form-service:latest
           
       - name: Build and push Response-Service
-        if: github.event_name == 'workflow_dispatch' || contains(steps.changed-services.outputs.all_changed_files, 'Response-Service/')
+        if:  contains(steps.changed-services.outputs.all_changed_files, 'Response-Service/')
         uses: docker/build-push-action@v5
         with:
           context: Response-Service
@@ -110,7 +103,7 @@ jobs:
           tags: ${{ env.DOCKER_USERNAME }}/response-service:latest
 
       - name: Build and push API-Gateway
-        if: github.event_name == 'workflow_dispatch' || contains(steps.changed-services.outputs.all_changed_files, 'API-Gateway/')
+        if: contains(steps.changed-services.outputs.all_changed_files, 'API-Gateway/')
         uses: docker/build-push-action@v5
         with:
           context: API-Gateway
