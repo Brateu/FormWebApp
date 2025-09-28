@@ -140,7 +140,7 @@ const FormHeader = () => {
             <Eye size={28} color='black'/>
         </IconButton>
         {canManageCollaborators && (
-          <IconButton onClick={() => openCollaborators()}>
+          <IconButton aria-label='btn-collaborators' onClick={() => openCollaborators()}>
             <UserPlus size={25} color='black' />
           </IconButton>
         )}
