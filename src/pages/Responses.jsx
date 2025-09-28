@@ -324,6 +324,7 @@ const Responses = () => {
             setSelectedQuestionId={setSelectedQuestionId}
             aggregates={aggregates}
             loading={loadingForm || loadingResponses}
+            responses={responses}
           />
         ) : (
           <IndividualView

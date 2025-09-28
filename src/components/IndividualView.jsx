@@ -22,9 +22,24 @@ const IndividualView = ({
   };
 
   const renderValue = (q, ansMap) => {
-    const question = (current.questionDefinitions === null || current.questionDefinitions === undefined) ? q : current.questionDefinitions.find(quest => quest.id === q.id);
-  
-    const v = ansMap[q.id];
+
+    const qdefs = current?.questionDefinitions || [];
+    const question = qdefs.find(quest => String(quest.id) === String(q.id));
+
+    if (!question) {
+      return <span className='text-gray-400'>—</span>
+    }
+
+    const v = ansMap[String(q.id)];
+    if (
+      v === null ||
+      v === undefined ||
+      (typeof v === 'string' && v.trim() === '') ||
+      (Array.isArray(v) && v.length === 0)
+    ) {
+      return <span className="text-gray-400">—</span>;
+    }
+
     if (v === null || v === '') return <span className="text-gray-400">—</span>;
 
     if (question.type === 'TEXT' || question.type === 'LONG_TEXT') {
@@ -33,7 +48,7 @@ const IndividualView = ({
 
     if (question.type === 'CHOICE') {
       const opt = findOptionById(question,v);
-      return <span>{opt ? opt.text : 'kamen'}</span>;
+      return <span>{opt ? opt.text : String(v)}</span>;
     }
 
     if (question.type === 'MULTI_CHOICE') {
@@ -41,13 +56,13 @@ const IndividualView = ({
       if (!ids.length) return <span className="text-gray-400">—</span>;
 
       const labels = ids.map(id => {
-        const opt = findOptionById(q, id);
+        const opt = findOptionById(question, id);
         return opt ? getOptionText(opt) : String(id);
       })
       return <span>{labels.join(', ') || '—'}</span>;
     }
 
-    if (question.type === 'DATE' || q.type === 'TIME') {
+    if (question.type === 'DATE' || question.type === 'TIME') {
       return <span>{typeof v === 'string' ? v : JSON.stringify(v)}</span>;
     }
 
@@ -57,7 +72,7 @@ const IndividualView = ({
   const buildAnswerMap = (resp) => {
     const m = {};
     resp?.answeredQuestions?.forEach(aq => {
-      m[aq.questionId] = aq.value;
+      m[String(aq.questionId)] = aq.value;
     });
     return m;
   };

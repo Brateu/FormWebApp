@@ -137,12 +137,14 @@ const FormsContextProvider = (props) => {
       status: uiForm.published === true ? 'ACTIVE' : 'DRAFT',
       visibility: uiForm.published === true ? 'PUBLIC' : 'PRIVATE',
       questions: (uiForm.questions || []).map((q, idx) => ({
+        id: Number(q.id),
         text: q.text || 'Untitled Question',
         type: QUESTION_TYPE_MAP[q.type] || (q.type ? q.type.toUpperCase() : 'SHORT_TEXT'),
         required: !!q.required,
         orderIndex: idx,
         imageUrl: q.imageUrl || null,
         options: (q.options || []).map((opt) => ({
+          id: opt.id,
           text: opt.text || '',
           imageUrl: opt.imageUrl || null,
         })),

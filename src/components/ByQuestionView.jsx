@@ -1,18 +1,21 @@
 import React from 'react';
-import { Image } from 'lucide-react';
+
 
 const ByQuestionView = ({
   form,
   selectedQuestionId,
   setSelectedQuestionId,
   aggregates,
+  responses,
   loading = false
 }) => {
   const questions = form?.questions || [];
   const q = questions.find(x => String(x.id) === String(selectedQuestionId)) || questions[0];
 
+  const totalResponses = responses.length;
   const agg = aggregates?.[q?.id] || { totalResponses: 0, distribution: [], samples: [] };
   const total = agg.totalAnswers || 0;
+  const missing = totalResponses - total;
 
   return (
     <div className="p-5">
@@ -38,7 +41,7 @@ const ByQuestionView = ({
           </div>
 
           <div className="text-sm text-gray-600">
-            Response missing: <span className="font-medium">{agg.missing}</span>
+            Response missing: <span className="font-medium">{missing}</span>
           </div>
         </div>
       </div>
