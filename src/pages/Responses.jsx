@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import ResponsesHeader from '../components/ResponsesHeader';
 import ByQuestionView from '../components/ByQuestionView';
 import IndividualView from '../components/IndividualView';
 import { FormsContext } from '../context/FormsContext';
@@ -7,6 +6,7 @@ import { useParams } from 'react-router-dom';
 import axios from '../context/AxiosInstance';
 import { Button } from '@mui/material';
 import * as XLSX from 'xlsx';
+import FormHeader from '../components/FormHeader';
 
 const Tabs = ({ active, setActive }) => {
   return (
@@ -230,15 +230,8 @@ const Responses = () => {
     setAggregates(buildAggregates(form, responses))
   }, [form, responses])
 
-  useEffect(() => {
-    console.log(responses);
-    console.log(form);
-    
-  }, [responses])
-
   const exportToXlsx = () => {
     try {
-      // Build question maps
       const questions = Array.isArray(form?.questions) ? form.questions : [];
       const qMap = new Map(questions.map(q => [toStr(q.id), q]));
       const qOrder = questions.map(q => ({ id: toStr(q.id), title: q.text || 'Untitled question' }));
@@ -248,7 +241,6 @@ const Responses = () => {
         optionMaps.set(toStr(q.id), om);
       });
 
-      // Helper to decode values into labels
       const decodeValue = (qid, type, raw) => {
         if (raw == null) return '';
         const q = qMap.get(toStr(qid));
@@ -267,11 +259,10 @@ const Responses = () => {
             return label != null ? label : key;
           }).join(', ');
         }
-        // TEXT, LONG_TEXT, DATE, TIME
+    
         return String(raw);
       };
 
-      // ---------- Sheet 1: Individual Responses ----------
       const headerFixed = ['Response ID', 'Submitted At', 'User ID'];
       const headerQuestions = qOrder.map(q => q.title);
       const rows = [ [...headerFixed, ...headerQuestions] ];
@@ -285,8 +276,6 @@ const Responses = () => {
         const valueCols = qOrder.map(({ id: qid }) => {
           const aq = ansMap.get(toStr(qid));
           if (!aq) return '';
-          // Map UI type to backend type via RESPONSE_TYPE_MAP already used in buildAggregates
-          // But aq.type is already backend type at this point
           return decodeValue(qid, aq.type, aq.value);
         });
 
@@ -309,7 +298,7 @@ const Responses = () => {
 
   return (
     <div className="bg-purple-100 pb-5 min-h-screen">
-      <ResponsesHeader />
+      <FormHeader />
 
       <div className="mx-70 my-3 rounded-lg border-t-8 border-b-2 border-x-2 border-b-[rgb(218,220,224)] border-x-[rgb(218,220,224)] border-[rgb(103,58,183)] bg-white">
         <div className="p-5 flex flex-col md:flex-row md:items-center md:justify-between gap-3">

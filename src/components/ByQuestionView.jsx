@@ -5,7 +5,7 @@ const ByQuestionView = ({
   form,
   selectedQuestionId,
   setSelectedQuestionId,
-  aggregates, // { [questionId]: { totalResponses, distribution: [{optionId, optionText, count}], freeText: [strings] } }
+  aggregates,
   loading = false
 }) => {
   const questions = form?.questions || [];
@@ -16,7 +16,6 @@ const ByQuestionView = ({
 
   return (
     <div className="p-5">
-      {/* Top controls */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <div className="flex items-center gap-3">
           <span className="text-sm text-gray-600">Question</span>
@@ -44,7 +43,6 @@ const ByQuestionView = ({
         </div>
       </div>
 
-      {/* Question header */}
       <div className="mt-4">
         <h2 className="text-lg font-medium">{q?.text || 'Untitled question'}</h2>
         {q?.imageUrl ? (
@@ -58,13 +56,11 @@ const ByQuestionView = ({
         ) : null}
       </div>
 
-      {/* Body */}
       <div className="mt-6">
         {loading ? (
           <p className="text-sm text-gray-500">Loading…</p>
         ) : (
           <>
-            {/* Choice-like questions (distribution) */}
             {(q?.type === 'multipleChoice' || q?.type === 'checkboxes') && (
               <div className="space-y-3">
                 {agg.distribution?.length ? (
@@ -95,7 +91,6 @@ const ByQuestionView = ({
               </div>
             )}
 
-            {/* Free text answers */}
             {(q?.type === 'shortAnswer' || q?.type === 'paragraph') && (
               <div className="space-y-2">
                 {agg.samples?.length ? (
@@ -110,7 +105,6 @@ const ByQuestionView = ({
               </div>
             )}
 
-            {/* Date/Time answers */}
             {(q?.type === 'date' || q?.type === 'time') && (
               <div className="space-y-2">
                 {agg.samples?.length ? (

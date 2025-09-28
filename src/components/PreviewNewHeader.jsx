@@ -2,7 +2,6 @@ import { ArrowLeft, CircleCheck, CircleMinus, Paperclip } from 'lucide-react'
 import React, { useContext } from 'react'
 import { NavLink } from 'react-router-dom'
 import { FormsContext } from '../context/FormsContext'
-import { useParams } from 'react-router-dom'
 
 const PreviewNewHeader = () => {
 

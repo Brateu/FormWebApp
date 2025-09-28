@@ -55,7 +55,6 @@ const Fill = () => {
 
       try {
         const payload = toResposePayload(form, answers);
-        //console.log(payload);
         await axios.post('/api/responses', payload, {
           headers: { 'X-User-ID': userId }
         })

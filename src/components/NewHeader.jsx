@@ -1,23 +1,15 @@
 import { ClipboardList, Eye, Lock, Share, Trash2, UserPlus } from 'lucide-react';
-import React, { useContext, useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
 import { FormsContext } from '../context/FormsContext';
 import { IconButton } from '@mui/material';
-import axios from '../context/AxiosInstance';
-import { toast } from 'react-toastify';
-import CollaboratorsModal from './CollaboratorsModal';
 
 const NewHeader = () => {
 
-    const { form, setForm, navigate, getUserIdFromToken, handleFormShare, useFormAccess } = useContext(FormsContext);
-    const [isCollabOpen, setCollabOpen] = useState(false);
-    const { id } = useParams();
-
+    const { form, setForm, navigate } = useContext(FormsContext);
 
     const goPreview = () => {
-      const targetId = id || form?.id;
-        navigate(`/forms/new/preview`, { state: { useLocal: true }})
+      navigate(`/forms/new/preview`, { state: { useLocal: true }})
     }
 
   return (

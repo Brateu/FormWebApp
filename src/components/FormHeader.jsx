@@ -14,9 +14,9 @@ const FormHeader = () => {
     const [isCollabOpen, setCollabOpen] = useState(false);
     const { id } = useParams();
 
-    const { isOwner, canEdit, canManageCollaborators, canPublish, canLock, canDelete } = useFormAccess(id);
+    const { canEdit, canManageCollaborators, canPublish, canLock, canDelete } = useFormAccess(id);
 
-    const questions = canEdit ? `/forms/${id}/edit` : id ? `/forms/${id}/edit` : '/forms/new';
+    const questions =`/forms/${id}/edit`;
 
     const goPreview = () => {
       const targetId = id || form?.id;

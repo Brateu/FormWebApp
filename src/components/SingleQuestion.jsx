@@ -1,6 +1,6 @@
 import React, { useContext, useRef } from 'react'
 import { FormsContext } from '../context/FormsContext'
-import { CalendarDays, Circle, Clock, Copy, EllipsisVertical, Image, Plus, Square, ToggleLeft, ToggleRight, Trash2, X } from 'lucide-react';
+import { CalendarDays, Circle, Clock, Copy, Image, Plus, Square, ToggleLeft, ToggleRight, Trash2, X } from 'lucide-react';
 import SubjectIcon from '@mui/icons-material/Subject';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';

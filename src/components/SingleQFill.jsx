@@ -4,7 +4,6 @@ import { FormsContext } from '../context/FormsContext';
 
 const SingleQFill = ({ question, value, onChange }) => {
 
-    const { answers } = useContext(FormsContext);
     const hasAnyImage = question.options.some((option) => option.imageUrl);
     const [selectedOption, setSelectedOption] = useState(null);
     const [selectedOptions, setSelectedOptions] = useState([]);

@@ -3,7 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const IndividualView = ({
   form,
-  responses = [],      // lista ResponseDto (ili već mapiranih)
+  responses = [],      
   index,
   setIndex,
   loading = false
@@ -21,7 +21,6 @@ const IndividualView = ({
     return opts.find(o => String(o.id) === String(id));
   };
 
-  // Helper za render odgovora po tipu
   const renderValue = (q, ansMap) => {
     const question = (current.questionDefinitions === null || current.questionDefinitions === undefined) ? q : current.questionDefinitions.find(quest => quest.id === q.id);
   
@@ -33,14 +32,11 @@ const IndividualView = ({
     }
 
     if (question.type === 'CHOICE') {
-      // v je optionId
-      
       const opt = findOptionById(question,v);
       return <span>{opt ? opt.text : 'kamen'}</span>;
     }
 
     if (question.type === 'MULTI_CHOICE') {
-      // v je niz optionId-ova
       const ids = Array.isArray(v) ? v : [];
       if (!ids.length) return <span className="text-gray-400">—</span>;
 
@@ -58,7 +54,6 @@ const IndividualView = ({
     return <span>{JSON.stringify(v)}</span>;
   };
 
-  // Pretvori AnsweredQuestion listu u mapu { questionId: value }
   const buildAnswerMap = (resp) => {
     const m = {};
     resp?.answeredQuestions?.forEach(aq => {
@@ -71,7 +66,6 @@ const IndividualView = ({
 
   return (
     <div className="p-5">
-      {/* Navigator */}
       <div className="flex items-center justify-between">
         <div className="text-sm text-gray-600">
           Response <span className="font-medium">{total ? index + 1 : 0}</span> of <span className="font-medium">{total}</span>
@@ -94,7 +88,6 @@ const IndividualView = ({
         </div>
       </div>
 
-      {/* Body */}
       <div className="mt-5">
         {loading ? (
           <p className="text-sm text-gray-500">Loading…</p>

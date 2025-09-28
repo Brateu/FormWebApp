@@ -1,13 +1,11 @@
 import React, { useContext} from 'react'
 import { FormsContext } from '../context/FormsContext'
 import PreviewList from '../components/PreviewList';
-import { useLocation, useParams } from 'react-router-dom';
 import PreviewNewHeader from '../components/PreviewNewHeader';
 
 const PreviewNew = () => {
 
   const { form } = useContext(FormsContext);
-  const location = useLocation();
 
   return (
     <div className='bg-purple-100 pb-5'>

@@ -10,7 +10,7 @@ const CreateForm = () => {
 
     const { form, setForm, createForm, updateForm, loadForm, saving, handleAddQuestion, useFormAccess } = useContext(FormsContext);
     const { id } = useParams();
-    const { canAccess, canEdit } = useFormAccess(Number(id));
+    const { canEdit } = useFormAccess(Number(id));
 
     useEffect(() => {
       if (id) {

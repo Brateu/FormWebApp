@@ -7,7 +7,7 @@ import NewHeader from '../components/NewHeader';
 
 const CreateNew = () => {
 
-    const { form, setForm, createForm, updateForm, loadForm, saving, handleAddQuestion, startNewForm } = useContext(FormsContext);
+    const { form, setForm, createForm, saving, handleAddQuestion } = useContext(FormsContext);
 
   return (
     <div className='bg-purple-100 pb-5'>
