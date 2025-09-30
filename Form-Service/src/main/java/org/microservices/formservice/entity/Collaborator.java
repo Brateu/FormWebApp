@@ -17,6 +17,7 @@ import org.microservices.formservice.enums.CollaboratorRole;
 @AllArgsConstructor
 @Builder
 public class Collaborator {
+    //
 
     /**
      * Unique identifier for the collaborator.
