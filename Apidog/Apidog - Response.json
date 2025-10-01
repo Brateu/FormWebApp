@@ -1,0 +1,1620 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Default module",
+    "description": "",
+    "version": "1.0.0"
+  },
+  "tags": [],
+  "paths": {
+    "/api/responses": {
+      "post": {
+        "summary": "- Wrong Date Format",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYW5lQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIzLCJpYXQiOjE3NTg2NjUyNTAsImV4cCI6MTc1ODY2ODg1MH0.gbVchxsLHPqJ6SWE1Hi6EtzphKLBj7Dj7GZs8k0HUX5eI4CllKxXcDpK-FOS4hvGLaB8GJSiwoGOSTdQ8ZWOFA",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "23",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "formId": 4,
+                "status": "SUBMITTED",
+                "answeredQuestions": [
+                  {
+                    "questionId": "16",
+                    "type": "DATE",
+                    "value": "23-09-2025"
+                  },
+                  {
+                    "questionId": "17",
+                    "type": "TIME",
+                    "value": "25:99"
+                  }
+                ],
+                "questionDefinitions": [
+                  {
+                    "id": "16",
+                    "type": "DATE",
+                    "required": false
+                  },
+                  {
+                    "id": "17",
+                    "type": "TIME",
+                    "required": false
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "timestamp": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "path": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "timestamp",
+                    "status",
+                    "error",
+                    "message",
+                    "path"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/responses/68d323377c967db7497c4f63": {
+      "get": {
+        "summary": "+ Get by ID",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYW5lQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIzLCJpYXQiOjE3NTg2NjUyNTAsImV4cCI6MTc1ODY2ODg1MH0.gbVchxsLHPqJ6SWE1Hi6EtzphKLBj7Dj7GZs8k0HUX5eI4CllKxXcDpK-FOS4hvGLaB8GJSiwoGOSTdQ8ZWOFA",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "23",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "formId": {
+                      "type": "integer"
+                    },
+                    "userId": {
+                      "type": "integer"
+                    },
+                    "answeredQuestions": {
+                      "type": "null"
+                    },
+                    "questionDefinitions": {
+                      "type": "null"
+                    },
+                    "status": {
+                      "type": "null"
+                    },
+                    "submittedAt": {
+                      "type": "null"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    },
+                    "ipAddress": {
+                      "type": "null"
+                    },
+                    "userAgent": {
+                      "type": "null"
+                    },
+                    "metadata": {
+                      "type": "null"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "formId",
+                    "userId",
+                    "answeredQuestions",
+                    "questionDefinitions",
+                    "status",
+                    "submittedAt",
+                    "createdAt",
+                    "updatedAt",
+                    "ipAddress",
+                    "userAgent",
+                    "metadata"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/responses/form/4": {
+      "get": {
+        "summary": "- Invalid Date Range",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "2025/08/01",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "2025-08-31",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "timestamp": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "path": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "timestamp",
+                    "status",
+                    "error",
+                    "message",
+                    "path"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/responses/user/23": {
+      "get": {
+        "summary": "+ Filtriranje po korisniku",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "0",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "content": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "formId": {
+                            "type": "integer"
+                          },
+                          "userId": {
+                            "type": "integer"
+                          },
+                          "answeredQuestions": {
+                            "type": "null"
+                          },
+                          "questionDefinitions": {
+                            "type": "null"
+                          },
+                          "status": {
+                            "type": "string",
+                            "nullable": true
+                          },
+                          "submittedAt": {
+                            "type": "null"
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "updatedAt": {
+                            "type": "string"
+                          },
+                          "ipAddress": {
+                            "type": "null"
+                          },
+                          "userAgent": {
+                            "type": "null"
+                          },
+                          "metadata": {
+                            "type": "null"
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "formId",
+                          "userId",
+                          "answeredQuestions",
+                          "questionDefinitions",
+                          "status",
+                          "submittedAt",
+                          "createdAt",
+                          "updatedAt",
+                          "ipAddress",
+                          "userAgent",
+                          "metadata"
+                        ]
+                      }
+                    },
+                    "pageable": {
+                      "type": "object",
+                      "properties": {
+                        "pageNumber": {
+                          "type": "integer"
+                        },
+                        "pageSize": {
+                          "type": "integer"
+                        },
+                        "sort": {
+                          "type": "object",
+                          "properties": {
+                            "sorted": {
+                              "type": "boolean"
+                            },
+                            "unsorted": {
+                              "type": "boolean"
+                            },
+                            "empty": {
+                              "type": "boolean"
+                            }
+                          },
+                          "required": [
+                            "sorted",
+                            "unsorted",
+                            "empty"
+                          ]
+                        },
+                        "offset": {
+                          "type": "integer"
+                        },
+                        "paged": {
+                          "type": "boolean"
+                        },
+                        "unpaged": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "pageNumber",
+                        "pageSize",
+                        "sort",
+                        "offset",
+                        "paged",
+                        "unpaged"
+                      ]
+                    },
+                    "totalPages": {
+                      "type": "integer"
+                    },
+                    "totalElements": {
+                      "type": "integer"
+                    },
+                    "last": {
+                      "type": "boolean"
+                    },
+                    "numberOfElements": {
+                      "type": "integer"
+                    },
+                    "size": {
+                      "type": "integer"
+                    },
+                    "number": {
+                      "type": "integer"
+                    },
+                    "sort": {
+                      "type": "object",
+                      "properties": {
+                        "sorted": {
+                          "type": "boolean"
+                        },
+                        "unsorted": {
+                          "type": "boolean"
+                        },
+                        "empty": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "sorted",
+                        "unsorted",
+                        "empty"
+                      ]
+                    },
+                    "first": {
+                      "type": "boolean"
+                    },
+                    "empty": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "content",
+                    "pageable",
+                    "totalPages",
+                    "totalElements",
+                    "last",
+                    "numberOfElements",
+                    "size",
+                    "number",
+                    "sort",
+                    "first",
+                    "empty"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/responses/draft": {
+      "post": {
+        "summary": "-- Draft without Form ID",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "status": "DRAFT",
+                "userId": 23
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "formId": {
+                      "type": "null"
+                    },
+                    "userId": {
+                      "type": "integer"
+                    },
+                    "answeredQuestions": {
+                      "type": "null"
+                    },
+                    "questionDefinitions": {
+                      "type": "null"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "submittedAt": {
+                      "type": "null"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    },
+                    "ipAddress": {
+                      "type": "null"
+                    },
+                    "userAgent": {
+                      "type": "null"
+                    },
+                    "metadata": {
+                      "type": "null"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "formId",
+                    "userId",
+                    "answeredQuestions",
+                    "questionDefinitions",
+                    "status",
+                    "submittedAt",
+                    "createdAt",
+                    "updatedAt",
+                    "ipAddress",
+                    "userAgent",
+                    "metadata"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "get": {
+        "summary": "+ Load DRAFT",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "formId",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "4",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "userId",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "23",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "formId": {
+                      "type": "integer"
+                    },
+                    "userId": {
+                      "type": "integer"
+                    },
+                    "answeredQuestions": {
+                      "type": "null"
+                    },
+                    "questionDefinitions": {
+                      "type": "null"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "submittedAt": {
+                      "type": "null"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    },
+                    "ipAddress": {
+                      "type": "null"
+                    },
+                    "userAgent": {
+                      "type": "null"
+                    },
+                    "metadata": {
+                      "type": "null"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "formId",
+                    "userId",
+                    "answeredQuestions",
+                    "questionDefinitions",
+                    "status",
+                    "submittedAt",
+                    "createdAt",
+                    "updatedAt",
+                    "ipAddress",
+                    "userAgent",
+                    "metadata"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/responses/68d327ad7c967db7497c4f66": {
+      "put": {
+        "summary": "+ Update Draft",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYW5lQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIzLCJpYXQiOjE3NTg2NjUyNTAsImV4cCI6MTc1ODY2ODg1MH0.gbVchxsLHPqJ6SWE1Hi6EtzphKLBj7Dj7GZs8k0HUX5eI4CllKxXcDpK-FOS4hvGLaB8GJSiwoGOSTdQ8ZWOFA",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "23",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "formId": 4,
+                "status": "DRAFT",
+                "answeredQuestions": [
+                  {
+                    "questionId": "12",
+                    "type": "TEXT",
+                    "value": "Petar Petrović"
+                  },
+                  {
+                    "questionId": "13",
+                    "type": "CHOICE",
+                    "value": "9"
+                  },
+                  {
+                    "questionId": "14",
+                    "type": "NUMBER",
+                    "value": 4
+                  }
+                ],
+                "questionDefinitions": [
+                  {
+                    "id": "12",
+                    "text": "Vaše puno ime",
+                    "type": "TEXT",
+                    "required": true,
+                    "options": [],
+                    "validationRules": {}
+                  },
+                  {
+                    "id": "13",
+                    "text": "Koji paket koristite?",
+                    "type": "CHOICE",
+                    "required": true,
+                    "options": [
+                      {
+                        "id": "8",
+                        "text": "Basic"
+                      },
+                      {
+                        "id": "9",
+                        "text": "Pro"
+                      }
+                    ],
+                    "validationRules": {}
+                  },
+                  {
+                    "id": "14",
+                    "text": "Ocenite uslugu (1–5)",
+                    "type": "NUMBER",
+                    "required": true,
+                    "options": [],
+                    "validationRules": {}
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "formId": {
+                      "type": "integer"
+                    },
+                    "userId": {
+                      "type": "null"
+                    },
+                    "answeredQuestions": {
+                      "type": "null"
+                    },
+                    "questionDefinitions": {
+                      "type": "null"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "submittedAt": {
+                      "type": "null"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    },
+                    "ipAddress": {
+                      "type": "null"
+                    },
+                    "userAgent": {
+                      "type": "null"
+                    },
+                    "metadata": {
+                      "type": "null"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "formId",
+                    "userId",
+                    "answeredQuestions",
+                    "questionDefinitions",
+                    "status",
+                    "submittedAt",
+                    "createdAt",
+                    "updatedAt",
+                    "ipAddress",
+                    "userAgent",
+                    "metadata"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/responses/68d328647c967db7497c4f67": {
+      "delete": {
+        "summary": "+ Delete Response",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYW5lQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIzLCJpYXQiOjE3NTg2NjUyNTAsImV4cCI6MTc1ODY2ODg1MH0.gbVchxsLHPqJ6SWE1Hi6EtzphKLBj7Dj7GZs8k0HUX5eI4CllKxXcDpK-FOS4hvGLaB8GJSiwoGOSTdQ8ZWOFA",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "23",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/responses/search": {
+      "get": {
+        "summary": "- Search without Answer",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "formId",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "4",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "questionId",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "12",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "timestamp": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "path": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "timestamp",
+                    "status",
+                    "error",
+                    "message",
+                    "path"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/responses/68d327ad7c967db7497c4f66/submit": {
+      "post": {
+        "summary": "+ Submit DRAFT",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "formId": {
+                      "type": "integer"
+                    },
+                    "userId": {
+                      "type": "null"
+                    },
+                    "answeredQuestions": {
+                      "type": "null"
+                    },
+                    "questionDefinitions": {
+                      "type": "null"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "submittedAt": {
+                      "type": "string"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    },
+                    "ipAddress": {
+                      "type": "null"
+                    },
+                    "userAgent": {
+                      "type": "null"
+                    },
+                    "metadata": {
+                      "type": "null"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "formId",
+                    "userId",
+                    "answeredQuestions",
+                    "questionDefinitions",
+                    "status",
+                    "submittedAt",
+                    "createdAt",
+                    "updatedAt",
+                    "ipAddress",
+                    "userAgent",
+                    "metadata"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/responses/export/csv": {
+      "get": {
+        "summary": "+ Export CSV",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "formId",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "4",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "*/*": {
+                "schema": {}
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/responses/import/csv": {
+      "post": {
+        "summary": "+ Import CSV",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "formId",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "example": "4",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "text/csv",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYW5lQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIzLCJpYXQiOjE3NTg2NjUyNTAsImV4cCI6MTc1ODY2ODg1MH0.gbVchxsLHPqJ6SWE1Hi6EtzphKLBj7Dj7GZs8k0HUX5eI4CllKxXcDpK-FOS4hvGLaB8GJSiwoGOSTdQ8ZWOFA",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string"
+              },
+              "example": "id,formId,userId,status,submittedAt,createdAt,updatedAt,ipAddress,userAgent\r\n,4,23,SUBMITTED,2025-09-23T23:59:59,2025-09-23T23:59:59,2025-09-23T23:59:59,127.0.0.1,PostmanRuntime\r\n"
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "importedCount": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "importedCount"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/analytics/time-series/4": {
+      "get": {
+        "summary": "- Time-series without Date",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "timestamp": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "path": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "timestamp",
+                    "status",
+                    "error",
+                    "message",
+                    "path"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/analytics/statistics/4": {
+      "get": {
+        "summary": "+ Statistic of Form",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYW5lQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIzLCJpYXQiOjE3NTg2NjUyNTAsImV4cCI6MTc1ODY2ODg1MH0.gbVchxsLHPqJ6SWE1Hi6EtzphKLBj7Dj7GZs8k0HUX5eI4CllKxXcDpK-FOS4hvGLaB8GJSiwoGOSTdQ8ZWOFA",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "totalResponses": {
+                      "type": "integer"
+                    },
+                    "averageResponseTimeSeconds": {
+                      "type": "number"
+                    },
+                    "responsesPerDay": {
+                      "type": "object",
+                      "properties": {
+                        "2025-09-24T00:00": {
+                          "type": "integer"
+                        },
+                        "2025-09-23T00:00": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "2025-09-24T00:00",
+                        "2025-09-23T00:00"
+                      ]
+                    },
+                    "responsesByStatus": {
+                      "type": "object",
+                      "properties": {
+                        "DRAFT": {
+                          "type": "integer"
+                        },
+                        "SUBMITTED": {
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "DRAFT",
+                        "SUBMITTED"
+                      ]
+                    }
+                  },
+                  "required": [
+                    "totalResponses",
+                    "averageResponseTimeSeconds",
+                    "responsesPerDay",
+                    "responsesByStatus"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/analytics/completion-rate/4": {
+      "get": {
+        "summary": "+ Completion rate",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYW5lQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIzLCJpYXQiOjE3NTg2NjUyNTAsImV4cCI6MTc1ODY2ODg1MH0.gbVchxsLHPqJ6SWE1Hi6EtzphKLBj7Dj7GZs8k0HUX5eI4CllKxXcDpK-FOS4hvGLaB8GJSiwoGOSTdQ8ZWOFA",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "totalResponses": {
+                      "type": "integer"
+                    },
+                    "submittedResponses": {
+                      "type": "integer"
+                    },
+                    "draftResponses": {
+                      "type": "integer"
+                    },
+                    "completionRate": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "totalResponses",
+                    "submittedResponses",
+                    "draftResponses",
+                    "completionRate"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/analytics/response-time/4": {
+      "get": {
+        "summary": "+ Average Response Time",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYW5lQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIzLCJpYXQiOjE3NTg2NjUyNTAsImV4cCI6MTc1ODY2ODg1MH0.gbVchxsLHPqJ6SWE1Hi6EtzphKLBj7Dj7GZs8k0HUX5eI4CllKxXcDpK-FOS4hvGLaB8GJSiwoGOSTdQ8ZWOFA",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "averageResponseTimeSeconds": {
+                      "type": "number"
+                    },
+                    "formId": {
+                      "type": "integer"
+                    },
+                    "averageResponseTimeMinutes": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "averageResponseTimeSeconds",
+                    "formId",
+                    "averageResponseTimeMinutes"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/": {
+      "post": {
+        "summary": "- Create SUBMITTED - empty answers",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYW5lQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIzLCJpYXQiOjE3NTg2NjUyNTAsImV4cCI6MTc1ODY2ODg1MH0.gbVchxsLHPqJ6SWE1Hi6EtzphKLBj7Dj7GZs8k0HUX5eI4CllKxXcDpK-FOS4hvGLaB8GJSiwoGOSTdQ8ZWOFA",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "23",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "formId": 4,
+                "status": "SUBMITTED",
+                "answeredQuestions": []
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/responses/90": {
+      "put": {
+        "summary": "- Update Invalid Response ID",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYW5lQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIzLCJpYXQiOjE3NTg2NjUyNTAsImV4cCI6MTc1ODY2ODg1MH0.gbVchxsLHPqJ6SWE1Hi6EtzphKLBj7Dj7GZs8k0HUX5eI4CllKxXcDpK-FOS4hvGLaB8GJSiwoGOSTdQ8ZWOFA",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "formId": 4,
+                "status": "DRAFT"
+              }
+            }
+          }
+        },
+        "responses": {
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "timestamp": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "path": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "timestamp",
+                    "status",
+                    "error",
+                    "message",
+                    "path"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/responses/17/submit": {
+      "post": {
+        "summary": "- Submit Response with Invalid ID",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYW5lQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIzLCJpYXQiOjE3NTg2NjUyNTAsImV4cCI6MTc1ODY2ODg1MH0.gbVchxsLHPqJ6SWE1Hi6EtzphKLBj7Dj7GZs8k0HUX5eI4CllKxXcDpK-FOS4hvGLaB8GJSiwoGOSTdQ8ZWOFA",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "timestamp": {
+                      "type": "string"
+                    },
+                    "status": {
+                      "type": "integer"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "path": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "timestamp",
+                    "status",
+                    "error",
+                    "message",
+                    "path"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/responses/1000": {
+      "delete": {
+        "summary": "-- Delete Invalid Response ID",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYW5lQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIzLCJpYXQiOjE3NTg2NjUyNTAsImV4cCI6MTc1ODY2ODg1MH0.gbVchxsLHPqJ6SWE1Hi6EtzphKLBj7Dj7GZs8k0HUX5eI4CllKxXcDpK-FOS4hvGLaB8GJSiwoGOSTdQ8ZWOFA",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {}
+  },
+  "servers": [],
+  "security": []
+}

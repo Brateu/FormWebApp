@@ -1,0 +1,3768 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Default module",
+    "description": "",
+    "version": "1.0.0"
+  },
+  "tags": [],
+  "paths": {
+    "/api/forms": {
+      "post": {
+        "summary": "Form Create 3",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYW5lQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIzLCJpYXQiOjE3NTg2NDMwODIsImV4cCI6MTc1ODY0NjY4Mn0.iQbSRUz_wVqsbKmo9I4mRe2CWLAwxHNeDn2WuxDuPeooNf5ZDYgI58q_-xs_SGu9SpTF6BuR6juAT2zSTzqnNw",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "23",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "name": "QA Form - Novi korisnik",
+                "description": "Minimal body to create a form",
+                "allowAnonymous": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "path": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "error",
+                    "message",
+                    "path",
+                    "timestamp"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "get": {
+        "summary": "+ Listed Forms",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWthQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjE4LCJpYXQiOjE3NTU5NDM3MzgsImV4cCI6MTc1NTk0NzMzOH0.rEIFPwX6xsFc2Smbr1avzmiNHGqZHmNGUmFfimtXKr9gEx4TmoSQOMQNfofdJeQFLvWUXYpov9YDmEA8BGHFUA",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "18",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "allowAnonymous": {
+                        "type": "boolean"
+                      },
+                      "responseLimit": {
+                        "type": "integer"
+                      },
+                      "locked": {
+                        "type": "boolean"
+                      },
+                      "createdAt": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string"
+                      },
+                      "createdBy": {
+                        "type": "integer"
+                      },
+                      "status": {
+                        "type": "string"
+                      },
+                      "visibility": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "name",
+                      "description",
+                      "allowAnonymous",
+                      "responseLimit",
+                      "locked",
+                      "createdAt",
+                      "updatedAt",
+                      "createdBy",
+                      "status",
+                      "visibility"
+                    ]
+                  }
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "name": "Test Form",
+                    "description": "Minimal body to create a form",
+                    "allowAnonymous": false,
+                    "responseLimit": 0,
+                    "locked": false,
+                    "createdAt": "2025-08-23T10:19:43.929883",
+                    "updatedAt": "2025-08-23T10:19:43.931766",
+                    "createdBy": 18,
+                    "status": "DRAFT",
+                    "visibility": "PRIVATE"
+                  },
+                  {
+                    "id": 2,
+                    "name": "Test Form 2",
+                    "description": "Minimal body to create a form 2",
+                    "allowAnonymous": false,
+                    "responseLimit": 0,
+                    "locked": false,
+                    "createdAt": "2025-08-23T10:49:49.347132",
+                    "updatedAt": "2025-08-23T10:49:49.347159",
+                    "createdBy": 20,
+                    "status": "DRAFT",
+                    "visibility": "PRIVATE"
+                  }
+                ]
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/1": {
+      "put": {
+        "summary": "+ Updated Form",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWthQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjE4LCJpYXQiOjE3NTU5NDM3MzgsImV4cCI6MTc1NTk0NzMzOH0.rEIFPwX6xsFc2Smbr1avzmiNHGqZHmNGUmFfimtXKr9gEx4TmoSQOMQNfofdJeQFLvWUXYpov9YDmEA8BGHFUA",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "18",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "allowAnonymous": {
+                    "type": "boolean"
+                  },
+                  "responseLimit": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "name",
+                  "description",
+                  "allowAnonymous",
+                  "responseLimit"
+                ]
+              },
+              "example": {
+                "name": "Test Form Updated",
+                "description": "Opis forme ažuriran za testiranje",
+                "allowAnonymous": true,
+                "responseLimit": 100
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "allowAnonymous": {
+                      "type": "boolean"
+                    },
+                    "responseLimit": {
+                      "type": "integer"
+                    },
+                    "locked": {
+                      "type": "boolean"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    },
+                    "createdBy": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "visibility": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "allowAnonymous",
+                    "responseLimit",
+                    "locked",
+                    "createdAt",
+                    "updatedAt",
+                    "createdBy",
+                    "status",
+                    "visibility"
+                  ]
+                },
+                "example": {
+                  "id": 1,
+                  "name": "Test Form Updated",
+                  "description": "Opis forme ažuriran za testiranje",
+                  "allowAnonymous": true,
+                  "responseLimit": 0,
+                  "locked": false,
+                  "createdAt": "2025-08-23T10:19:43.929883",
+                  "updatedAt": "2025-08-23T10:58:54.680260671",
+                  "createdBy": 18,
+                  "status": "DRAFT",
+                  "visibility": "PRIVATE"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "delete": {
+        "summary": "+ Delete Form",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWthQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjE4LCJpYXQiOjE3NTU5NDM4MzMsImV4cCI6MTc1NTk0NzQzM30.Nt-wBzMccHdqkTd5i1oUBc2RbaWg6TJ3psEXSMTcqjzvcMaTpJZ1Q9mw4Oh5ZSQ4K-d-8gfu67P0r0P_ui5PRA",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "18",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/1/lock": {
+      "put": {
+        "summary": "+ Locked Form",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWthQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjE4LCJpYXQiOjE3NTU5NDM4MzMsImV4cCI6MTc1NTk0NzQzM30.Nt-wBzMccHdqkTd5i1oUBc2RbaWg6TJ3psEXSMTcqjzvcMaTpJZ1Q9mw4Oh5ZSQ4K-d-8gfu67P0r0P_ui5PRA",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "18",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "allowAnonymous": {
+                      "type": "boolean"
+                    },
+                    "responseLimit": {
+                      "type": "integer"
+                    },
+                    "locked": {
+                      "type": "boolean"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    },
+                    "createdBy": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "visibility": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "allowAnonymous",
+                    "responseLimit",
+                    "locked",
+                    "createdAt",
+                    "updatedAt",
+                    "createdBy",
+                    "status",
+                    "visibility"
+                  ]
+                },
+                "example": {
+                  "id": 1,
+                  "name": "Test Form Updated",
+                  "description": "Opis forme ažuriran za testiranje",
+                  "allowAnonymous": true,
+                  "responseLimit": 0,
+                  "locked": true,
+                  "createdAt": "2025-08-23T10:19:43.929883",
+                  "updatedAt": "2025-08-23T11:16:59.196749868",
+                  "createdBy": 18,
+                  "status": "DRAFT",
+                  "visibility": "PRIVATE"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/1/unlock": {
+      "put": {
+        "summary": "+ Unlocked Form",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWthQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjE4LCJpYXQiOjE3NTU5NDM4MzMsImV4cCI6MTc1NTk0NzQzM30.Nt-wBzMccHdqkTd5i1oUBc2RbaWg6TJ3psEXSMTcqjzvcMaTpJZ1Q9mw4Oh5ZSQ4K-d-8gfu67P0r0P_ui5PRA",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "18",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "allowAnonymous": {
+                      "type": "boolean"
+                    },
+                    "responseLimit": {
+                      "type": "integer"
+                    },
+                    "locked": {
+                      "type": "boolean"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    },
+                    "createdBy": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "visibility": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "allowAnonymous",
+                    "responseLimit",
+                    "locked",
+                    "createdAt",
+                    "updatedAt",
+                    "createdBy",
+                    "status",
+                    "visibility"
+                  ]
+                },
+                "example": {
+                  "id": 1,
+                  "name": "Test Form Updated",
+                  "description": "Opis forme ažuriran za testiranje",
+                  "allowAnonymous": true,
+                  "responseLimit": 0,
+                  "locked": false,
+                  "createdAt": "2025-08-23T10:19:43.929883",
+                  "updatedAt": "2025-08-23T11:21:32.072260448",
+                  "createdBy": 18,
+                  "status": "DRAFT",
+                  "visibility": "PRIVATE"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/user": {
+      "get": {
+        "summary": "+ Get Forms for the Current User",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdGVmYW4xQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIwLCJpYXQiOjE3NTU5NDYwMzksImV4cCI6MTc1NTk0OTYzOX0.26Jb08KuXCeDVNi5lohy1WJ8XCrRQeC2wxNjedgzsOnN407zzozcO5BHQVI2yBA1qXgY0Yqvwwv39nBfR3suzg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "allowAnonymous": {
+                        "type": "boolean"
+                      },
+                      "responseLimit": {
+                        "type": "integer"
+                      },
+                      "locked": {
+                        "type": "boolean"
+                      },
+                      "createdAt": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string"
+                      },
+                      "createdBy": {
+                        "type": "integer"
+                      },
+                      "status": {
+                        "type": "string"
+                      },
+                      "visibility": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "example": [
+                  {
+                    "id": 2,
+                    "name": "Test Form 2",
+                    "description": "Minimal body to create a form 2",
+                    "allowAnonymous": false,
+                    "responseLimit": 0,
+                    "locked": false,
+                    "createdAt": "2025-08-23T10:49:49.347132",
+                    "updatedAt": "2025-08-23T10:49:49.347159",
+                    "createdBy": 20,
+                    "status": "DRAFT",
+                    "visibility": "PRIVATE"
+                  }
+                ]
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/2/visibility": {
+      "put": {
+        "summary": "+ Update Form Visibility",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "visibility",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "PUBLIC",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "eyJzdWIiOiJzdGVmYW4xQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIwLCJpYXQiOjE3NTU5NDYwMzksImV4cCI6MTc1NTk0OTYzOX0.26Jb08KuXCeDVNi5lohy1WJ8XCrRQeC2wxNjedgzsOnN407zzozcO5BHQVI2yBA1qXgY0Yqvwwv39nBfR3suzg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "allowAnonymous": {
+                      "type": "boolean"
+                    },
+                    "responseLimit": {
+                      "type": "integer"
+                    },
+                    "locked": {
+                      "type": "boolean"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    },
+                    "createdBy": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "visibility": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "allowAnonymous",
+                    "responseLimit",
+                    "locked",
+                    "createdAt",
+                    "updatedAt",
+                    "createdBy",
+                    "status",
+                    "visibility"
+                  ]
+                },
+                "example": {
+                  "id": 2,
+                  "name": "Test Form 2",
+                  "description": "Minimal body to create a form 2",
+                  "allowAnonymous": false,
+                  "responseLimit": 0,
+                  "locked": false,
+                  "createdAt": "2025-08-23T10:49:49.347132",
+                  "updatedAt": "2025-08-23T11:42:58.712696075",
+                  "createdBy": 20,
+                  "status": "DRAFT",
+                  "visibility": "PUBLIC"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/visibility/PUBLIC": {
+      "get": {
+        "summary": "+ Get Forms by Visibility",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "eyJzdWIiOiJzdGVmYW4xQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIwLCJpYXQiOjE3NTU5NDYwMzksImV4cCI6MTc1NTk0OTYzOX0.26Jb08KuXCeDVNi5lohy1WJ8XCrRQeC2wxNjedgzsOnN407zzozcO5BHQVI2yBA1qXgY0Yqvwwv39nBfR3suzg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "allowAnonymous": {
+                        "type": "boolean"
+                      },
+                      "responseLimit": {
+                        "type": "integer"
+                      },
+                      "locked": {
+                        "type": "boolean"
+                      },
+                      "createdAt": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string"
+                      },
+                      "createdBy": {
+                        "type": "integer"
+                      },
+                      "status": {
+                        "type": "string"
+                      },
+                      "visibility": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "example": [
+                  {
+                    "id": 2,
+                    "name": "Test Form 2",
+                    "description": "Minimal body to create a form 2",
+                    "allowAnonymous": false,
+                    "responseLimit": 0,
+                    "locked": false,
+                    "createdAt": "2025-08-23T10:49:49.347132",
+                    "updatedAt": "2025-08-23T11:42:58.712696",
+                    "createdBy": 20,
+                    "status": "DRAFT",
+                    "visibility": "PUBLIC"
+                  }
+                ]
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/2/copy": {
+      "post": {
+        "summary": " + Create a Copy of a Form",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJzdWIiOiJzdGVmYW4xQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIwLCJpYXQiOjE3NTU5NDYwMzksImV4cCI6MTc1NTk0OTYzOX0.26Jb08KuXCeDVNi5lohy1WJ8XCrRQeC2wxNjedgzsOnN407zzozcO5BHQVI2yBA1qXgY0Yqvwwv39nBfR3suzg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "allowAnonymous": {
+                      "type": "boolean"
+                    },
+                    "responseLimit": {
+                      "type": "integer"
+                    },
+                    "locked": {
+                      "type": "boolean"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    },
+                    "createdBy": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "visibility": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "allowAnonymous",
+                    "responseLimit",
+                    "locked",
+                    "createdAt",
+                    "updatedAt",
+                    "createdBy",
+                    "status",
+                    "visibility"
+                  ]
+                },
+                "example": {
+                  "id": 3,
+                  "name": "Test Form 2 (Copy)",
+                  "description": "Minimal body to create a form 2",
+                  "allowAnonymous": false,
+                  "responseLimit": 0,
+                  "locked": false,
+                  "createdAt": "2025-08-23T11:58:59.081255157",
+                  "updatedAt": "2025-08-23T11:58:59.081274158",
+                  "createdBy": 20,
+                  "status": "DRAFT",
+                  "visibility": "PRIVATE"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/2/status": {
+      "put": {
+        "summary": "+ Updated Form Status Closed",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "example": "CLOSED",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdGVmYW4xQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIwLCJpYXQiOjE3NTU5NDYwMzksImV4cCI6MTc1NTk0OTYzOX0.26Jb08KuXCeDVNi5lohy1WJ8XCrRQeC2wxNjedgzsOnN407zzozcO5BHQVI2yBA1qXgY0Yqvwwv39nBfR3suzg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "allowAnonymous": {
+                      "type": "boolean"
+                    },
+                    "responseLimit": {
+                      "type": "integer"
+                    },
+                    "locked": {
+                      "type": "boolean"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    },
+                    "createdBy": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "visibility": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "allowAnonymous",
+                    "responseLimit",
+                    "locked",
+                    "createdAt",
+                    "updatedAt",
+                    "createdBy",
+                    "status",
+                    "visibility"
+                  ]
+                },
+                "example": {
+                  "id": 2,
+                  "name": "Test Form 2",
+                  "description": "Minimal body to create a form 2",
+                  "allowAnonymous": false,
+                  "responseLimit": 0,
+                  "locked": false,
+                  "createdAt": "2025-08-23T10:49:49.347132",
+                  "updatedAt": "2025-08-23T13:20:39.069830696",
+                  "createdBy": 20,
+                  "status": "CLOSED",
+                  "visibility": "PUBLIC"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/status/CLOSED": {
+      "get": {
+        "summary": "+ Get Forms by Status",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdGVmYW4xQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIwLCJpYXQiOjE3NTU5NDYwMzksImV4cCI6MTc1NTk0OTYzOX0.26Jb08KuXCeDVNi5lohy1WJ8XCrRQeC2wxNjedgzsOnN407zzozcO5BHQVI2yBA1qXgY0Yqvwwv39nBfR3suzg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "allowAnonymous": {
+                        "type": "boolean"
+                      },
+                      "responseLimit": {
+                        "type": "integer"
+                      },
+                      "locked": {
+                        "type": "boolean"
+                      },
+                      "createdAt": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string"
+                      },
+                      "createdBy": {
+                        "type": "integer"
+                      },
+                      "status": {
+                        "type": "string"
+                      },
+                      "visibility": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "example": [
+                  {
+                    "id": 2,
+                    "name": "Test Form 2",
+                    "description": "Minimal body to create a form 2",
+                    "allowAnonymous": false,
+                    "responseLimit": 0,
+                    "locked": false,
+                    "createdAt": "2025-08-23T10:49:49.347132",
+                    "updatedAt": "2025-08-23T13:20:39.069831",
+                    "createdBy": 20,
+                    "status": "CLOSED",
+                    "visibility": "PUBLIC"
+                  }
+                ]
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/public": {
+      "get": {
+        "summary": "+ Get All Public Forms",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdGVmYW4xQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIwLCJpYXQiOjE3NTU5NDYwMzksImV4cCI6MTc1NTk0OTYzOX0.26Jb08KuXCeDVNi5lohy1WJ8XCrRQeC2wxNjedgzsOnN407zzozcO5BHQVI2yBA1qXgY0Yqvwwv39nBfR3suzg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "name": {
+                        "type": "null"
+                      },
+                      "description": {
+                        "type": "null"
+                      },
+                      "allowAnonymous": {
+                        "type": "boolean"
+                      },
+                      "responseLimit": {
+                        "type": "integer"
+                      },
+                      "locked": {
+                        "type": "boolean"
+                      },
+                      "createdAt": {
+                        "type": "string"
+                      },
+                      "updatedAt": {
+                        "type": "string"
+                      },
+                      "createdBy": {
+                        "type": "integer"
+                      },
+                      "status": {
+                        "type": "string"
+                      },
+                      "visibility": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "example": [
+                  {
+                    "id": 2,
+                    "name": null,
+                    "description": null,
+                    "allowAnonymous": true,
+                    "responseLimit": 0,
+                    "locked": false,
+                    "createdAt": "2025-08-23T10:49:49.347132",
+                    "updatedAt": "2025-08-23T13:40:16.955915",
+                    "createdBy": 20,
+                    "status": "ACTIVE",
+                    "visibility": "PUBLIC"
+                  }
+                ]
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/public/2": {
+      "get": {
+        "summary": "+ Get a Specific Public Form",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdGVmYW4xQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIwLCJpYXQiOjE3NTU5NDYwMzksImV4cCI6MTc1NTk0OTYzOX0.26Jb08KuXCeDVNi5lohy1WJ8XCrRQeC2wxNjedgzsOnN407zzozcO5BHQVI2yBA1qXgY0Yqvwwv39nBfR3suzg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "name": {
+                      "type": "null"
+                    },
+                    "description": {
+                      "type": "null"
+                    },
+                    "allowAnonymous": {
+                      "type": "boolean"
+                    },
+                    "responseLimit": {
+                      "type": "integer"
+                    },
+                    "locked": {
+                      "type": "boolean"
+                    },
+                    "createdAt": {
+                      "type": "string"
+                    },
+                    "updatedAt": {
+                      "type": "string"
+                    },
+                    "createdBy": {
+                      "type": "integer"
+                    },
+                    "status": {
+                      "type": "string"
+                    },
+                    "visibility": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "name",
+                    "description",
+                    "allowAnonymous",
+                    "responseLimit",
+                    "locked",
+                    "createdAt",
+                    "updatedAt",
+                    "createdBy",
+                    "status",
+                    "visibility"
+                  ]
+                },
+                "example": {
+                  "id": 2,
+                  "name": null,
+                  "description": null,
+                  "allowAnonymous": true,
+                  "responseLimit": 0,
+                  "locked": false,
+                  "createdAt": "2025-08-23T10:49:49.347132",
+                  "updatedAt": "2025-08-23T13:40:16.955915",
+                  "createdBy": 20,
+                  "status": "ACTIVE",
+                  "visibility": "PUBLIC"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/2/questions": {
+      "post": {
+        "summary": "Create for Delete",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdGVmYW4xQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIwLCJpYXQiOjE3NTU5NDYwMzksImV4cCI6MTc1NTk0OTYzOX0.26Jb08KuXCeDVNi5lohy1WJ8XCrRQeC2wxNjedgzsOnN407zzozcO5BHQVI2yBA1qXgY0Yqvwwv39nBfR3suzg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "required": {
+                    "type": "boolean"
+                  },
+                  "orderIndex": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "text",
+                  "type",
+                  "required",
+                  "orderIndex"
+                ]
+              },
+              "example": {
+                "text": "Navedite Vaše ime i prezime",
+                "type": "SHORT_TEXT",
+                "required": true,
+                "orderIndex": 11
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    },
+                    "required": {
+                      "type": "boolean"
+                    },
+                    "orderIndex": {
+                      "type": "integer"
+                    },
+                    "formId": {
+                      "type": "integer"
+                    },
+                    "userId": {
+                      "type": "integer"
+                    },
+                    "imageUrl": {
+                      "type": "null"
+                    },
+                    "options": {
+                      "type": "array",
+                      "items": {}
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "text",
+                    "type",
+                    "required",
+                    "orderIndex",
+                    "formId",
+                    "userId",
+                    "imageUrl",
+                    "options"
+                  ]
+                },
+                "example": {
+                  "id": 11,
+                  "text": "Navedite Vaše ime i prezime",
+                  "type": "SHORT_TEXT",
+                  "required": true,
+                  "orderIndex": 11,
+                  "formId": 2,
+                  "userId": 20,
+                  "imageUrl": null,
+                  "options": []
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "get": {
+        "summary": "+ List of Questions in Form",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWthQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjE4LCJpYXQiOjE3NTU5NDM4MzMsImV4cCI6MTc1NTk0NzQzM30.Nt-wBzMccHdqkTd5i1oUBc2RbaWg6TJ3psEXSMTcqjzvcMaTpJZ1Q9mw4Oh5ZSQ4K-d-8gfu67P0r0P_ui5PRA",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "text": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "required": {
+                        "type": "boolean"
+                      },
+                      "orderIndex": {
+                        "type": "integer"
+                      },
+                      "formId": {
+                        "type": "integer"
+                      },
+                      "userId": {
+                        "type": "integer"
+                      },
+                      "imageUrl": {
+                        "type": "null"
+                      },
+                      "options": {
+                        "type": "array",
+                        "items": {}
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "text",
+                      "type",
+                      "required",
+                      "orderIndex",
+                      "formId",
+                      "userId",
+                      "imageUrl",
+                      "options"
+                    ]
+                  }
+                },
+                "example": [
+                  {
+                    "id": 3,
+                    "text": "Vaše ime i prezime",
+                    "type": "SHORT_TEXT",
+                    "required": true,
+                    "orderIndex": 1,
+                    "formId": 2,
+                    "userId": 20,
+                    "imageUrl": null,
+                    "options": []
+                  },
+                  {
+                    "id": 4,
+                    "text": "Opišite svoje iskustvo",
+                    "type": "LONG_TEXT",
+                    "required": false,
+                    "orderIndex": 2,
+                    "formId": 2,
+                    "userId": 20,
+                    "imageUrl": null,
+                    "options": []
+                  },
+                  {
+                    "id": 6,
+                    "text": "Koji paket koristite?",
+                    "type": "SINGLE_CHOICE",
+                    "required": true,
+                    "orderIndex": 3,
+                    "formId": 2,
+                    "userId": 20,
+                    "imageUrl": null,
+                    "options": []
+                  },
+                  {
+                    "id": 7,
+                    "text": "Odaberite dve stavke",
+                    "type": "MULTI_CHOICE",
+                    "required": false,
+                    "orderIndex": 4,
+                    "formId": 2,
+                    "userId": 20,
+                    "imageUrl": null,
+                    "options": []
+                  },
+                  {
+                    "id": 8,
+                    "text": "Ocenite uslugu (1–5)",
+                    "type": "NUMBER",
+                    "required": true,
+                    "orderIndex": 5,
+                    "formId": 2,
+                    "userId": 20,
+                    "imageUrl": null,
+                    "options": []
+                  },
+                  {
+                    "id": 9,
+                    "text": "Datum rođenja",
+                    "type": "DATE",
+                    "required": false,
+                    "orderIndex": 6,
+                    "formId": 2,
+                    "userId": 20,
+                    "imageUrl": null,
+                    "options": []
+                  },
+                  {
+                    "id": 10,
+                    "text": "Vreme kontakta",
+                    "type": "TIME",
+                    "required": false,
+                    "orderIndex": 7,
+                    "formId": 2,
+                    "userId": 20,
+                    "imageUrl": null,
+                    "options": []
+                  }
+                ]
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/2/questions/7": {
+      "get": {
+        "summary": "+ Get a Specific Question",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWthQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjE4LCJpYXQiOjE3NTU5NDM4MzMsImV4cCI6MTc1NTk0NzQzM30.Nt-wBzMccHdqkTd5i1oUBc2RbaWg6TJ3psEXSMTcqjzvcMaTpJZ1Q9mw4Oh5ZSQ4K-d-8gfu67P0r0P_ui5PRA",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    },
+                    "required": {
+                      "type": "boolean"
+                    },
+                    "orderIndex": {
+                      "type": "integer"
+                    },
+                    "formId": {
+                      "type": "integer"
+                    },
+                    "userId": {
+                      "type": "integer"
+                    },
+                    "imageUrl": {
+                      "type": "null"
+                    },
+                    "options": {
+                      "type": "array",
+                      "items": {}
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "text",
+                    "type",
+                    "required",
+                    "orderIndex",
+                    "formId",
+                    "userId",
+                    "imageUrl",
+                    "options"
+                  ]
+                },
+                "example": {
+                  "id": 7,
+                  "text": "Odaberite dve stavke",
+                  "type": "MULTI_CHOICE",
+                  "required": false,
+                  "orderIndex": 4,
+                  "formId": 2,
+                  "userId": 20,
+                  "imageUrl": null,
+                  "options": []
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/2/questions/3": {
+      "put": {
+        "summary": "+ Update a Question",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdGVmYW4xQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIwLCJpYXQiOjE3NTU5NDYwMzksImV4cCI6MTc1NTk0OTYzOX0.26Jb08KuXCeDVNi5lohy1WJ8XCrRQeC2wxNjedgzsOnN407zzozcO5BHQVI2yBA1qXgY0Yqvwwv39nBfR3suzg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  },
+                  "type": {
+                    "type": "string"
+                  },
+                  "required": {
+                    "type": "boolean"
+                  },
+                  "orderIndex": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "text",
+                  "type",
+                  "required",
+                  "orderIndex"
+                ]
+              },
+              "example": {
+                "text": "Vaše puno ime",
+                "type": "SHORT_TEXT",
+                "required": true,
+                "orderIndex": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    },
+                    "required": {
+                      "type": "boolean"
+                    },
+                    "orderIndex": {
+                      "type": "integer"
+                    },
+                    "formId": {
+                      "type": "integer"
+                    },
+                    "userId": {
+                      "type": "integer"
+                    },
+                    "imageUrl": {
+                      "type": "null"
+                    },
+                    "options": {
+                      "type": "array",
+                      "items": {}
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "text",
+                    "type",
+                    "required",
+                    "orderIndex",
+                    "formId",
+                    "userId",
+                    "imageUrl",
+                    "options"
+                  ]
+                },
+                "example": {
+                  "id": 3,
+                  "text": "Vaše puno ime",
+                  "type": "SHORT_TEXT",
+                  "required": true,
+                  "orderIndex": 1,
+                  "formId": 2,
+                  "userId": 20,
+                  "imageUrl": null,
+                  "options": []
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/2/questions/11": {
+      "delete": {
+        "summary": "+ Delete a Question",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdGVmYW4xQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIwLCJpYXQiOjE3NTU5NDYwMzksImV4cCI6MTc1NTk0OTYzOX0.26Jb08KuXCeDVNi5lohy1WJ8XCrRQeC2wxNjedgzsOnN407zzozcO5BHQVI2yBA1qXgY0Yqvwwv39nBfR3suzg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/2/questions/reorder": {
+      "put": {
+        "summary": "+ Reordered Questions",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdGVmYW4xQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIwLCJpYXQiOjE3NTU5NDYwMzksImV4cCI6MTc1NTk0OTYzOX0.26Jb08KuXCeDVNi5lohy1WJ8XCrRQeC2wxNjedgzsOnN407zzozcO5BHQVI2yBA1qXgY0Yqvwwv39nBfR3suzg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "integer"
+                }
+              },
+              "example": [
+                6,
+                9,
+                3,
+                7,
+                10,
+                4,
+                8
+              ]
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "text": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "required": {
+                        "type": "boolean"
+                      },
+                      "orderIndex": {
+                        "type": "integer"
+                      },
+                      "formId": {
+                        "type": "integer"
+                      },
+                      "userId": {
+                        "type": "integer"
+                      },
+                      "imageUrl": {
+                        "type": "null"
+                      },
+                      "options": {
+                        "type": "array",
+                        "items": {}
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "text",
+                      "type",
+                      "required",
+                      "orderIndex",
+                      "formId",
+                      "userId",
+                      "imageUrl",
+                      "options"
+                    ]
+                  }
+                },
+                "example": [
+                  {
+                    "id": 4,
+                    "text": "Opišite svoje iskustvo",
+                    "type": "LONG_TEXT",
+                    "required": false,
+                    "orderIndex": 5,
+                    "formId": 2,
+                    "userId": 20,
+                    "imageUrl": null,
+                    "options": []
+                  },
+                  {
+                    "id": 6,
+                    "text": "Koji paket koristite?",
+                    "type": "SINGLE_CHOICE",
+                    "required": true,
+                    "orderIndex": 0,
+                    "formId": 2,
+                    "userId": 20,
+                    "imageUrl": null,
+                    "options": []
+                  },
+                  {
+                    "id": 7,
+                    "text": "Odaberite dve stavke",
+                    "type": "MULTI_CHOICE",
+                    "required": false,
+                    "orderIndex": 3,
+                    "formId": 2,
+                    "userId": 20,
+                    "imageUrl": null,
+                    "options": []
+                  },
+                  {
+                    "id": 8,
+                    "text": "Ocenite uslugu (1–5)",
+                    "type": "NUMBER",
+                    "required": true,
+                    "orderIndex": 6,
+                    "formId": 2,
+                    "userId": 20,
+                    "imageUrl": null,
+                    "options": []
+                  },
+                  {
+                    "id": 9,
+                    "text": "Datum rođenja",
+                    "type": "DATE",
+                    "required": false,
+                    "orderIndex": 1,
+                    "formId": 2,
+                    "userId": 20,
+                    "imageUrl": null,
+                    "options": []
+                  },
+                  {
+                    "id": 10,
+                    "text": "Vreme kontakta",
+                    "type": "TIME",
+                    "required": false,
+                    "orderIndex": 4,
+                    "formId": 2,
+                    "userId": 20,
+                    "imageUrl": null,
+                    "options": []
+                  },
+                  {
+                    "id": 3,
+                    "text": "Vaše puno ime",
+                    "type": "SHORT_TEXT",
+                    "required": true,
+                    "orderIndex": 2,
+                    "formId": 2,
+                    "userId": 20,
+                    "imageUrl": null,
+                    "options": []
+                  }
+                ]
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/2/questions/6/options": {
+      "post": {
+        "summary": "+ Create a New Option for Question with Image ",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdGVmYW4xQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIwLCJpYXQiOjE3NTU5NDYwMzksImV4cCI6MTc1NTk0OTYzOX0.26Jb08KuXCeDVNi5lohy1WJ8XCrRQeC2wxNjedgzsOnN407zzozcO5BHQVI2yBA1qXgY0Yqvwwv39nBfR3suzg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  },
+                  "imageUrl": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text",
+                  "imageUrl"
+                ]
+              },
+              "example": {
+                "text": "BasicPro",
+                "imageUrl": "https://sh.wikipedia.org/wiki/Slika#/media/Datoteka:Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "imageUrl": {
+                      "type": "string"
+                    },
+                    "questionId": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "text",
+                    "imageUrl",
+                    "questionId"
+                  ]
+                },
+                "example": {
+                  "id": 4,
+                  "text": "BasicPro",
+                  "imageUrl": "https://sh.wikipedia.org/wiki/Slika#/media/Datoteka:Mona_Lisa,_by_Leonardo_da_Vinci,_from_C2RMF_retouched.jpg",
+                  "questionId": 6
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "get": {
+        "summary": "+ List of Options  - Single Choice",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdGVmYW4xQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIwLCJpYXQiOjE3NTU5NDYwMzksImV4cCI6MTc1NTk0OTYzOX0.26Jb08KuXCeDVNi5lohy1WJ8XCrRQeC2wxNjedgzsOnN407zzozcO5BHQVI2yBA1qXgY0Yqvwwv39nBfR3suzg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "text": {
+                        "type": "string"
+                      },
+                      "imageUrl": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "questionId": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "text",
+                      "imageUrl",
+                      "questionId"
+                    ]
+                  }
+                },
+                "example": [
+                  {
+                    "id": 2,
+                    "text": "Basic",
+                    "imageUrl": null,
+                    "questionId": 6
+                  },
+                  {
+                    "id": 4,
+                    "text": "UpdatedText",
+                    "imageUrl": "https://sr.wikipedia.org/wiki/%D0%A1%D0%BB%D0%B8%D0%BA%D0%B0#/media/%D0%94%D0%B0%D1%82%D0%BE%D1%82%D0%B5%D0%BA%D0%B0:Vincent_Willem_van_Gogh_107.jpg",
+                    "questionId": 6
+                  }
+                ]
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/2/questions/6/options/4": {
+      "put": {
+        "summary": "+ Updated an Options - Text and Image",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdGVmYW4xQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIwLCJpYXQiOjE3NTU5NDYwMzksImV4cCI6MTc1NTk0OTYzOX0.26Jb08KuXCeDVNi5lohy1WJ8XCrRQeC2wxNjedgzsOnN407zzozcO5BHQVI2yBA1qXgY0Yqvwwv39nBfR3suzg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  },
+                  "imageUrl": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text",
+                  "imageUrl"
+                ]
+              },
+              "example": {
+                "text": "UpdatedText",
+                "imageUrl": "https://sr.wikipedia.org/wiki/%D0%A1%D0%BB%D0%B8%D0%BA%D0%B0#/media/%D0%94%D0%B0%D1%82%D0%BE%D1%82%D0%B5%D0%BA%D0%B0:Vincent_Willem_van_Gogh_107.jpg"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "imageUrl": {
+                      "type": "string"
+                    },
+                    "questionId": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "text",
+                    "imageUrl",
+                    "questionId"
+                  ]
+                },
+                "example": {
+                  "id": 4,
+                  "text": "UpdatedText",
+                  "imageUrl": "https://sr.wikipedia.org/wiki/%D0%A1%D0%BB%D0%B8%D0%BA%D0%B0#/media/%D0%94%D0%B0%D1%82%D0%BE%D1%82%D0%B5%D0%BA%D0%B0:Vincent_Willem_van_Gogh_107.jpg",
+                  "questionId": 6
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/2/questions/6/options/3": {
+      "delete": {
+        "summary": "+ Delete an Option",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdGVmYW4xQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIwLCJpYXQiOjE3NTU5NDYwMzksImV4cCI6MTc1NTk0OTYzOX0.26Jb08KuXCeDVNi5lohy1WJ8XCrRQeC2wxNjedgzsOnN407zzozcO5BHQVI2yBA1qXgY0Yqvwwv39nBfR3suzg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/2/questions/4/clone": {
+      "post": {
+        "summary": "-- Clone Question",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdGVmYW4xQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIwLCJpYXQiOjE3NTU5NDYwMzksImV4cCI6MTc1NTk0OTYzOX0.26Jb08KuXCeDVNi5lohy1WJ8XCrRQeC2wxNjedgzsOnN407zzozcO5BHQVI2yBA1qXgY0Yqvwwv39nBfR3suzg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "path": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "status",
+                    "error",
+                    "message",
+                    "path",
+                    "timestamp"
+                  ]
+                },
+                "example": {
+                  "status": 500,
+                  "error": "Internal Server Error",
+                  "message": "Specified result type [java.lang.Integer] did not match Query selection type [org.microservices.formservice.entity.Question] - multiple selections: use Tuple or array",
+                  "path": "/api/forms/2/questions/4/clone",
+                  "timestamp": "2025-08-23 18:48:16"
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/2/collaborators": {
+      "post": {
+        "summary": "+ Collaborator Viewer",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdGVmYW4xQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIwLCJpYXQiOjE3NTU5NDYwMzksImV4cCI6MTc1NTk0OTYzOX0.26Jb08KuXCeDVNi5lohy1WJ8XCrRQeC2wxNjedgzsOnN407zzozcO5BHQVI2yBA1qXgY0Yqvwwv39nBfR3suzg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "userId": {
+                    "type": "integer"
+                  },
+                  "role": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "userId",
+                  "role"
+                ]
+              },
+              "example": {
+                "userId": 22,
+                "role": "VIEWER"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "userId": {
+                      "type": "integer"
+                    },
+                    "email": {
+                      "type": "null"
+                    },
+                    "role": {
+                      "type": "string"
+                    },
+                    "formId": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "userId",
+                    "email",
+                    "role",
+                    "formId"
+                  ]
+                },
+                "example": {
+                  "id": 2,
+                  "userId": 22,
+                  "email": null,
+                  "role": "VIEWER",
+                  "formId": 2
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "get": {
+        "summary": "+ List of Collaborators",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdGVmYW4xQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIwLCJpYXQiOjE3NTU5NDYwMzksImV4cCI6MTc1NTk0OTYzOX0.26Jb08KuXCeDVNi5lohy1WJ8XCrRQeC2wxNjedgzsOnN407zzozcO5BHQVI2yBA1qXgY0Yqvwwv39nBfR3suzg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "userId": {
+                        "type": "integer"
+                      },
+                      "email": {
+                        "type": "null"
+                      },
+                      "role": {
+                        "type": "string"
+                      },
+                      "formId": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "userId",
+                      "email",
+                      "role",
+                      "formId"
+                    ]
+                  }
+                },
+                "example": [
+                  {
+                    "id": 1,
+                    "userId": 21,
+                    "email": null,
+                    "role": "VIEWER",
+                    "formId": 2
+                  },
+                  {
+                    "id": 2,
+                    "userId": 22,
+                    "email": null,
+                    "role": "EDITOR",
+                    "formId": 2
+                  }
+                ]
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/2/collaborators/1": {
+      "put": {
+        "summary": "+ Collaborator Change Editor to Viewer",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdGVmYW4xQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIwLCJpYXQiOjE3NTU5NDYwMzksImV4cCI6MTc1NTk0OTYzOX0.26Jb08KuXCeDVNi5lohy1WJ8XCrRQeC2wxNjedgzsOnN407zzozcO5BHQVI2yBA1qXgY0Yqvwwv39nBfR3suzg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "role"
+                ]
+              },
+              "example": {
+                "role": "VIEWER"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "userId": {
+                      "type": "integer"
+                    },
+                    "email": {
+                      "type": "null"
+                    },
+                    "role": {
+                      "type": "string"
+                    },
+                    "formId": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "userId",
+                    "email",
+                    "role",
+                    "formId"
+                  ]
+                },
+                "example": {
+                  "id": 1,
+                  "userId": 21,
+                  "email": null,
+                  "role": "VIEWER",
+                  "formId": 2
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/2/collaborators/2": {
+      "put": {
+        "summary": "+ Collaborator Change Viewer to Editor",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdGVmYW4xQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIwLCJpYXQiOjE3NTU5NDYwMzksImV4cCI6MTc1NTk0OTYzOX0.26Jb08KuXCeDVNi5lohy1WJ8XCrRQeC2wxNjedgzsOnN407zzozcO5BHQVI2yBA1qXgY0Yqvwwv39nBfR3suzg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "role": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "role"
+                ]
+              },
+              "example": {
+                "role": "EDITOR"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "userId": {
+                      "type": "integer"
+                    },
+                    "email": {
+                      "type": "null"
+                    },
+                    "role": {
+                      "type": "string"
+                    },
+                    "formId": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "userId",
+                    "email",
+                    "role",
+                    "formId"
+                  ]
+                },
+                "example": {
+                  "id": 2,
+                  "userId": 22,
+                  "email": null,
+                  "role": "EDITOR",
+                  "formId": 2
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "delete": {
+        "summary": "+ Delete Collaborator",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdGVmYW4xQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIwLCJpYXQiOjE3NTU5NDYwMzksImV4cCI6MTc1NTk0OTYzOX0.26Jb08KuXCeDVNi5lohy1WJ8XCrRQeC2wxNjedgzsOnN407zzozcO5BHQVI2yBA1qXgY0Yqvwwv39nBfR3suzg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "",
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/2/questions/7/options": {
+      "post": {
+        "summary": "+ Create a New Option for Multi Choice 2",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdGVmYW4xQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIwLCJpYXQiOjE3NTU5NDYwMzksImV4cCI6MTc1NTk0OTYzOX0.26Jb08KuXCeDVNi5lohy1WJ8XCrRQeC2wxNjedgzsOnN407zzozcO5BHQVI2yBA1qXgY0Yqvwwv39nBfR3suzg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "text": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "text"
+                ]
+              },
+              "example": {
+                "text": "Vektor"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "imageUrl": {
+                      "type": "null"
+                    },
+                    "questionId": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "text",
+                    "imageUrl",
+                    "questionId"
+                  ]
+                },
+                "example": {
+                  "id": 7,
+                  "text": "Vektor",
+                  "imageUrl": null,
+                  "questionId": 7
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "get": {
+        "summary": "+ List of Options - Multi Choice",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJzdGVmYW4xQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIwLCJpYXQiOjE3NTU5NDYwMzksImV4cCI6MTc1NTk0OTYzOX0.26Jb08KuXCeDVNi5lohy1WJ8XCrRQeC2wxNjedgzsOnN407zzozcO5BHQVI2yBA1qXgY0Yqvwwv39nBfR3suzg",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "20",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "text": {
+                        "type": "string"
+                      },
+                      "imageUrl": {
+                        "type": "string",
+                        "nullable": true
+                      },
+                      "questionId": {
+                        "type": "integer"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "text",
+                      "imageUrl",
+                      "questionId"
+                    ]
+                  }
+                },
+                "example": [
+                  {
+                    "id": 6,
+                    "text": "Brzina",
+                    "imageUrl": "https://sh.wikipedia.org/wiki/Krik_%28slika%29#/media/Datoteka:The_Scream.jpg",
+                    "questionId": 7
+                  },
+                  {
+                    "id": 7,
+                    "text": "Vektor",
+                    "imageUrl": null,
+                    "questionId": 7
+                  }
+                ]
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/4/questions": {
+      "post": {
+        "summary": "+ F3 Number ",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": " Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYW5lQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIzLCJpYXQiOjE3NTg2NDMwODIsImV4cCI6MTc1ODY0NjY4Mn0.iQbSRUz_wVqsbKmo9I4mRe2CWLAwxHNeDn2WuxDuPeooNf5ZDYgI58q_-xs_SGu9SpTF6BuR6juAT2zSTzqnNw",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "23",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "text": "Ocenite uslugu (1–5)",
+                "type": "NUMBER",
+                "required": true,
+                "orderIndex": 1
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    },
+                    "required": {
+                      "type": "boolean"
+                    },
+                    "orderIndex": {
+                      "type": "integer"
+                    },
+                    "formId": {
+                      "type": "integer"
+                    },
+                    "userId": {
+                      "type": "integer"
+                    },
+                    "imageUrl": {
+                      "type": "null"
+                    },
+                    "options": {
+                      "type": "array",
+                      "items": {}
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "text",
+                    "type",
+                    "required",
+                    "orderIndex",
+                    "formId",
+                    "userId",
+                    "imageUrl",
+                    "options"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      },
+      "get": {
+        "summary": "+F3 Listed Qs",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": " Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYW5lQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIzLCJpYXQiOjE3NTg2NDMwODIsImV4cCI6MTc1ODY0NjY4Mn0.iQbSRUz_wVqsbKmo9I4mRe2CWLAwxHNeDn2WuxDuPeooNf5ZDYgI58q_-xs_SGu9SpTF6BuR6juAT2zSTzqnNw",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "23",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer"
+                      },
+                      "text": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "required": {
+                        "type": "boolean"
+                      },
+                      "orderIndex": {
+                        "type": "integer"
+                      },
+                      "formId": {
+                        "type": "integer"
+                      },
+                      "userId": {
+                        "type": "integer"
+                      },
+                      "imageUrl": {
+                        "type": "null"
+                      },
+                      "options": {
+                        "type": "array",
+                        "items": {}
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "text",
+                      "type",
+                      "required",
+                      "orderIndex",
+                      "formId",
+                      "userId",
+                      "imageUrl",
+                      "options"
+                    ]
+                  }
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    },
+    "/api/forms/4/questions/13/options": {
+      "post": {
+        "summary": "+F3 Added Option 1",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": " Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJiYW5lQG1haWwuY29tIiwicm9sZSI6IlVTRVIiLCJ1c2VySWQiOjIzLCJpYXQiOjE3NTg2NDMwODIsImV4cCI6MTc1ODY0NjY4Mn0.iQbSRUz_wVqsbKmo9I4mRe2CWLAwxHNeDn2WuxDuPeooNf5ZDYgI58q_-xs_SGu9SpTF6BuR6juAT2zSTzqnNw",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "X-User-ID",
+            "in": "header",
+            "description": "",
+            "required": false,
+            "example": "23",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {
+                "text": "Pro"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer"
+                    },
+                    "text": {
+                      "type": "string"
+                    },
+                    "imageUrl": {
+                      "type": "null"
+                    },
+                    "questionId": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "id",
+                    "text",
+                    "imageUrl",
+                    "questionId"
+                  ]
+                }
+              }
+            },
+            "headers": {}
+          }
+        },
+        "security": []
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "securitySchemes": {}
+  },
+  "servers": [],
+  "security": []
+}
